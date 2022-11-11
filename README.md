@@ -19,6 +19,8 @@
  
 <script>
 document.getElementById("text").innerHTML = "Text added by JavaScript code";
+alert("one");
 var map = L.map('map').setView([51.505, -0.09], 13);
+alert("two");
 </script>
  
