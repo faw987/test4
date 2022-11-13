@@ -13,6 +13,11 @@
 <div id=two">
 <h1>hhh 7:00</h1>
 <a href="faw4.html">faw4</a>
+
+
+
+<a href="clemap1.png">CLE map1</a>
+
 </div>
  
 <script>
