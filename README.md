@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background-image: url('images/sunset-on-river.jpg');
+}
+</style>
+</head>
+<body>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
      integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
      crossorigin=""/>
@@ -10,18 +21,27 @@
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<div id=two">
-<h2>Sunday 12:51</h2>
+
+<br/>
 <a href="faw4.html">faw4</a>
+<br/>
 
 <a href="faw5.html">faw5</a>
 
+<br/>
+<a href="faw6.html">faw6 - drag & drop </a>
 
-<a href="clemap1.png">CLE map1</a>
+<br/>
 
-</div>
+<a href="clemap1.png">cle</a>
+<a href="sunset-on-river.jpg">sunset</a>
+
+<br/>
+<h1>hhh 7:00</h1>
  
+<br/>
 <script>
+
 document.getElementById("text").innerHTML = "Text added by JavaScript code";
 <!-- alert("one"); 41.500998037771, -81.68048052414491. -->
 var map = L.map('map').setView([41.500998037771, -81.68048052414491], 13);
@@ -33,3 +53,4 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 </script>
  
+</body>
