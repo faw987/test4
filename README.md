@@ -33,6 +33,14 @@ body {
 
 <br/>
 
+<a href="faw9.html">faw9</a>
+
+<br/>
+
+<a href="faw10.html">faw10</a>
+
+<br/>
+
 <a href="clemap1.png">cle</a>
 <a href="sunset-on-river.jpg">sunset</a>
 
