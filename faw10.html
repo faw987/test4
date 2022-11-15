@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>another three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+<div
+  <p>Drag one or more files to this <i>drop zone</i>.</p>
+</div>
+
+<style>
+</style>
+		<script src="js/three.js"></script>
+
+		<script  type="module" >
+// import * as THREE from './js/three.js';
+
+// const texture2 = new THREE.TextureLoader().load( 'images/land_ocean_ice_cloud_2048.jpg' );
+const texture2 = new THREE.TextureLoader().load( 'images/chippy_1.jpeg' );
+
+// immediately use the texture for material creation
+const material2 = new THREE.MeshBasicMaterial( { map: texture2 } );
+
+var spotLight = new THREE.SpotLight(0xFFFFFF);
+  spotLight.position.set(-40, 40, -15);
+  spotLight.castShadow = true;
+  spotLight.shadow.mapSize = new THREE.Vector2(1024, 1024);
+  spotLight.shadow.camera.far = 130;
+  spotLight.shadow.camera.near = 40;
+
+var loader = new THREE.TextureLoader();
+var mats = [
+	'./images/im1.png',
+	'./images/im2.png',
+	'./images/im3.png',
+	'./images/im1.png',
+	'./images/im2.png',
+	'./images/im3.png'
+].map(pic => {
+  return new THREE.MeshLambertMaterial({map: loader.load(pic)});
+});
+// var geom = new THREE.BoxGeometry(2, 2, 2);
+var geom = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+var box = new THREE.Mesh(geom, mats);
+
+const camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 10 );
+camera.position.z = 1;
+
+const scene = new THREE.Scene();
+
+//const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
+const geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 );
+const material = new THREE.MeshNormalMaterial();
+
+//const mesh = new THREE.Mesh( geometry, material );
+const mesh = new THREE.Mesh( geometry, material2 );
+scene.add( mesh );
+
+const renderer = new THREE.WebGLRenderer( { antialias: true } );
+renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setAnimationLoop( animation );
+document.body.appendChild( renderer.domElement );
+
+// animation
+
+function animation( time ) {
+
+	mesh.rotation.x = time / 4000;
+	mesh.rotation.y = time / 2000;
+
+	renderer.render( scene, camera );
+
+}
+</script>
+	</body>
+</html>
