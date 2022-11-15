@@ -27,27 +27,26 @@ body {
 <br/>
 
 <a href="faw5.html">faw5</a>
-
 <br/>
-<a href="faw6.html">faw6 - drag & drop </a>
 
+<a href="faw6.html">faw6 - drag & drop </a>
 <br/>
 
 <a href="faw9.html">faw9</a>
-
 <br/>
 
 <a href="faw10.html">faw10</a>
-
 <br/>
 
 <a href="clemap1.png">cle</a>
-<a href="sunset-on-river.jpg">sunset</a>
+<br/>
 
+<a href="sunset-on-river.jpg">sunset</a>
 <br/>
-<h1>Good Morning 1.4</h1>
- 
+
+<h1>Good Morning 1.5</h1>
 <br/>
+
 <script>
 
 document.getElementById("text").innerHTML = "Text added by JavaScript code";
