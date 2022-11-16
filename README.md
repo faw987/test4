@@ -23,33 +23,41 @@ body {
 <div id="text"></div>
 
 <br/>
-<a href="faw4.html">faw4</a>
+<a href="faw4.html">faw4 location and camera</a>
 <br/>
 
 <a href="faw5.html">faw5</a>
-<br/>
 
+<br/>
 <a href="faw6.html">faw6 - drag & drop </a>
 <br/>
+<a href="faw7.html">faw7</a>
 
+<br/>
+
+<a href="faw8.html">faw8</a>
+<br><br>
 <a href="faw9.html">faw9</a>
-<br/>
-
-<a href="faw10.html">faw10</a>
-<br/>
-
-<a href="faw13.html">faw13</a>
-<br/>
-
+<br><br>
+<a href="faw11.html">faw11 - draw lines</a>
+<br><br>
+<a href="faw12.html">faw12 - broke</a>
+<br><br>
+<a href="faw10.html">Chippy</a>
+<br>
+<a href="faw13.html">Chippy One</a>
+<br>
+<a href="faw14.html">Chippy Two - six pics - working on Xmas theme</a>
+<br><br><br>
 <a href="clemap1.png">cle</a>
-<br/>
+<br>
 
 <a href="sunset-on-river.jpg">sunset</a>
-<br/>
 
-<h1>Good Day 1.5.1  :) </h1>
 <br/>
-
+<h1>hhh 7:00</h1>
+ 
+<br/>
 <script>
 
 document.getElementById("text").innerHTML = "Text added by JavaScript code";
