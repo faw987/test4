@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>Chippy One</title>
+		<title>Chippy</title>
 		<style>
 			body { margin: 0; }
 		</style>
@@ -15,12 +15,11 @@
 		<script src="orbitControls.js"></script>
 		<script  type="module" >
 
-// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-
 'use strict';
 
 var camera, scene, renderer;
 var cube, cube_geometry, cube_material;
+var cube2;
 var controls;
 
 init();
@@ -30,22 +29,21 @@ function init() {
 
 const texture2 = new THREE.TextureLoader().load( 'images/chippy_1.jpeg' );
 
-// immediately use the texture for material creation
 const material2 = new THREE.MeshBasicMaterial( { map: texture2 } );
 
 var loader = new THREE.TextureLoader();
 var mats = [
-	'./images/im1.png',
-	'./images/im2.png',
-	'./images/im3.png',
-	'./images/im1.png',
-	'./images/im2.png',
-	'./images/im3.png'
+	'images/chippy_1.jpeg',
+	'images/chippy_2.jpeg',
+	'images/chippy_3.jpeg',
+	'images/chippy_4.jpeg',
+	'images/chippy_5.jpeg',
+	'images/chippy_6.jpeg'
 ].map(pic => {
   return new THREE.MeshLambertMaterial({map: loader.load(pic)});
 });
 
-	scene = new THREE.Scene();
+    scene = new THREE.Scene();
 
     // renderer
 
@@ -66,10 +64,14 @@ var mats = [
     controls.addEventListener('change', render);
     controls.enableZoom = false;
 
+	// camera.position.set( 0, 20, 100 );
+	// controls.update();
+
+
     // mesh - cube
 
     // faw cube_geometry = new THREE.CubeGeometry(5, 5, 5);
-    cube_geometry = new THREE.BoxGeometry(7, 7, 7);
+    cube_geometry = new THREE.BoxGeometry(8, 8, 8);
 
  //   for (var i = 0; i < cube_geometry.faces.length; i += 2) {
   //      var color = Math.random() * 0xffffff;
@@ -82,8 +84,15 @@ var mats = [
         vertexColors: THREE.FaceColors
     });
 
-    cube = new THREE.Mesh(cube_geometry, material2);
-    scene.add(cube);
+	// cube = new THREE.Mesh(cube_geometry, material2);
+
+	cube = new THREE.Mesh(cube_geometry, mats);
+	cube2 = new THREE.Mesh(cube_geometry, mats);
+	cube2.position.x = 10
+	cube2.position.y = 10
+
+	scene.add(cube);
+	scene.add(cube2);
 
     // Lights
 
@@ -91,11 +100,11 @@ var mats = [
     light.position.set(1, 1, 1);
     scene.add(light);
 
-    var light = new THREE.DirectionalLight(0x002288);
+    var light = new THREE.DirectionalLight(0xC54B58);
     light.position.set(-1, -1, -1);
     scene.add(light);
 
-    var light = new THREE.AmbientLight(0x222222);
+    var light = new THREE.AmbientLight(0x4BC55D);
     scene.add(light);
 
     // events
