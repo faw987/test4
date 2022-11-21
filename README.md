@@ -55,7 +55,7 @@ body {
 <a href="sunset-on-river.jpg">sunset</a>
 
 <br><br>
-<h1>Good Day :)</h1>
+<h1>Ahoy there.</h1>
  
 <br/>
 <script>
