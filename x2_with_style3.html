@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/styles3.css">
+</head>
+
+<body>
+
+<script width=200 src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+<img class="clip-circle"  class="fade-in-image" id="slideSource"  src="/chippy_1.jpeg" alt="Flatiron Building" />
+
+
+<!--<div  id="slideSource" class="fade-in-image" id="fadeHand">-->
+<!--    <img id="chippy" src="/chippy_1.jpeg" alt="Flatiron Building" />-->
+<!--</div>-->
+
+<div id='clock'>
+    <div class = 'hr-wrapper'>
+        <div class='hand hr'></div>
+    </div>
+    <div class = 'min-wrapper'>
+        <div class='hand min'></div>
+    </div>
+    <div class='sec-wrapper'>
+        <span class="sechand" id="fadeHand">
+             <div id="slideSource" class='hand secs' class="fade-out-image"></div>
+
+        </span>
+    </div>
+</div>
+
+
+<div class="circle">
+    <div class="arc arc-1"></div>
+    <div class="arc arc-2"></div>
+    <div class="arc arc-3"></div>
+    <div class="arc arc-4"></div>
+    <div class="arc arc-5"></div>
+    <div class="arc arc-6"></div>
+    <div class="arc arc-7"></div>
+    <div class="arc arc-8"></div>
+    <div class="arc arc-9"></div>
+    <div class="arc arc-10"></div>
+    <div class="arc arc-11"></div>
+    <div class="arc arc-12"></div>
+</div>
+
+
+
+
+<div class="control"> <br/>    <br/>
+    <button id="pause" text="pause seconds" onclick="pause()">Pause</button>
+    <br/>
+    <button id="resume" text="resume seconds" onclick="resume()">Resume</button>
+    <br/>
+</div>
+
+
+</body>
+
+<script>
+
+
+    param_pauseAtSecond = 59*1000;
+    param_pauseDurationMsec = 1*1000;
+    // param_msecToNextPause = 5*1000;       //test
+    // ?????????  param_init_pause = 2222;
+    param_msecToNextPause = 59*1000;
+
+    // FOR testing
+    // param_pauseAtSecond = 5*1000;
+    // param_pauseDurationMsec = 0.5*1000;
+
+    function displayTime(note){
+        var dateInfo = new Date();
+        var hr = dateInfo.getHours() > 12 ? dateInfo.getHours() - 12 : dateInfo.getHours(),
+            min = dateInfo.getMinutes(),
+            sec = dateInfo.getSeconds(),
+            milsec = dateInfo.getMilliseconds();
+
+        console.log("note:"+ note+ " time: "+ hr +":"+min+":"+sec+"    millisecs: "+ milsec + '   initDelay(ms)='+initDelay)
+    }
+    function resumeAfterPauseUpdate() {
+        document.querySelector(".secs").style.background = "red";
+
+        // var elements = document.querySelectorAll('.secs::after');
+        //
+        // for (var i = 0; i < elements.length; i++) {
+        //     console.log("set ith to red")
+        //     elements[i].style.backgroundColor = 'red';
+        // }
+
+        var secsafter = document.querySelector('.sechand');
+        secsafter.style.backgroundcolor = 'red';
+
+        // var img = document.getElementById('chippy');
+        // img.style.visibility = 'hidden';
+
+        var slideSource = document.getElementById('slideSource');
+        slideSource.classList.toggle('fade');
+
+        var fadeHand = document.getElementById('fadeHand');
+        fadeHand.classList.toggle('fade');
+
+        document.querySelector(".secs").style.webkitAnimationPlayState = "running";
+
+    }
+
+    function resumeAfterPause() {
+        console.log("resumeAfterPause entered")
+        resumeAfterPauseUpdate();
+        // resume();
+        setTimeout(timeToPause, param_msecToNextPause);
+    }
+
+
+    function timeToPauseUpdate() {
+        document.querySelector(".sechand").style.backgroundcolor = "green";
+
+        // var img = document.getElementById('chippy');
+        // img.style.visibility = 'visible';
+
+        var slideSource = document.getElementById('slideSource');
+        slideSource.classList.toggle('fade');
+
+        var fadeHand = document.getElementById('fadeHand');
+        fadeHand.classList.toggle('fade');
+
+        document.querySelector(".secs").style.webkitAnimationPlayState = "paused";
+
+    }
+
+    function timeToPause() {
+        console.log("timeToPause entered")
+        displayTime("timeToPause entered");
+        timeToPauseUpdate();
+        setTimeout(resumeAfterPause, param_pauseDurationMsec);
+    }
+
+    function stopandgo(){
+        wait(1000);
+        console.log("waited 1000 ms")
+    }
+
+    function wait(ms) {
+        var start = new Date().getTime();
+        var end = start;
+        while (end < start + ms) {
+            end = new Date().getTime();
+        }
+    }
+
+    function pause() {
+        console.log("pause pressed");
+        document.querySelector(".secs").style.webkitAnimationPlayState = "paused";
+        document.querySelector(".secs").style.background = "blue";
+        timeToPauseUpdate();
+    }
+
+    function resume() {
+        console.log("resume pressed");
+        document.querySelector(".secs").style.background = "red";
+        document.querySelector(".secs").style.webkitAnimationPlayState = "running";
+        resumeAfterPauseUpdate();
+    }
+
+    // get current time
+    var dateInfo = new Date();
+    var hr = dateInfo.getHours() > 12 ? dateInfo.getHours() - 12 : dateInfo.getHours(),
+        min = dateInfo.getMinutes(),
+        sec = dateInfo.getSeconds(),
+        milsec = dateInfo.getMilliseconds();
+    console.log(hr)
+    /*
+    1 hr = 30°, 1 min = 6°, 1 sec = 6°, 1 millisec = 0.36°
+    Even though we can calculate the proper angles of the hour, minute, and second hands, we can determine more accurately where the hands are between the current and next ticks. For example, if it is 6:30, we know that the hour hand is at least 180°, yet it should be between the 6 and 7. To get that, we divide the angle of the current minute by 12 ((30 * 6°) / 12) and add the result (15) to 180. Therefore, the hour hand should be at 195°.
+    */
+    var hrAngle = hr * 30 + (min * 6 / 12),
+        minAngle = min * 6 + (sec * 6 / 60),
+        secAngle = sec * 6 + (milsec * 0.36 / 1000);
+
+    // set initial angles of the hand wrappers
+    function setAngle(wrapper, angle) {
+        x = document.querySelector("." + wrapper);
+        y = document.querySelector(".hours")
+        console.log("x:"+x)
+        console.log("y:"+y)
+        document.querySelector("." + wrapper).style.transform = "rotate(" + angle + "deg)";
+    }
+
+    // function updateTransition_secs(e) {
+    //     console.log("updateTransition: "+e);
+    //     elem = document.querySelector(".secs");
+    //     elem.style.animation = 'animation: rotateHand 5s linear infinite;';
+    //
+    //     elem.removeEventListener('animationend', updateTransition_secs);
+    //     console.log("removed");
+    //     elem.addEventListener("animationend", updateTransition_secs, false);
+    //     console.log("updateTransition complete");
+    //
+    //     //       uncomment and the .secs disappear
+    //     // document.querySelector(".secs").className = 'run-animation';
+    //
+    //     // document.querySelector(".secs").removeClass("run-animation");
+    //     $( ".secs" ).removeClass( "run-animation" )
+    //
+    //     wait(10)
+    //     // document.querySelector(".secs").addClass("run-animation");
+    //     $( ".secs" ).addClass( "run-animation" )
+    //
+    //
+    // }
+
+    console.log("hrAngle:"+hrAngle)
+
+    setAngle("hr-wrapper", hrAngle);
+    setAngle("min-wrapper", minAngle);
+    setAngle("sec-wrapper", secAngle);
+
+    const element_sec = document.querySelector(".secs");
+    initDelay = param_pauseAtSecond-((sec*1000)+milsec);
+    console.log("initial time: "+ hr +":"+min+":"+sec+"    millisecs: "+ milsec + '   initDelay(ms)='+initDelay)
+
+    setTimeout(timeToPause,initDelay); // try again in 300 milliseconds
+    // setTimeout(timeToPause,param_msecToNextPause); //debug
+
+
+    // var img = document.getElementById('chippy');
+    // img.style.visibility = 'visible';
+
+    var slideSource = document.getElementById('slideSource');
+    slideSource.classList.toggle('fade');
+
+
+</script>
+
+</html>

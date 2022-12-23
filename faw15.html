@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+  // Get the API key from the Google Developer Console
+  // const API_KEY = 'AIzaSyDgsAGFHzzPSQ4  csQp45bw';
+  const API_KEY = 'AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw';
+
+
+
+
+  // Get the Google Sheet ID from the URL
+  const SHEET_ID = '1E8lcYT5jWmYaPAST5z6a5jNrJcIuS_tG8FH7ZAtiyMc';
+
+  // Make a request to the Sheets API to get the data
+  $.get('https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/A1:D1?key=' + API_KEY, function(data) {
+    // Get the data from the response
+    const values = data.values;
+
+    // Check if the data exists
+    if (values && values.length > 0) {
+      // Get the cells from the first row
+      const cell1 = values[0][0];
+      const cell2 = values[0][1];
+      const cell3 = values[0][2];
+      const cell4 = values[0][3];
+
+      // Append the cells to the page
+      $('body').append('<p>Cell 1: ' + cell1 + '</p>');
+      $('body').append('<p>Cell 2: ' + cell2 + '</p>');
+      $('body').append('<p>Cell 3: ' + cell3 + '</p>');
+      $('body').append('<p>Cell 4: ' + cell4 + '</p>');
+    }
+  });
+
+</script>
+<body>
+
+</body>
+</html>

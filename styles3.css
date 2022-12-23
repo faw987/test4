@@ -1,0 +1,234 @@
+
+button {
+    /* all your common button styles */
+    height: 60px;
+    width: 100px;
+}
+
+.big {
+    height: 60px;
+    width: 100px;
+}
+.small {
+    height: 40px;
+    width: 70px;
+}
+
+body {
+    background: white;
+    /*background: rgb(13, 186, 230);*/
+    color: #333;
+    font-family: Helvetica, sans-serif;
+}
+
+ul {
+    list-style: none;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    text-align: center;
+}
+
+li {
+    position: absolute;
+    transform-origin: 50% 100%;
+    height: 160px;
+}
+
+
+
+.hand {
+    position: absolute;
+    bottom: 50%;
+    transform-origin: 50% 100%;
+}
+
+.hr {
+    background: #222;
+    left: 186px;
+    width: 17px;
+    height: 105px;
+    /*border-radius: 10px;*/
+    animation: rotateHand 43200s linear infinite;
+}
+.hr:after {
+    background: #222;
+    border-radius: 50%;
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 5px;
+    width: 17px;
+    height: 16px;
+    top: 12px;
+}
+
+.min {
+    background: #222;
+    left: 186px;
+    width: 12px;
+    height: 125px;
+    /*border-radius: 8px;*/
+    animation: rotateHand 3600s linear infinite;
+}
+.min:after {
+    background: #222;
+    border-radius: 50%;
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: -8px;
+    width: 12px;
+    height: 16px;
+}
+
+
+
+/* JavaScript pre-rotates these wrappers instead of the hands when getting the time at load. If it pre-rotates the hands, then the hands will not perform 1 turn at their normal speeds. */
+.hr-wrapper, .min-wrapper, .sec-wrapper {
+    position: absolute;
+    /*left: 150*/
+    /*top: 150*/
+    width: 400px;
+    height: 400px;
+}
+
+.hand {
+    position: absolute;
+    bottom: 50%;
+    transform-origin: 50% 100%;
+}
+
+.run-animation {
+    position: relative;
+    -webkit-animation: fancy-animation 2s ease;
+}
+
+.secs {
+    left: 206px;
+    top: 51px;
+    position: relative;
+    width: 6px;
+    height: 165px;
+    background-color: red;
+    /*border-radius: 25px;*/
+    animation: rotateHand 60s linear infinite;
+    animation-iteration-count: infinite;
+    /*animation-name: rot;*/
+    /*animation-iteration-count: 2;*/
+    /*animation-duration: 3s;*/
+}
+
+.secs:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: -13px;
+    bottom: -3.5px;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    transform: translateX(-50%);
+}
+
+@keyframes rotateHand {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+#clock {
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    background: #fff;
+    border: 15px solid #222;
+    width: 400px;
+    height: 400px;
+    background: transparent;
+    /*z-index: 0;*/
+    /*background-image: "url(/images/im1.png)";*/
+    /*background-image: url(*/
+    /*https://media.geeksforgeeks.org/wp-content/uploads/20210507170406/white.jpg);*/
+    border-radius: 50%;
+    margin: -17px auto;
+}
+
+
+img{
+    position: relative;
+    top: 150px;
+    left: 200px;
+    width: 220px;
+    /*z-index: 9;*/
+    transform: rotate(0deg);
+    /*animation: rotation 12s infinite linear;*/
+}
+
+/*@keyframes rotation {*/
+/*    from {*/
+/*        transform: rotate(0deg);*/
+/*    }*/
+/*    to {*/
+/*        transform: rotate(360deg);*/
+/*    }*/
+/*}*/
+
+.fade-in-image { animation: fadeIn 2s; }
+.fade-Out-image { animation: fadeOut 2s; }
+
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+
+@keyframes fadeOut {
+    100% { opacity: 1; }
+    0% { opacity: 0; }
+}
+
+
+
+
+
+#slideSource {
+    opacity: 1;
+    transition: opacity 2s;
+}
+
+#slideSource.fade {
+    opacity: 0;
+    transition: opacity 2s;
+
+}
+
+
+
+
+#fadeHand {
+    opacity: 1;
+    transition: opacity 4s;
+}
+
+#fadeHand.fade {
+    opacity: 0;
+    transition: opacity 4s;
+
+}
+
+
+.mask2 {
+    -webkit-mask-image: radial-gradient(circle, black 50%, rgba(0, 0, 0, 0.5) 40%);
+    mask-image: radial-gradient(circle, black 50%, rgba(0, 0, 0, 0.5) 40%);
+}
+
+.clip-circle {
+    clip-path: circle(115px at center);
+    /* OLD VALUE example: circle(245px, 140px, 50px); */
+    /* Yep, even the new clip-path has deprecated stuff. */
+}
