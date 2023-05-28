@@ -48,7 +48,9 @@ body {
 <a href="faw13.html">Chippy One</a>
 <br>
 <a href="faw14.html">Chippy Two - six pics - working on Xmas theme</a>
-<br><br><br>
+<br>
+<a href="faw31.html">Latitude & Longitude</a>
+<br><br>
 <a href="clemap1.png">cle</a>
 <br>
 
