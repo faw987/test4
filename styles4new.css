@@ -46,7 +46,7 @@ li {
 
 .hr {
     background: #222;
-    left: 186px;
+    left: 5%;
     width: 17px;
     height: 105px;
     /*border-radius: 10px;*/
@@ -66,7 +66,7 @@ li {
 
 .min {
     background: #222;
-    left: 186px;
+    left: 5%;
     width: 12px;
     height: 125px;
     /*border-radius: 8px;*/
@@ -106,7 +106,7 @@ li {
 }
 
 .secs {
-    left: 206px;
+    left: 5%;
     top: 51px;
     position: relative;
     width: 6px;
@@ -142,8 +142,8 @@ li {
 
 #clock {
     position: absolute;
-    top: 100px;
-    left: 100px;
+    top: 16px;
+    left: 5%;
     /*background: #fff;*/
     border: 15px solid #222;
     width: 400px;
@@ -160,8 +160,8 @@ li {
 
 img{
     position: relative;
-    top: 150px;
-    left: 200px;
+    top: 66px;
+    left: 103px;
     width: 220px;
     /*z-index: 9;*/
     transform: rotate(0deg);

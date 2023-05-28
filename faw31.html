@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GeoLocation Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>GeoLocation Application</h1>
+
+<label for="latlon">Latitude and Longitude:</label>
+<input type="text" id="latlon" readonly>
+
+<label for="date">Date:</label>
+<input type="text" id="date" readonly>
+
+<label for="time">Time:</label>
+<input type="text" id="time" readonly>
+
+<button id="latlonButton">latlon</button>
+<button id="infoButton">info</button>
+
+<script>
+    document.getElementById('latlonButton').addEventListener('click', function() {
+        if (!navigator.geolocation){
+            alert("Geolocation is not supported by your browser");
+            return;
+        }
+
+        function success(position) {
+            var latitude  = position.coords.latitude;
+            var longitude = position.coords.longitude;
+            document.getElementById('latlon').value = `Latitude: ${latitude}, Longitude: ${longitude}`;
+            let now = new Date();
+            document.getElementById('date').value = now.toDateString();
+            document.getElementById('time').value = now.toLocaleTimeString();
+        }
+
+        function error() {
+            alert("Unable to retrieve your location");
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error);
+    });
+
+    document.getElementById('infoButton').addEventListener('click', function() {
+        document.getElementById('latlon').value = "";
+        document.getElementById('date').value = "";
+        document.getElementById('time').value = "";
+    });
+</script>
+</body>
+</html>

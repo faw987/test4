@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Plotting Latitude and Longitude on Google Map</title>
+  <meta charset="utf-8" />
+<!--  <script-->
+<!--          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ"&callback=initMap-->
+<!--  ></script>-->
+
+
+  <script async
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initDrop">
+  </script>
+
+</head>
+<body>
+<div id="drop_zone" style="height: 100px; width: 100%;">Drop files here</div>
+<div
+        id="drop_zone2" style="height: 100px; width: 100%;"
+        ondrop="dropHandler(event);"
+        ondragover="dragOverHandler(event);"
+>
+  <p>Drag one or more files to this <i>drop zone</i>.</p>
+<!--  <img src="images/ugly_turkey.jpg" width="500" height="600">-->
+</div>
+
+<div id="map" style="height: 500px; width: 100%;"></div>
+<script src="script.js"></script>
+</body>
+</html>
