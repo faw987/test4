@@ -51,6 +51,8 @@ body {
 <br>
 <a href="faw31.html">Latitude & Longitude</a>
 <br><br>
+<a href="faw32.html">Multi-ride mapper</a>
+<br><br>
 <a href="clemap1.png">cle</a>
 <br>
 
