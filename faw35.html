@@ -72,6 +72,9 @@
         let index = 0;
         function moveToNextPosition() {
             if (index < coordinates.length) {
+
+                console.log("Current coordinate: Lat = " + coordinates[index].lat + ", Lng = " + coordinates[index].lng);
+
                 panorama.setPosition(coordinates[index]);
                 index++;
                 setTimeout(moveToNextPosition, timeoutValue); // Using the user-defined timeout value
