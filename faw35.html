@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street View Movement</title>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,geometry,drawing&key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ"></script>
+</head>
+<body>
+<div>
+    <label for="fileInput">Select GPX file with coordinates:</label>
+    <input type="file" id="fileInput" accept=".gpx" onchange="handleFile()">
+
+    <label for="timeout">Set time between coordinates (ms):</label>
+    <input type="number" id="timeout" value="2000" min="0">
+
+    <button onclick="initialize()" id="startButton" disabled>Start Moving</button>
+</div>
+<div id="pano" style="width: 600px; height: 400px;"></div>
+
+<script>
+    let panorama;
+    let timeoutValue = 2000; // Default value
+    let loadedCoordinates = [];
+
+    function handleFile() {
+        const file = document.getElementById("fileInput").files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(event.target.result, "text/xml");
+
+                // Extract lat and lon from the GPX file
+                const trackpoints = xmlDoc.getElementsByTagName("trkpt");
+                for(let i = 0; i < trackpoints.length; i++) {
+                    const lat = parseFloat(trackpoints[i].getAttribute("lat"));
+                    const lon = parseFloat(trackpoints[i].getAttribute("lon"));
+                    loadedCoordinates.push({lat, lng: lon});
+                }
+
+                document.getElementById("startButton").disabled = false; // enable the Start Moving button
+            };
+
+            reader.onerror = function() {
+                alert("Error reading the file.");
+            };
+
+            reader.readAsText(file);
+        }
+    }
+
+    function initialize() {
+        timeoutValue = document.getElementById("timeout").value;
+
+        panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('pano'), {
+                position: loadedCoordinates[0], // Start at the first coordinate
+                pov: {
+                    heading: 34,
+                    pitch: 10
+                }
+            }
+        );
+
+        moveAlongPath(loadedCoordinates);
+    }
+
+    function moveAlongPath(coordinates) {
+        let index = 0;
+        function moveToNextPosition() {
+            if (index < coordinates.length) {
+                panorama.setPosition(coordinates[index]);
+                index++;
+                setTimeout(moveToNextPosition, timeoutValue); // Using the user-defined timeout value
+            }
+        }
+        moveToNextPosition();
+    }
+</script>
+</body>
+</html>

@@ -58,6 +58,15 @@ body {
 <br><br>
 
 
+<a href="faw34.html">NEW streetview experiment</a>
+<br><br>
+
+
+<a href="faw35.html">gpx streetview experiment</a>
+<br><br>
+
+
+
 <a href="clemap1.png">cle</a>
 <br>
 
