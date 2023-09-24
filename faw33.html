@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Street View Movement</title>
+    <style>
+        #map, #street-view {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+
+<input type="file" id="input-file" />
+<div id="map"></div>
+<div id="street-view"></div>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap"></script>
+<script>
+    let map, panorama;
+
+    function initMap() {
+        let sv = new google.maps.StreetViewService();
+
+        panorama = new google.maps.StreetViewPanorama(document.getElementById('street-view'));
+        map = new google.maps.Map(document.getElementById('map'), {
+            streetView: panorama
+        });
+    }
+
+    function readFile(evt) {
+        let file = evt.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let content = e.target.result;
+                processData(content);
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function processData(content) {
+        let data = JSON.parse(content);
+        moveAlongPath(data);
+    }
+
+    function moveAlongPath(coordinates) {
+        let index = 0;
+        function moveToNextPosition() {
+            if (index < coordinates.length) {
+
+                alert("Current coordinate: Lat = " + coordinates[index].lat + ", Lng = " + coordinates[index].lng);
+                console.log("Current coordinate: Lat = " + coordinates[index].lat + ", Lng = " + coordinates[index].lng);
+
+                panorama.setPosition(coordinates[index]);
+                index++;
+                setTimeout(moveToNextPosition, 9000); // Delay of 9 seconds between moves
+            }
+        }
+        moveToNextPosition();
+    }
+
+    document.getElementById('input-file').addEventListener('change', readFile, false);
+</script>
+</body>
+</html>
