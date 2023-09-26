@@ -55,6 +55,33 @@
   // setInterval(logLocation, 10000); // Log location every 10 seconds
   logLocation();
 
+
+  async function requestMotionPermission() {
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      try {
+        const permissionState = await DeviceMotionEvent.requestPermission();
+
+        if (permissionState === 'granted') {
+          window.addEventListener('devicemotion', handleMotionEvent);
+        } else {
+          console.error('Permission not granted for DeviceMotionEvent.');
+        }
+      } catch (error) {
+        console.error('DeviceMotionEvent requestPermission error:', error);
+      }
+    } else {
+      // If the requestPermission function isn't available, try adding the event listener directly
+      window.addEventListener('devicemotion', handleMotionEvent);
+    }
+  }
+
+  // On page load, request permissions
+  window.addEventListener('load', () => {
+    requestMotionPermission();
+    //setInterval(logLocation, 10000); // Log location every 10 seconds
+  });
+
+
 </script>
 </body>
 </html>
