@@ -69,6 +69,10 @@ body {
 <br><br>
 
 
+<a href="faw37.html">new gps/motion experiment</a>
+<br><br>
+
+
 <a href="clemap1.png">cle</a>
 <br>
 

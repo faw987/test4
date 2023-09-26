@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geo & Accelerometer Logger</title>
+</head>
+<body>
+<h1>Geo & Accelerometer Logger</h1>
+<p>Open the browser console to see the logs.</p>
+
+<script>
+  let lastLat = null;
+  let lastLon = null;
+  let lastX = null;
+  let lastY = null;
+  let lastZ = null;
+
+  // Using the Geolocation API to get latitude and longitude
+  function logLocation() {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(position => {
+        let lat = position.coords.latitude;
+        let lon = position.coords.longitude;
+
+        if (lat !== lastLat || lon !== lastLon) {
+          lastLat = lat;
+          lastLon = lon;
+          console.log(`Latitude: ${lat}, Longitude: ${lon}`);
+        }
+      });
+    } else {
+      console.log("Geolocation not available.");
+    }
+  }
+
+  // Using DeviceOrientationEvent to get accelerometer data
+  function handleMotionEvent(event) {
+    let x = event.accelerationIncludingGravity.x;
+    let y = event.accelerationIncludingGravity.y;
+    let z = event.accelerationIncludingGravity.z;
+
+    if (x !== lastX || y !== lastY || z !== lastZ) {
+      lastX = x;
+      lastY = y;
+      lastZ = z;
+      console.log(`Acceleration X: ${x}, Y: ${y}, Z: ${z}`);
+    }
+  }
+
+  window.addEventListener('devicemotion', handleMotionEvent);
+
+  // setInterval(logLocation, 10000); // Log location every 10 seconds
+  logLocation();
+
+</script>
+</body>
+</html>
