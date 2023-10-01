@@ -17,6 +17,8 @@
   <button onclick="initialize()" id="startButton" disabled>Start Moving</button>
   <button onclick="pauseMovement()" id="pauseButton">Pause</button>
   <button onclick="resumeMovement()" id="resumeButton" disabled>Resume</button>
+  <button onclick="loadTest1()" id="test1Button">Test1</button>
+
 </div>
 <div id="map" style="width: 600px; height: 400px;"></div>
 <div id="pano" style="width: 600px; height: 400px;"></div>
@@ -27,6 +29,30 @@
   let loadedCoordinates = [];
   let isPaused = false;
   let index = 0;
+
+
+  function loadTest1() {
+    const xhr = new XMLHttpRequest();
+    const url = "https://raw.githubusercontent.com/faw987/faw987.github.io/main/test1.gpx";
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xhr.responseText, "application/xml");
+        const trkpts = xmlDoc.getElementsByTagName("trkpt");
+        loadedCoordinates = [];
+        for (let i = 0; i < trkpts.length; i++) {
+          loadedCoordinates.push({
+            lat: parseFloat(trkpts[i].getAttribute("lat")),
+            lng: parseFloat(trkpts[i].getAttribute("lon"))
+          });
+        }
+        document.getElementById("startButton").disabled = false;
+      }
+    };
+    xhr.send();
+  }
+
 
   function calculateBearing(start, end) {
     const startLat = google.maps.geometry.spherical.computeOffset(start, 10, 0).lat();
