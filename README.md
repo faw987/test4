@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>general launch point</title> 
 <style>
 body {
   background-image: url('images/sunset-on-river.jpg');
@@ -64,7 +65,7 @@ body {
 
 <a href="faw35.html">gpx streetview experiment</a>
 
-<a href="faw35a.html">gpxa streetview experiment</a>
+<a href="faw35a.html">gpxa streetview experiment fixed</a>
 
 <br><br>
 
