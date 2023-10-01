@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Street View Movement</title>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,geometry,drawing&key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ"></script>
+</head>
+<body>
+<div>
+  <label for="fileInput">Select GPX file with coordinates:</label>
+  <input type="file" id="fileInput" accept=".gpx" onchange="handleFile()">
+
+  <label for="timeout">Set time between coordinates (ms):</label>
+  <input type="number" id="timeout" value="2000" min="0">
+
+  <button onclick="initialize()" id="startButton" disabled>Start Moving</button>
+  <button onclick="pauseMovement()" id="pauseButton">Pause</button>
+  <button onclick="resumeMovement()" id="resumeButton" disabled>Resume</button>
+</div>
+<div id="map" style="width: 600px; height: 400px;"></div>
+<div id="pano" style="width: 600px; height: 400px;"></div>
+
+<script>
+  let panorama, map, currentMarker;
+  let timeoutValue = 2000;
+  let loadedCoordinates = [];
+  let isPaused = false;
+  let index = 0;
+
+  function calculateBearing(start, end) {
+    const lat1 = start.lat * Math.PI / 180;
+    const lon1 = start.lng * Math.PI / 180;
+    const lat2 = end.lat * Math.PI / 180;
+    const lon2 = end.lng * Math.PI / 180;
+    const dLon = lon2 - lon1;
+    const y = Math.sin(dLon) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+    let bearing = Math.atan2(y, x);
+    bearing = bearing * 180 / Math.PI;
+    bearing = (bearing + 360) % 360;
+    return bearing;
+  }
+
+  function handleFile() {
+    const file = document.getElementById("fileInput").files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(event.target.result, "text/xml");
+        const trackpoints = xmlDoc.getElementsByTagName("trkpt");
+        for(let i = 0; i < trackpoints.length; i++) {
+          const lat = parseFloat(trackpoints[i].getAttribute("lat"));
+          const lon = parseFloat(trackpoints[i].getAttribute("lon"));
+          loadedCoordinates.push({lat, lng: lon});
+        }
+        document.getElementById("startButton").disabled = false;
+      };
+      reader.onerror = function() {
+        alert("Error reading the file.");
+      };
+      reader.readAsText(file);
+    }
+  }
+
+  function initialize() {
+    timeoutValue = document.getElementById("timeout").value;
+
+    // Initializing the Map
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: loadedCoordinates[0],
+      zoom: 14
+    });
+    currentMarker = new google.maps.Marker({
+      position: loadedCoordinates[0],
+      map: map
+    });
+
+    panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
+    moveAlongPath(loadedCoordinates);
+  }
+
+  function pauseMovement() {
+    isPaused = true;
+    document.getElementById("pauseButton").disabled = true;
+    document.getElementById("resumeButton").disabled = false;
+  }
+
+  function resumeMovement() {
+    isPaused = false;
+    document.getElementById("pauseButton").disabled = false;
+    document.getElementById("resumeButton").disabled = true;
+    moveAlongPath(loadedCoordinates);
+  }
+
+  function moveAlongPath(coordinates) {
+    function moveToNextPosition() {
+      if (index < coordinates.length && !isPaused) {
+        const position = coordinates[index];
+        let pov = {
+          pitch: 10
+        };
+        if (index + 1 < coordinates.length) {
+          pov.heading = calculateBearing(position, coordinates[index + 1]);
+        }
+        panorama.setPov(pov);
+        panorama.setPosition(position);
+
+        // Update the marker's position
+        currentMarker.setPosition(position);
+
+        index++;
+        setTimeout(moveToNextPosition, timeoutValue);
+      }
+    }
+    moveToNextPosition();
+  }
+</script>
+</body>
+</html>
