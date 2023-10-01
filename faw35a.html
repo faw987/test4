@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Street View Movement a1</title>
+  <title>Street View Movement</title>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places,geometry,drawing&key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ"></script>
 </head>
 <body>
 <div>
   <label for="fileInput">Select GPX file with coordinates:</label>
   <input type="file" id="fileInput" accept=".gpx" onchange="handleFile()">
-
   <label for="timeout">Set time between coordinates (ms):</label>
   <input type="number" id="timeout" value="2000" min="0">
-
+  <label for="pitch">Set pitch (angle):</label>
+  <input type="range" id="pitch" min="-90" max="90" value="0">
   <button onclick="initialize()" id="startButton" disabled>Start Moving</button>
   <button onclick="pauseMovement()" id="pauseButton">Pause</button>
   <button onclick="resumeMovement()" id="resumeButton" disabled>Resume</button>
@@ -29,36 +29,33 @@
   let index = 0;
 
   function calculateBearing(start, end) {
-    const lat1 = start.lat * Math.PI / 180;
-    const lon1 = start.lng * Math.PI / 180;
-    const lat2 = end.lat * Math.PI / 180;
-    const lon2 = end.lng * Math.PI / 180;
-    const dLon = lon2 - lon1;
-    const y = Math.sin(dLon) * Math.cos(lat2);
-    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-    let bearing = Math.atan2(y, x);
-    bearing = bearing * 180 / Math.PI;
-    bearing = (bearing + 360) % 360;
-    return bearing;
+    const startLat = google.maps.geometry.spherical.computeOffset(start, 10, 0).lat();
+    const endLat = google.maps.geometry.spherical.computeOffset(end, 10, 0).lat();
+    const startLng = google.maps.geometry.spherical.computeOffset(start, 10, 90).lng();
+    const endLng = google.maps.geometry.spherical.computeOffset(end, 10, 90).lng();
+    const deltaLng = endLng - startLng;
+    const y = Math.sin(deltaLng) * Math.cos(endLat);
+    const x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(deltaLng);
+    const brng = Math.atan2(y, x) * (180 / Math.PI);
+    return brng;
   }
 
   function handleFile() {
     const file = document.getElementById("fileInput").files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = function(event) {
+      reader.onload = function(e) {
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(event.target.result, "text/xml");
-        const trackpoints = xmlDoc.getElementsByTagName("trkpt");
-        for(let i = 0; i < trackpoints.length; i++) {
-          const lat = parseFloat(trackpoints[i].getAttribute("lat"));
-          const lon = parseFloat(trackpoints[i].getAttribute("lon"));
-          loadedCoordinates.push({lat, lng: lon});
+        const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
+        const trkpts = xmlDoc.getElementsByTagName("trkpt");
+        loadedCoordinates = [];
+        for (let i = 0; i < trkpts.length; i++) {
+          loadedCoordinates.push({
+            lat: parseFloat(trkpts[i].getAttribute("lat")),
+            lng: parseFloat(trkpts[i].getAttribute("lon"))
+          });
         }
         document.getElementById("startButton").disabled = false;
-      };
-      reader.onerror = function() {
-        alert("Error reading the file.");
       };
       reader.readAsText(file);
     }
@@ -67,29 +64,36 @@
   function initialize() {
     timeoutValue = document.getElementById("timeout").value;
 
-    // Initializing the Map
-    map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById("map"), {
       center: loadedCoordinates[0],
-      zoom: 14
+      zoom: 15
     });
+
     currentMarker = new google.maps.Marker({
       position: loadedCoordinates[0],
       map: map
     });
 
-    panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
+    panorama = new google.maps.StreetViewPanorama(document.getElementById("pano"), {
+      position: loadedCoordinates[0],
+      pov: {
+        heading: 0,
+        pitch: 0
+      }
+    });
+
+    map.setStreetView(panorama);
+
     moveAlongPath(loadedCoordinates);
   }
 
   function pauseMovement() {
     isPaused = true;
-    document.getElementById("pauseButton").disabled = true;
     document.getElementById("resumeButton").disabled = false;
   }
 
   function resumeMovement() {
     isPaused = false;
-    document.getElementById("pauseButton").disabled = false;
     document.getElementById("resumeButton").disabled = true;
     moveAlongPath(loadedCoordinates);
   }
@@ -98,18 +102,16 @@
     function moveToNextPosition() {
       if (index < coordinates.length && !isPaused) {
         const position = coordinates[index];
+        let pitch = parseFloat(document.getElementById("pitch").value);
         let pov = {
-          pitch: 10
+          pitch: pitch
         };
         if (index + 1 < coordinates.length) {
           pov.heading = calculateBearing(position, coordinates[index + 1]);
         }
         panorama.setPov(pov);
         panorama.setPosition(position);
-
-        // Update the marker's position
         currentMarker.setPosition(position);
-
         index++;
         setTimeout(moveToNextPosition, timeoutValue);
       }
