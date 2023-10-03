@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Sheets Reader</title>
+</head>
+<body>
+<h1>Read Google Sheet</h1>
+<form id="urlForm">
+  <label for="sheetUrl">Google Sheet URL:</label>
+  <input type="url" id="sheetUrl" name="sheetUrl" required>
+  <button type="submit">Load Data</button>
+</form>
+<h2>Data Summary</h2>
+<div id="summary"></div>
+<script>
+  document.getElementById('urlForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    let sheetUrl = document.getElementById('sheetUrl').value;
+    loadSheetData(sheetUrl);
+  });
+
+  function loadSheetData(sheetUrl) {
+    // Assume sheetUrl is in a format that leads to a CSV published file
+    fetch(sheetUrl)
+            .then(response => response.text())
+            .then(data => {
+              let rows = data.split("\n");
+              let today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+              let relevantRows = rows.filter(row => {
+                let date = row.split(",")[2]; // Assuming date is in the third column (index 2)
+                return date === today;
+              });
+              displaySummary(relevantRows);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+  }
+
+  function displaySummary(relevantRows) {
+    let summaryElement = document.getElementById('summary');
+    relevantRows.forEach(row => {
+      let div = document.createElement('div');
+      div.innerText = row;
+      summaryElement.appendChild(div);
+    });
+  }
+
+</script>
+</body>
+</html>
