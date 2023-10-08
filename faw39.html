@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Speech and Speech to Text</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 300px;
+      height: 340px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+<h1>Text to Speech and Speech to Text Converter</h1>
+<label for="text-input">Enter/Receive Text:</label>
+<textarea id="text-input" placeholder="Speak or type something...">1,Chin tucks - supine,2,10,10,2,,
+2,Chin tucks - seated,2,10,10,2,,
+3,Vervical Rotation Stretch,1,4,30,2,,</textarea>
+<button onclick="speakTextField()">Say</button>
+<button onclick="clearText()">Clear</button>
+<button onclick="listenText()">Listen</button>
+<button onclick="loadData()">Load</button>
+<button onclick="processData()">Go</button>
+
+<script>
+  let data = [];
+
+
+  function speakText(text) {
+    if ('speechSynthesis' in window) {
+      let utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.volume = 1;
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    } else {
+      alert("Sorry, your browser does not support Text to Speech!");
+    }
+  }
+
+  function speakTextField() {
+    let text = document.getElementById('text-input').value;
+    speakText(text);
+  }
+
+
+  function clearText() {
+    document.getElementById('text-input').value = '';
+  }
+
+  function listenText() {
+    if ('webkitSpeechRecognition' in window) {
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.onresult = function(event) {
+        document.getElementById('text-input').value = event.results[0][0].transcript;
+      };
+      recognition.onerror = function(event) {
+        alert('Error occurred in recognition: ' + event.error);
+      }
+      recognition.start();
+    } else {
+      alert("Sorry, your browser does not support Speech Recognition!");
+    }
+  }
+
+  function loadData() {
+    const textareaValue = document.getElementById('text-input').value;
+    const rows = textareaValue.split('\n');
+    data = rows.map(row => row.split(','));
+    alert("Data loaded successfully!");
+  }
+
+
+  function delay(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+  }
+
+  async function runExercise(row) {
+    const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
+    speakText(`Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`)
+    // speakText(`10 9 8 7 6 5 4 3 2 1`)
+    console.log("Hello");
+    await delay(3000);
+    console.log("World");
+    await delay(3000);
+    console.log("World");
+
+
+  }
+
+  function processOneRow(row) {
+    const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
+
+    console.log("Processing a single row:");
+    console.log("Exercise:", Exercise);
+    console.log("Description:", Description);
+    console.log("Sets:", Sets);
+    console.log("Reps:", Reps);
+    console.log("Hold:", Hold);
+    console.log("Freq:", Freq);
+    console.log("Pic:", Pic);
+    console.log("Extras:", Extras);
+    runExercise(row)
+
+    // 10-second delay
+    setTimeout(function() {
+      console.log("This message appears after 10 seconds");
+    }, 10000); // 10000 milliseconds = 10 seconds
+
+
+  }
+
+  function processData() {
+    if(data.length === 0) {
+      alert("No data to process!");
+      return;
+    }
+    console.log("Processing Data:");
+    data.forEach((row, index) => {
+      console.log(`Processing Row ${index + 1}:`);
+      processOneRow(row);
+    });
+  }
+</script>
+</body>
+
+</html>
