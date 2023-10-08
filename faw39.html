@@ -113,28 +113,29 @@
   }
 
 
-  function delay(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-  }
+  // function delay(milliseconds) {
+  //   return new Promise(resolve => setTimeout(resolve, milliseconds));
+  // }
 
   function runExercise(row) {
     const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
-    speakText(`Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`);
+
+
     // speakText(`10 9 8 7 6 5 4 3 2 1`)
     // console.log("Hello");
     // await delay(3000);
     // console.log("World");
     // await delay(3000);
     // console.log("World");
+
     for (let set = 1; set <= Sets; set++) {
       console.log(`set ${set}`);
-      // speakText(`set ${set}`);
       for (let rep = 1; rep <= Reps; rep++) {
         console.log(`set ${set}, rep ${rep}  hold for ${Hold}`);
         speakText(`set ${set}, rep ${rep}, ${Hold} seconds`);
         blockForSeconds(Hold);
-      }
-    }
+      };
+    };
   }
 
   function processOneRow(row) {
@@ -149,12 +150,15 @@
     console.log("Freq:", Freq);
     console.log("Pic:", Pic);
     console.log("Extras:", Extras);
-    runExercise(row)
+
+    speakText(`Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`);
+
+    runExercise(row);
 
     // 10-second delay
-    setTimeout(function() {
-      console.log("This message appears after 10 seconds");
-    }, 10000); // 10000 milliseconds = 10 seconds
+    // setTimeout(function() {
+    //   console.log("This message appears after 10 seconds");
+    // }, 10000); // 10000 milliseconds = 10 seconds
 
 
   }
