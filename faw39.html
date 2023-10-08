@@ -59,14 +59,41 @@
     }
 
     console.log("Loops executed: " + counter);
-    return;
+
   }
 
+  function speakCancel() {
+    if ('speechSynthesis' in window) {
+      console.log(`speakText cancel"`);
+      window.speechSynthesis.cancel();
+    } else {
+      alert("Sorry, your browser does not support Text to Speech!");
+    }
+  }
 
+  function speakTextCallback(text, callback) {
+    // Create a new speech utterance instance
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // Attach an event handler for the 'end' event
+    utterance.onend = function(event) {
+      console.log('Speech has finished');
+      if (callback) {
+        callback();
+      }
+    };
+
+    // Speak the text
+    window.speechSynthesis.speak(utterance);
+  }
 
   function speakText(text) {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+
+
+      console.log(`speakText \"${text}\"`);
+
+      // window.speechSynthesis.cancel();
 
       let utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-US';
@@ -120,22 +147,15 @@
   function runExercise(row) {
     const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
 
-
-    // speakText(`10 9 8 7 6 5 4 3 2 1`)
-    // console.log("Hello");
-    // await delay(3000);
-    // console.log("World");
-    // await delay(3000);
-    // console.log("World");
-
     for (let set = 1; set <= Sets; set++) {
       console.log(`set ${set}`);
       for (let rep = 1; rep <= Reps; rep++) {
         console.log(`set ${set}, rep ${rep}  hold for ${Hold}`);
+        speakCancel();
         speakText(`set ${set}, rep ${rep}, ${Hold} seconds`);
         blockForSeconds(Hold);
-      };
-    };
+      }
+    }
   }
 
   function processOneRow(row) {
@@ -151,7 +171,12 @@
     console.log("Pic:", Pic);
     console.log("Extras:", Extras);
 
-    speakText(`Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`);
+    speakCancel();
+    t = `Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`;
+    console.log("t:", t);
+
+    speakText(t);
+    blockForSeconds(5);
 
     runExercise(row);
 
