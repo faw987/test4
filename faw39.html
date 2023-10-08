@@ -42,6 +42,22 @@
   let data = [];
 
 
+  function blockForSeconds(seconds) {
+    let counter = 0;
+    const startTime = new Date().getTime();
+    let currentTime = startTime;
+
+    while (currentTime < startTime + (seconds * 1000)) {
+      currentTime = new Date().getTime();
+      counter += 1;
+    }
+
+    console.log("Loops executed: " + counter);
+    return;
+  }
+
+
+
   function speakText(text) {
     if ('speechSynthesis' in window) {
       let utterance = new SpeechSynthesisUtterance(text);
@@ -85,7 +101,7 @@
     const textareaValue = document.getElementById('text-input').value;
     const rows = textareaValue.split('\n');
     data = rows.map(row => row.split(','));
-    alert("Data loaded successfully!");
+    // alert("Data loaded successfully!");
   }
 
 
@@ -93,17 +109,24 @@
     return new Promise(resolve => setTimeout(resolve, milliseconds));
   }
 
-  async function runExercise(row) {
+  function runExercise(row) {
     const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
-    speakText(`Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`)
+    speakText(`Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`);
     // speakText(`10 9 8 7 6 5 4 3 2 1`)
-    console.log("Hello");
-    await delay(3000);
-    console.log("World");
-    await delay(3000);
-    console.log("World");
-
-
+    // console.log("Hello");
+    // await delay(3000);
+    // console.log("World");
+    // await delay(3000);
+    // console.log("World");
+    for (let set = 0; set < Sets; set++) {
+      console.log(set);
+      speakText(`set ${set}`);
+      for (let rep = 0; rep < Reps; rep++) {
+        console.log(rep);
+        speakText(`rep ${rep}`);
+        blockForSeconds(Hold);
+      }
+    }
   }
 
   function processOneRow(row) {
