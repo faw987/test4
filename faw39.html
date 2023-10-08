@@ -19,7 +19,7 @@
       margin-bottom: 20px;
     }
     textarea {
-      width: 300px;
+      width: 600px;
       height: 340px;
       margin-bottom: 20px;
     }
@@ -29,9 +29,13 @@
 <body>
 <h1>Text to Speech and Speech to Text Converter</h1>
 <label for="text-input">Enter/Receive Text:</label>
-<textarea id="text-input" placeholder="Speak or type something...">1,Chin tucks - supine,2,10,10,2,,
-2,Chin tucks - seated,2,10,10,2,,
-3,Vervical Rotation Stretch,1,4,30,2,,</textarea>
+<textarea id="text-input" placeholder="Speak or type something...">1,supine Chin tucks,2,3,4,2,,
+2,seated Chin tucks,2,3,4,2,,
+
+3,Vertical Rotation Stretch,1,4,30,2,,
+  1,supine Chin tucks,2,10,10,2,,
+2,seated Chin tucks,2,10,10,2,,
+3,Vertical Rotation Stretch,1,4,30,2,,</textarea>
 <button onclick="speakTextField()">Say</button>
 <button onclick="clearText()">Clear</button>
 <button onclick="listenText()">Listen</button>
@@ -47,6 +51,8 @@
     const startTime = new Date().getTime();
     let currentTime = startTime;
 
+    console.log("block seconds: " + seconds);
+
     while (currentTime < startTime + (seconds * 1000)) {
       currentTime = new Date().getTime();
       counter += 1;
@@ -60,6 +66,8 @@
 
   function speakText(text) {
     if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+
       let utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'en-US';
       utterance.volume = 1;
@@ -118,12 +126,12 @@
     // console.log("World");
     // await delay(3000);
     // console.log("World");
-    for (let set = 0; set < Sets; set++) {
-      console.log(set);
-      speakText(`set ${set}`);
-      for (let rep = 0; rep < Reps; rep++) {
-        console.log(rep);
-        speakText(`rep ${rep}`);
+    for (let set = 1; set <= Sets; set++) {
+      console.log(`set ${set}`);
+      // speakText(`set ${set}`);
+      for (let rep = 1; rep <= Reps; rep++) {
+        console.log(`set ${set}, rep ${rep}  hold for ${Hold}`);
+        speakText(`set ${set}, rep ${rep}, ${Hold} seconds`);
         blockForSeconds(Hold);
       }
     }
