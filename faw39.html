@@ -64,6 +64,9 @@
   <input type="range" id="pitch" min="0" max="2" step="0.01" value="1">
   <output id="pitch-output" for="pitch">1</output>
   <br>
+  <label for="voice">Voice: </label>
+  <select id="voice" name="voice"></select>
+  <br>
 </div>
 <div class="status">
   <label>Exercise:</label>
@@ -153,15 +156,23 @@
       let volume = document.getElementById('volume').value;
       let rate = document.getElementById('rate').value;
       let pitch = document.getElementById('pitch').value;
+      let voice = document.getElementById('voice').value;
 
-      window.speechSynthesis.getVoices().forEach(function(voice) {
-        console.log(voice.name, voice.default ? voice.default :'');
-      });
+      // window.speechSynthesis.getVoices().forEach(function(voice) {
+      //   console.log(voice.name, voice.default ? voice.default :'');
+      // });
 
       let utterance = new SpeechSynthesisUtterance(text);
+
       // utterance.voice = speechSynthesis.getVoices().filter(function (voice) {
       //   return voice.name == 'Whisper';
       // })[0];
+
+      let selectedVoiceName = document.getElementById('voice').value;
+      utterance.voice = speechSynthesis.getVoices().filter(voice => voice.name === selectedVoiceName)[0];
+
+      console.log(utterance.voice);
+
       utterance.lang = 'en-US';
       utterance.volume = volume; // 0 to 1
       utterance.rate = rate; // 0.1 to 10
@@ -305,6 +316,47 @@
     document.getElementById('pitch').addEventListener('input', function (event) {
     document.getElementById('pitch-output').value = event.target.value;
   });
+
+  window.onload = () => {
+    //... any existing onload code...
+
+    // let voiceSelect = document.getElementById('voice');
+    // let voices = window.speechSynthesis.getVoices();
+    //
+    // // Populate the voice select dropdown
+    // voices.forEach((voice, i) => {
+    //   let option = document.createElement('option');
+    //   option.value = voice.name;
+    //   option.innerHTML = voice.name + ' (' + voice.lang + ')';
+    //   voiceSelect.appendChild(option);
+    // });
+
+    let voiceSelect = document.getElementById('voice');
+
+// Hard-coded voice choices
+    let voices = [
+      {name: 'Samantha', lang: 'en-US'},
+      {name: 'Whisper', lang: 'en-US'},
+      {name: 'Grandpa', lang: 'en-US'}
+      // Note: These names and languages are placeholders and may not work if the user's speech synthesis doesn't have them.
+    ];
+
+// Populate the voice select dropdown
+    voices.forEach((voice, i) => {
+      let option = document.createElement('option');
+      option.value = voice.name;
+      option.innerHTML = voice.name + ' (' + voice.lang + ')';
+      voiceSelect.appendChild(option);
+    });
+
+    voiceSelect.addEventListener('change', function () {
+      console.log('Voice selected:', voiceSelect.value);
+      // Additional code to handle voice change...
+    });
+
+
+
+  };
 
 
 
