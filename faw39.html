@@ -79,8 +79,11 @@
   <input type="text" id="status-time" readonly>
 </div>
 <label for="text-input">Routine</label>
+
+<!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
+
 <textarea id="text-input" placeholder="Speak or type something...">
-  1,supine Chin tucks,1,2,4,2,,
+  1,supine Chin tucks,1,1,2,2,,
 
   1,supine Chin tucks,2,3,4,2,,
   2,seated Chin tucks,2,3,4,2,,
@@ -287,11 +290,27 @@
       alert("No data to process!");
       return;
     }
+
+    const startTimeRoutine = new Date();
+
     console.log("Processing Data:");
     data.forEach((row, index) => {
       console.log(`Processing Row ${index + 1}:`);
       processOneRow(row);
     });
+
+    const endTimeRoutine = new Date();
+    secondsRoutine = (endTimeRoutine - startTimeRoutine)/1000
+
+    console.log(`Complete: ${startTimeRoutine.toString()}   ${endTimeRoutine.toString()}   ${secondsRoutine} seconds.`);
+
+    t = `great job!`;
+
+    speakText(t);
+    t = `You finished the routine in ${secondsRoutine}.`;
+
+    speakText(t);
+
   }
 
   function runDemo() {
@@ -337,7 +356,9 @@
     let voices = [
       {name: 'Samantha', lang: 'en-US'},
       {name: 'Whisper', lang: 'en-US'},
-      {name: 'Grandpa', lang: 'en-US'}
+      {name: 'Wobble', lang: 'en-US'},
+      {name: 'Xander', lang: 'en-US'},
+      {name: 'Sara', lang: 'en-US'}
       // Note: These names and languages are placeholders and may not work if the user's speech synthesis doesn't have them.
     ];
 
