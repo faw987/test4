@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Text to Speech and Speech to Text</title>
+  <title>My Workout/PT/Exercise Coach</title>
   <style>
     body {
       display: flex;
@@ -14,39 +14,98 @@
       height: 100vh;
       margin: 0;
     }
+
     h1 {
       font-size: 24px;
       margin-bottom: 20px;
     }
+
     textarea {
       width: 600px;
       height: 340px;
       margin-bottom: 20px;
     }
+
+    label {
+      margin-right: 10px;
+    }
+
+    .controls, .status {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    #demoButton {
+      font-size: 20px;
+      padding: 10px 20px;
+      background-color: lightgreen;
+      border: none;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 
 <body>
-<h1>Text to Speech and Speech to Text Converter</h1>
-<label for="text-input">Enter/Receive Text:</label>
-<textarea id="text-input" placeholder="Speak or type something...">1,supine Chin tucks,2,3,4,2,,
-2,seated Chin tucks,2,3,4,2,,
+<h1>My Workout/PT/Exercise Coach</h1>
+<div class="controls">
+  <label for="volume">Volume: </label>
+  <input type="range" id="volume" min="0" max="1" step="0.10" value="0.5">
+  <output id="volume-output" for="volume">0.5</output>
+  <br>
 
-3,Vertical Rotation Stretch,1,4,30,2,,
+  <label for="rate">Rate: </label>
+  <input type="range" id="rate" min="0.1" max="10" step="0.1" value="1">
+  <output id="rate-output" for="rate">1</output>
+  <br>
+
+  <label for="pitch">Pitch: </label>
+  <input type="range" id="pitch" min="0" max="2" step="0.01" value="1">
+  <output id="pitch-output" for="pitch">1</output>
+  <br>
+</div>
+<div class="status">
+  <label>Exercise:</label>
+  <input type="text" id="status-exercise" readonly>
+  <label>Set:</label>
+  <input type="text" id="status-set" readonly>
+  <label>Rep:</label>
+  <input type="text" id="status-rep" readonly>
+  <label>Time Left:</label>
+  <input type="text" id="status-time" readonly>
+</div>
+<label for="text-input">Routine</label>
+<textarea id="text-input" placeholder="Speak or type something...">
+  1,supine Chin tucks,1,2,4,2,,
+
+  1,supine Chin tucks,2,3,4,2,,
+  2,seated Chin tucks,2,3,4,2,,
+
+  3,Vertical Rotation Stretch,1,4,30,2,,
+
   1,supine Chin tucks,2,10,10,2,,
-2,seated Chin tucks,2,10,10,2,,
-3,Vertical Rotation Stretch,1,4,30,2,,</textarea>
+  2,seated Chin tucks,2,10,10,2,,
+  3,Vertical Rotation Stretch,1,4,30,2,,
+</textarea>
 <button onclick="speakTextField()">Say</button>
 <button onclick="clearText()">Clear</button>
 <button onclick="listenText()">Listen</button>
 <button onclick="loadData()">Load</button>
 <button onclick="processData()">Go</button>
+<button id="demoButton" onclick="runDemo()">Demo</button>
+
 
 <script>
   let data = [];
 
 
-  function blockForSeconds(seconds) {
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+
+  async function blockForSeconds(seconds) {
     let counter = 0;
     const startTime = new Date().getTime();
     let currentTime = startTime;
@@ -54,6 +113,7 @@
     console.log("block seconds: " + seconds);
 
     while (currentTime < startTime + (seconds * 1000)) {
+      // await delay(1000); // 1 second delay
       currentTime = new Date().getTime();
       counter += 1;
     }
@@ -64,47 +124,69 @@
 
   function speakCancel() {
     if ('speechSynthesis' in window) {
-      console.log(`speakText cancel"`);
+      console.log(`speakText cancel()`);
       window.speechSynthesis.cancel();
     } else {
       alert("Sorry, your browser does not support Text to Speech!");
     }
   }
-
-  function speakTextCallback(text, callback) {
-    // Create a new speech utterance instance
-    const utterance = new SpeechSynthesisUtterance(text);
-
-    // Attach an event handler for the 'end' event
-    utterance.onend = function(event) {
-      console.log('Speech has finished');
-      if (callback) {
-        callback();
-      }
-    };
-
-    // Speak the text
-    window.speechSynthesis.speak(utterance);
-  }
+  //
+  // function speakTextCallback(text, callback) {
+  //   // Create a new speech utterance instance
+  //   const utterance = new SpeechSynthesisUtterance(text);
+  //
+  //   // Attach an event handler for the 'end' event
+  //   utterance.onend = function(event) {
+  //     console.log('Speech has finished');
+  //     if (callback) {
+  //       callback();
+  //     }
+  //   };
+  //
+  //   // Speak the text
+  //   window.speechSynthesis.speak(utterance);
+  // }
 
   function speakText(text) {
     if ('speechSynthesis' in window) {
+      // Get voice properties from controls
+      let volume = document.getElementById('volume').value;
+      let rate = document.getElementById('rate').value;
+      let pitch = document.getElementById('pitch').value;
 
-
-      console.log(`speakText \"${text}\"`);
-
-      // window.speechSynthesis.cancel();
+      window.speechSynthesis.getVoices().forEach(function(voice) {
+        console.log(voice.name, voice.default ? voice.default :'');
+      });
 
       let utterance = new SpeechSynthesisUtterance(text);
+      // utterance.voice = speechSynthesis.getVoices().filter(function (voice) {
+      //   return voice.name == 'Whisper';
+      // })[0];
       utterance.lang = 'en-US';
-      utterance.volume = 1;
-      utterance.rate = 1;
-      utterance.pitch = 1;
+      utterance.volume = volume; // 0 to 1
+      utterance.rate = rate; // 0.1 to 10
+      utterance.pitch = pitch; // 0 to 2
       window.speechSynthesis.speak(utterance);
     } else {
       alert("Sorry, your browser does not support Text to Speech!");
     }
   }
+
+  // In your 'processOneRow' function or wherever appropriate, update status fields:
+  // Example:
+  function updateStatus(exercise, set, rep, timeLeft) {
+
+    console.log(`updateStatus >>>  ${exercise}, set ${set}, rep ${rep}  hold for ${timeLeft}`);
+
+    document.getElementById('status-exercise').value = exercise;
+    document.getElementById('status-exercise').innerText = exercise;
+    document.getElementById('status-set').value = set;
+    document.getElementById('status-rep').value = rep;
+    document.getElementById('status-time').value = timeLeft;
+  }
+
+  // Then, during your processing logic, you'd call:
+  // updateStatus(currentExercise, currentSet, currentRep, timeLeft);
 
   function speakTextField() {
     let text = document.getElementById('text-input').value;
@@ -144,13 +226,14 @@
   //   return new Promise(resolve => setTimeout(resolve, milliseconds));
   // }
 
-  function runExercise(row) {
+  async function runExercise(row) {
     const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
 
     for (let set = 1; set <= Sets; set++) {
       console.log(`set ${set}`);
       for (let rep = 1; rep <= Reps; rep++) {
         console.log(`set ${set}, rep ${rep}  hold for ${Hold}`);
+        updateStatus(Exercise, set, rep, Hold);
         speakCancel();
         speakText(`set ${set}, rep ${rep}, ${Hold} seconds`);
         blockForSeconds(Hold);
@@ -199,6 +282,33 @@
       processOneRow(row);
     });
   }
+
+  function runDemo() {
+    // Set the demo text
+    const demoText = "1,supine Chin tucks,1,2,4,2,,";
+    document.getElementById('text-input').value = demoText;
+    document.getElementById('text-input').innerText = demoText;
+
+    // Simulate clicking Load and Go buttons
+    loadData();
+    processData();
+  }
+
+    document.getElementById('volume').addEventListener('input', function (event) {
+    document.getElementById('volume-output').value = event.target.value;
+  });
+
+    document.getElementById('rate').addEventListener('input', function (event) {
+    document.getElementById('rate-output').value = event.target.value;
+  });
+
+    document.getElementById('pitch').addEventListener('input', function (event) {
+    document.getElementById('pitch-output').value = event.target.value;
+  });
+
+
+
+
 </script>
 </body>
 
