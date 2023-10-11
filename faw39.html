@@ -100,10 +100,63 @@
 <button onclick="loadData()">Load</button>
 <button onclick="processData()">Go</button>
 <button id="demoButton" onclick="runDemo()">Demo</button>
+<button onclick="test1()">test1</button>
 
 
 <script>
   let data = [];
+
+  document.getElementById('status-time').value = 30;
+
+  function test1(){
+    let tr = document.getElementById('status-time').value;
+    // alert(`tr=${tr}`)
+    console.log(`tr=${tr}`)
+    setTimeout(test1_1sec,1000)
+  }
+
+  function test1_1sec(){
+    let tr = document.getElementById('status-time').value;
+    console.log(`tr=${tr}`)
+
+    let Exercise = document.getElementById('status-exercise').value;
+    let Set = document.getElementById('status-set').value;
+    let Rep = document.getElementById('status-rep').value;
+
+    if (tr > 0) {
+      if(tr % 10 === 0) {
+        t = `${tr} remaining.`;
+        speakText(t);
+      }
+      tr=Number(tr)-1;
+      document.getElementById('status-time').value = tr;
+      setTimeout(test1_1sec,1000)
+    } else {
+      t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
+      console.log(t)
+      speakText(t);
+    }
+  }
+
+  function appendText(id,newText) {
+    // Get the textarea element
+    var textarea = document.getElementById(id);
+
+    // Get the current text in the textarea
+    var currentText = textarea.value;
+
+    // The text to append
+    // var newText = "This is the appended text.";
+
+    // Append the new text with a newline character
+    textarea.value = currentText + "\n" + newText;
+  }
+
+
+  function doNothing() {
+    console.log('Nothing was done!');
+  }
+
 
 
   function delay(ms) {
@@ -111,7 +164,7 @@
   }
 
 
-  async function blockForSeconds(seconds) {
+  async function blockForSeconds(seconds, Exercise, set, rep, Hold) {
     let counter = 0;
     const startTime = new Date().getTime();
     let currentTime = startTime;
@@ -119,7 +172,16 @@
     console.log("block seconds: " + seconds);
 
     while (currentTime < startTime + (seconds * 1000)) {
+
       // await delay(1000); // 1 second delay
+
+      // setTimeout(doNothing, 100);
+      updateStatus(Exercise, set, rep, Hold);
+      // setTimeout(doNothing, 100);
+
+      // await delay(1000); // 1 second delay
+      delay(1000); // 1 second delay
+
       currentTime = new Date().getTime();
       counter += 1;
     }
@@ -176,7 +238,7 @@
 
       console.log(utterance.voice);
 
-      utterance.lang = 'en-US';
+      utterance.lang = 'en-GB';
       utterance.volume = volume; // 0 to 1
       utterance.rate = rate; // 0.1 to 10
       utterance.pitch = pitch; // 0 to 2
@@ -190,13 +252,22 @@
   // Example:
   function updateStatus(exercise, set, rep, timeLeft) {
 
-    console.log(`updateStatus >>>  ${exercise}, set ${set}, rep ${rep}  hold for ${timeLeft}`);
+    l = `updateStatus >>>  Exercise: ${exercise}, set: ${set}, rep: ${rep}  hold for ${timeLeft} secs.`;
+    console.log(`updateStatus >>>  Exercise: ${exercise}, set: ${set}, rep: ${rep}  hold for ${timeLeft} secs.`);
 
     document.getElementById('status-exercise').value = exercise;
     document.getElementById('status-exercise').innerText = exercise;
     document.getElementById('status-set').value = set;
+    document.getElementById('status-set').innerText = set;
     document.getElementById('status-rep').value = rep;
+    document.getElementById('status-rep').innerText = rep;
     document.getElementById('status-time').value = timeLeft;
+    document.getElementById('status-time').innerText = timeLeft;
+
+    // ti = document.getElementById('text-input');
+
+    appendText('text-input',l);
+
   }
 
   // Then, during your processing logic, you'd call:
@@ -229,6 +300,16 @@
   }
 
   function loadData() {
+
+    console.log('Start');
+
+    setTimeout(() => {
+      console.log('After Timeout');
+    }, 3000);
+
+    console.log('End');
+
+
     const textareaValue = document.getElementById('text-input').value;
     const rows = textareaValue.split('\n');
     data = rows.map(row => row.split(','));
@@ -246,11 +327,11 @@
     for (let set = 1; set <= Sets; set++) {
       console.log(`set ${set}`);
       for (let rep = 1; rep <= Reps; rep++) {
-        console.log(`set ${set}, rep ${rep}  hold for ${Hold}`);
+        // console.log(`set ${set}, rep ${rep}  hold for ${Hold}`);
         updateStatus(Exercise, set, rep, Hold);
         speakCancel();
-        speakText(`set ${set}, rep ${rep}, ${Hold} seconds`);
-        blockForSeconds(Hold);
+        speakText(`set ${set}, repetition ${rep}, ${Hold} seconds`);
+        blockForSeconds(Hold, Exercise, set, rep, Hold);
       }
     }
   }
@@ -273,7 +354,7 @@
     console.log("t:", t);
 
     speakText(t);
-    blockForSeconds(5);
+    blockForSeconds(5, 1, 2, 3, 4);
 
     runExercise(row);
 
@@ -307,7 +388,7 @@
     t = `great job!`;
 
     speakText(t);
-    t = `You finished the routine in ${secondsRoutine}.`;
+    t = `You finished the routine in ${secondsRoutine} seconds.`;
 
     speakText(t);
 
