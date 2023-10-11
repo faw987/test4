@@ -107,6 +107,25 @@
   let data = [];
 
   document.getElementById('status-time').value = 30;
+  document.getElementById('status-exercise').value = 1;
+  document.getElementById('status-set').value = 1;
+  document.getElementById('status-rep').value = 1;
+
+  function getExerciseDetails(table,index){
+    console.log(`getExerciseDetails index=${index}`);
+    const tableRow = table[index];
+    // table.forEach((row, index) => {
+    //   console.log(`Processing Row ${index + 1}: "${row}"`);
+    //   // console.log(row);
+    // });
+    return tableRow;
+    //
+    // console.log(table)
+    // console.log(index)
+    // console.log(tableRow)
+
+  }
+
 
   function test1(){
     let tr = document.getElementById('status-time').value;
@@ -123,17 +142,23 @@
     let Set = document.getElementById('status-set').value;
     let Rep = document.getElementById('status-rep').value;
 
+
+    let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
+    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras] = d;
+
+    console.log(`d=${rExercise},${rDescription},${d[2]},${d[3]}`)
+
     if (tr > 0) {
       if(tr % 10 === 0) {
         t = `${tr} remaining.`;
         speakText(t);
-      }
+      };
       tr=Number(tr)-1;
       document.getElementById('status-time').value = tr;
-      setTimeout(test1_1sec,1000)
+      setTimeout(test1_1sec,1000);
     } else {
       t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
-      console.log(t)
+      console.log(t);
       speakText(t);
     }
   }
@@ -300,15 +325,14 @@
   }
 
   function loadData() {
-
-    console.log('Start');
-
-    setTimeout(() => {
-      console.log('After Timeout');
-    }, 3000);
-
-    console.log('End');
-
+    //
+    // console.log('Start');
+    //
+    // setTimeout(() => {
+    //   console.log('After Timeout');
+    // }, 3000);
+    //
+    // console.log('End');
 
     const textareaValue = document.getElementById('text-input').value;
     const rows = textareaValue.split('\n');
