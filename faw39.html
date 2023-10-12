@@ -85,8 +85,12 @@
 <label for="text-input">Routine</label>
 
 <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
+<img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
 
-<textarea id="text-input" placeholder="Speak or type something...">
+<textarea id="text-input" placeholder="Speak or type something...">1,exercise one,1,2,10,2,supine_chin-tuck.png,
+2,exercise two,1,1,10,2,,
+3,three,1,2,10,2,supine_chin-tuck.png,
+
   1,exercise one,1,2,5,2,supine_chin-tuck.png,
   2,exercise two,2,2,3,2,,
   3,three,1,4,30,2,,
@@ -102,15 +106,14 @@
   2,seated Chin tucks,2,10,10,2,,
   3,Vertical Rotation Stretch,1,4,30,2,,
 </textarea>
-<button onclick="speakTextField()">Say</button>
+
 <button onclick="clearText()">Clear</button>
 <button onclick="listenText()">Listen</button>
+<button onclick="speakTextField()">Say</button>
 <button onclick="loadData()">Load</button>
-<button onclick="processData()">Go</button>
+<button onclick="runRoutine()">Run</button>
+<button onclick="processData()">TBD</button>
 <button id="demoButton" onclick="runDemo()">Demo</button>
-<button onclick="test1()">test1</button>
-<!--<img id="myImage" src="supine_chin-tuck.png" alt="Description of the image">-->
-<img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
 
 
 <script>
@@ -155,7 +158,7 @@
   }
 
 
-  function test1(){
+  function runRoutine(){
     let tr = document.getElementById('status-time').value;
     // alert(`tr=${tr}`)
     console.log(`tr=${tr}`)
@@ -474,13 +477,18 @@
 
   function runDemo() {
     // Set the demo text
-    const demoText = "1,supine Chin tucks,1,2,4,2,,";
+    // const demoText = "1,supine Chin tucks,1,2,4,2,,";
+    const demoText = `1,exercise one,1,2,10,2,supine_chin-tuck.png,
+            2,exercise two,1,1,10,2,,
+            3,three,1,2,10,2,supine_chin-tuck.png`;
+
     document.getElementById('text-input').value = demoText;
     document.getElementById('text-input').innerText = demoText;
 
     // Simulate clicking Load and Go buttons
     loadData();
-    processData();
+    runRoutine();
+
   }
 
     document.getElementById('volume').addEventListener('input', function (event) {

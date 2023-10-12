@@ -6,6 +6,13 @@
 body {
   background-image: url('images/sunset-on-river.jpg');
 }
+
+a {
+            font-size: 12pt;
+            font-family: Arial, sans-serif;
+            color: silver;
+        }
+
 </style>
 </head>
 <body>
