@@ -44,6 +44,10 @@
       cursor: pointer;
     }
 
+    .customImage {
+      width: 300px;
+      height: 150px;
+    }
   </style>
 </head>
 
@@ -83,7 +87,7 @@
 <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
 
 <textarea id="text-input" placeholder="Speak or type something...">
-  1,exercise one,1,2,5,2,,
+  1,exercise one,1,2,5,2,supine_chin-tuck.png,
   2,exercise two,2,2,3,2,,
   3,three,1,4,30,2,,
 
@@ -105,6 +109,8 @@
 <button onclick="processData()">Go</button>
 <button id="demoButton" onclick="runDemo()">Demo</button>
 <button onclick="test1()">test1</button>
+<!--<img id="myImage" src="supine_chin-tuck.png" alt="Description of the image">-->
+<img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
 
 
 <script>
@@ -118,6 +124,20 @@
   document.getElementById('status-exercise').value = 1;
   document.getElementById('status-set').value = 1;
   document.getElementById('status-rep').value = 1;
+
+  function imgError(thing) {
+    let imageElement = document.getElementById('myImage');
+    imageElement.src = "default.png";
+  }
+
+
+  function setImage(image) {
+    // Get the image element by its id
+    let imageElement = document.getElementById('myImage');
+
+    // Change the source of the image
+    imageElement.src = image;
+  }
 
   function getExerciseDetails(table,index){
     console.log(`getExerciseDetails index=${index}`);
@@ -153,6 +173,8 @@
 
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras] = d;
+
+    setImage(rPic)
 
     console.log(`d=${rExercise},${rDescription},${d[2]},${d[3]}`)
 
