@@ -10,7 +10,7 @@ body {
 a {
             font-size: 12pt;
             font-family: Arial, sans-serif;
-            color: silver;
+            color: black;
         }
 
 </style>
