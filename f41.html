@@ -7,6 +7,8 @@
 </head>
 <body>
 
+<input type="file" id="fileInput">
+<button onclick="loadCSV()">Load</button>
 <button onclick="updateLocation()">Update</button>
 
 <table id="resultsTable" border="1">
@@ -24,11 +26,22 @@
 </table>
 
 <script>
-    // Sample data of places
-    const places = [
-        { lat: 40.7128, lon: -74.0060, address: "New York, NY" },
-        { lat: 34.0522, lon: -118.2437, address: "Los Angeles, CA" },
-        // ... add more places here
+    let places = [
+        { lat: "40.54787", lon: "-74.33570", address: "Menlo Park Mall" },
+        { lat: "40.56752", lon: "-74.56367", address: "580 Union Avenue Bridgewater" },
+        { lat: "40.53624", lon: "-74.29713", address: "440 King Georges Road Woodbridge" },
+        { lat: "40.50658", lon: "-74.39358", address: "580 U.S. Route 1 Edison" },
+        { lat: "40.51689", lon: "-74.28688", address: "365 Convery Boulevard Perth Amboy" },
+        { lat: "40.57706", lon: "-74.28738", address: "930 US-1 Avenel" },
+        { lat: "40.46252", lon: "-74.40112", address: "656 Old Bridge TurnpikeSouth River" },
+        { lat: "40.46056", lon: "-74.45700", address: "650 Shoppes Blvd North Brunswick Township NJ 08902" },
+        { lat: "40.65501", lon: "-74.52999", address: "415 King George RoadBasking Ridge" },
+        { lat: "40.65802", lon: "-74.28826", address: "370 North Avenue East Cranford" },
+        { lat: "40.43934", lon: "-74.50491", address: "191 Grand Avenue North Brunswick" },
+        { lat: "40.69172", lon: "-74.27049", address: "1750 Route 22 EastUnion" },
+        { lat: "40.68579", lon: "-74.31648", address: "(Store) 135 US 22 Springfield" },
+        { lat: "40.71816", lon: "-74.32946", address: "2017 Cleveland Place Springfield" },
+        { lat: "40.29497", lon: "-74.68447", address: "3371 Brunswick Pike" }
     ];
 
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -49,13 +62,45 @@
         return deg * (Math.PI/180)
     }
 
+    function loadCSV() {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = evt => {
+                const csvData = evt.target.result;
+                const lines = csvData.split('\n').filter(line => line.trim() !== ''); // Filter out empty/whitespace-only lines
+                places = lines.map(line => {
+                    const [lat, lon, address] = line.split(',');
+                    return {
+                        lat: parseFloat(lat).toFixed(5), // Format to 5 decimals
+                        lon: parseFloat(lon).toFixed(5), // Format to 5 decimals
+                        address: address.replace(/"/g, '').trim() // Remove " characters
+                    };
+                });
+                alert('CSV Loaded!');
+            };
+            reader.onerror = evt => {
+                alert('Error reading CSV file');
+            };
+        } else {
+            alert('Please select a CSV file first.');
+        }
+    }
+
     function updateLocation() {
         navigator.geolocation.getCurrentPosition(position => {
             const currentLat = position.coords.latitude;
             const currentLon = position.coords.longitude;
 
+            // places.forEach(place => {
+            //     console.log(`${place.lat},${place.lon},${place.address}`);
+            // });
+
             places.forEach(place => {
-                place.distance = getDistanceFromLatLonInKm(currentLat, currentLon, place.lat, place.lon);
+                place.distance = getDistanceFromLatLonInKm(currentLat, currentLon, parseFloat(place.lat), parseFloat(place.lon));
             });
 
             // Sort by distance
