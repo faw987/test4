@@ -73,6 +73,9 @@
   <br>
 </div>
 <div class="status">
+  <label>Exercise Description:</label>
+  <input type="text" id="exercise-description">
+  <br/>
   <label>Exercise:</label>
   <input type="text" id="status-exercise" readonly>
   <label>Set:</label>
@@ -178,6 +181,7 @@
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras] = d;
 
     setImage(rPic)
+    document.getElementById('exercise-description').value = rDescription;
 
     console.log(`d=${rExercise},${rDescription},${d[2]},${d[3]}`)
 
