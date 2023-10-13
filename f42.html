@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Row Click</title>
+</head>
+<body>
+<table id="dataTable" border="1">
+  <thead>
+  <tr>
+    <th>Item</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Rows will be populated by JavaScript -->
+  </tbody>
+</table>
+
+<script>
+  // Sample list of things
+  const things = ["Apple", "Banana", "Cherry", "Date", "Fig"];
+
+  // Populate the table with the list of things
+  const tableBody = document.querySelector("#dataTable tbody");
+  things.forEach(thing => {
+    let row = tableBody.insertRow();
+    let cell = row.insertCell();
+    cell.textContent = thing;
+
+    // Add click event to each row
+    row.addEventListener("click", function() {
+      processRow(this);
+    });
+  });
+
+  // Function to process the clicked row
+  function processRow(row) {
+    let clickedData = row.cells[0].textContent;
+    alert("You clicked on: " + clickedData);
+    // Additional processing logic can go here
+  }
+</script>
+</body>
+</html>
