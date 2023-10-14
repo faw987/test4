@@ -33,17 +33,46 @@
     }
 
     .controls, .status {
-      display: flex;
+      /*display: flex;*/
       gap: 10px;
       margin-bottom: 10px;
     }
 
 
+    /*.status {*/
+    /*  font-size: 24px;*/
+    /*  font-family: Helvetica, Areprial, sans-serif;*/
+    /*}*/
+
     .status {
-      font-size: 30px;
-      font-family: Helvetica, Areprial, sans-serif;
+      font-family: 'Arial', sans-serif;  /* Font family */
+      font-size: 24px;                   /* Font size */
+      font-weight: bold;                 /* Font weight */
+      font-style: italic;                /* Font style */
+      color: #333;                       /* Font color */
+      line-height: 1.5;                  /* Line height (spacing between lines) */
+      text-align: left;                  /* Text alignment */
+      /*width: 30px;*/
+      /* Add any other font or styling properties you want */
     }
 
+    .status input{
+      font-family: 'Arial', sans-serif;  /* Font family */
+      font-size: 24px;                   /* Font size */
+      font-weight: bold;                 /* Font weight */
+      font-style: italic;                /* Font style */
+      color: #333;                       /* Font color */
+      line-height: 1.5;                  /* Line height (spacing between lines) */
+      text-align: left;                  /* Text alignment */
+      width: 30px;
+      /* Add any other font or styling properties you want */
+    }
+
+    input#exercise-description{
+      width:250px;
+    }
+
+    /**/
     #demoButton {
       font-size: 20px;
       padding: 10px 20px;
@@ -76,7 +105,7 @@
   <input type="url" id="sheetUrl" name="sheetUrl" required>
   <button type="submit">Load Data</button>
 </form>
-
+<br/>
 <table id="dataTable" border="1">
   <thead>
   <tr>
@@ -87,7 +116,7 @@
   <!-- Rows will be populated by JavaScript -->
   </tbody>
 </table>
-
+<br/>
 <div class="controls">
   <label for="volume">Volume: </label>
   <input type="range" id="volume" min="0" max="1" step="0.10" value="0.5">
@@ -107,16 +136,18 @@
   <select id="voice" name="voice"></select>
   <br>
 </div>
+<br/>
 <div class="status">
-  <label>Exercise Description:</label>
-  <input type="text" id="exercise-description">
-  <br/>
   <label>Exercise:</label>
-  <input type="text" id="status-exercise" readonly>
+  <input type="text" id="status-exercise" >
+  <label>Description:</label>
+  <input type="text" id="exercise-description">
+  <br>
   <label>Set:</label>
-  <input type="text" id="status-set" readonly>
+  <input type="text" id="status-set" >
   <label>Rep:</label>
-  <input type="text" id="status-rep" readonly>
+  <input type="text" id="status-rep" >
+  <br/>
   <label>Time Left:</label>
   <input type="text" id="status-time" readonly>
 </div>
@@ -178,8 +209,11 @@
   });
 
   function loadDefaultData(){
-    sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnwiTGyd8ZGiPq' +
-            '97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?gid=0&single=true&output=csv'
+    sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnw' +
+            'iTGyd8ZGiPq97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?output=csv'
+            //
+            // 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnwiTGyd8ZGiPq' +
+            // '97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?gid=0&single=true&output=csv'
     loadSheetData(sheetUrl);
   }
 
@@ -223,8 +257,7 @@
   // Function to process the clicked row
   function processRoutineSelectRow(row, rows) {
     let clickedData = row.cells[0].textContent;
-    // alert("You clicked on: " + clickedData);
-    // Additional processing logic can go here
+
     data = [];
     rows.forEach(eachrow => {
       if (eachrow.startsWith(clickedData + ",")) {
@@ -360,11 +393,11 @@
 
     if (tr == rHold) {
       // t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
-      t2=`set ${Set}  repetition ${Rep}  hold ${rHold}  begin.`
+      t2=`begin set ${Set}  repetition ${Rep}  hold ${rHold}.`
       speakText(t2);
     }
 
-    if (tr > 0) {
+    if (parseInt(tr) > 0) {
       // if(tr % INIT_MOD === 0) {
       slashesAddedCountdown='/'+rCountdownAt+'/';
       slashesAddedTr='/'+tr+'/';
@@ -385,24 +418,26 @@
       t = `Set ${Set} repetition ${Rep} complete.`;
       console.log(t);
       // speakText(t);
-      appendText('text-input',t);
+      // appendText('text-input',t);
 
       // speakText(`${t}, next`);
       speakText(`${t}`);
       // speakText(`done`);
 
-      if (Rep < rReps) {
+      console.log(`Rep ${Rep}   rReps ${rReps}`);
+
+      if (parseInt(Rep) < parseInt(rReps)) {
         document.getElementById('status-rep').value = Number(Rep)+1;
         document.getElementById('status-time').value = rHold;
         setTimeout(test1_1sec,1000);
       } else {
-        if (Set < rSets) {
+        if (parseInt(Set) < parseInt(rSets)) {
           document.getElementById('status-set').value = Number(Set)+1;
           document.getElementById('status-rep').value = 1;
           document.getElementById('status-time').value = rHold;
           setTimeout(test1_1sec,1000);
         } else {
-          if (Exercise < numberExercises) {
+          if (parseInt(Exercise) < numberExercises) {
             document.getElementById('status-exercise').value = Number(Exercise)+1;
             document.getElementById('status-set').value = 1;
             document.getElementById('status-rep').value = 1;
@@ -489,31 +524,6 @@
       alert("Sorry, your browser does not support Text to Speech!");
     }
   }
-
-  // In your 'processOneRow' function or wherever appropriate, update status fields:
-  // Example:
-  function updateStatus(exercise, set, rep, timeLeft) {
-
-    l = `updateStatus >>>  Exercise: ${exercise}, set: ${set}, rep: ${rep}  hold for ${timeLeft} secs.`;
-    console.log(`updateStatus >>>  Exercise: ${exercise}, set: ${set}, rep: ${rep}  hold for ${timeLeft} secs.`);
-
-    document.getElementById('status-exercise').value = exercise;
-    document.getElementById('status-exercise').innerText = exercise;
-    document.getElementById('status-set').value = set;
-    document.getElementById('status-set').innerText = set;
-    document.getElementById('status-rep').value = rep;
-    document.getElementById('status-rep').innerText = rep;
-    document.getElementById('status-time').value = timeLeft;
-    document.getElementById('status-time').innerText = timeLeft;
-
-    // ti = document.getElementById('text-input');
-
-    appendText('text-input',l);
-
-  }
-
-  // Then, during your processing logic, you'd call:
-  // updateStatus(currentExercise, currentSet, currentRep, timeLeft);
 
   function speakTextField() {
     let text = document.getElementById('text-input').value;
