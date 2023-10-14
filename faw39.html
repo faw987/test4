@@ -110,6 +110,26 @@
 <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
 <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
 
+
+<table border="1" id="exerciseTable">
+  <thead>
+  <tr>
+    <th>Exercise</th>
+    <th>Description</th>
+    <th>Sets</th>
+    <th>Reps</th>
+    <th>Hold</th>
+    <th>Frequency</th>
+    <th>Picture</th>
+    <th>Extras</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Rows will be populated by JavaScript -->
+  </tbody>
+</table>
+
+
 <textarea id="text-input" placeholder="Speak or type something...">1,exercise one,1,2,10,2,supine_chin-tuck.png,
 2,exercise two,1,1,10,2,,
 3,three,1,2,10,2,supine_chin-tuck.png,
@@ -160,6 +180,43 @@
     loadSheetData(sheetUrl);
   });
 
+  function highlightSpecificRow(r) {
+    let tableBody = document.querySelector("#exerciseTable tbody");
+    let specificRow = tableBody.rows[r]; // This gets the second row (index starts at 0)
+    highlightRow(specificRow);
+  }
+
+
+  // Highlight row function
+  function highlightRow(row) {
+    row.style.backgroundColor = "yellow"; // Change color as desired
+  }
+
+  // Unhighlight row function
+  function unhighlightRow(row) {
+    row.style.backgroundColor = ""; // Reset to original color
+  }
+
+  function generateTable(dataTable){
+    // Populate the HTML table
+    let tableBody = document.querySelector("#exerciseTable tbody");
+    dataTable.forEach(rowData => {
+      let row = tableBody.insertRow();
+
+      Object.values(rowData).forEach(cellData => {
+        let cell = row.insertCell();
+        cell.textContent = cellData;
+      });
+
+      // Add click events for demonstration purposes
+      row.onclick = function() {
+        highlightRow(this);
+        setTimeout(() => {
+          unhighlightRow(this);
+        }, 2000); // Unhighlight after 2 seconds for demonstration
+      };
+    });
+  }
 
   // Function to process the clicked row
   function processRow(row,rows) {
@@ -178,6 +235,9 @@
       }
       console.log(eachrow);
     });
+
+    generateTable(data);
+
   }
 
     function findRoutineInit(rows) {
@@ -303,6 +363,10 @@
 
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras] = d;
+
+    highlightSpecificRow(Number(Exercise)-1);
+
+
 
     setImage(rPic)
     document.getElementById('exercise-description').value = rDescription;
