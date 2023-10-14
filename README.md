@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h3>Saturday 14 - 10/14/2023 10:20 AM </h3>
+<h3>Saturday 14 - 10/14/2023 11:09 AM </h3>
 <br/>
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
@@ -95,6 +95,9 @@ a {
 <a href="f41.html">Supercharger search</a>
 <br><br>
 
+
+<a href="f43.html">Enhanced Supercharger search</a>
+<br><br>
 
 
 <a href="clemap1.png">cle</a>

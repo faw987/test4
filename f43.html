@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location Finder</title>
+</head>
+<body>
+
+<input type="file" id="fileInput">
+<button onclick="loadCSV()">Load</button>
+
+<button onclick="updateLocation()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Update</button>
+
+
+<table id="resultsTable" border="1">
+  <thead>
+  <tr>
+    <th>Lat</th>
+    <th>Lon</th>
+    <th>Distance (km)</th>
+    <th>Address</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Results will be populated here -->
+  </tbody>
+</table>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap"></script>
+
+<script>
+  let places = [
+    { lat: "40.54787", lon: "-74.33570", address: "Menlo Park Mall" },
+    { lat: "40.56752", lon: "-74.56367", address: "580 Union Avenue Bridgewater" },
+    { lat: "40.53624", lon: "-74.29713", address: "440 King Georges Road Woodbridge" },
+    { lat: "40.50658", lon: "-74.39358", address: "580 U.S. Route 1 Edison" },
+    { lat: "40.51689", lon: "-74.28688", address: "365 Convery Boulevard Perth Amboy" },
+    { lat: "40.57706", lon: "-74.28738", address: "930 US-1 Avenel" },
+    { lat: "40.46252", lon: "-74.40112", address: "656 Old Bridge TurnpikeSouth River" },
+    { lat: "40.46056", lon: "-74.45700", address: "650 Shoppes Blvd North Brunswick Township NJ 08902" },
+    { lat: "40.65501", lon: "-74.52999", address: "415 King George RoadBasking Ridge" },
+    { lat: "40.65802", lon: "-74.28826", address: "370 North Avenue East Cranford" },
+    { lat: "40.43934", lon: "-74.50491", address: "191 Grand Avenue North Brunswick" },
+    { lat: "40.69172", lon: "-74.27049", address: "1750 Route 22 EastUnion" },
+    { lat: "40.68579", lon: "-74.31648", address: "(Store) 135 US 22 Springfield" },
+    { lat: "40.71816", lon: "-74.32946", address: "2017 Cleveland Place Springfield" },
+    { lat: "40.29497", lon: "-74.68447", address: "3371 Brunswick Pike" }
+  ];
+
+
+  function reverseGeocode(lat, lon, callback) {
+    const geocoder = new google.maps.Geocoder;
+    const latlng = {lat: parseFloat(lat), lng: parseFloat(lon)};
+
+    geocoder.geocode({'location': latlng}, function(results, status) {
+      if (status === 'OK' && results[0]) {
+        callback(results[0].formatted_address, results);
+      } else {
+        console.error('Geocoder failed due to: ' + status);
+        callback(null);
+      }
+    });
+  }
+
+  // Example usage:
+  reverseGeocode(40.730610, -73.935242, function(address, fullResults) {
+    if(address) {
+      console.log("Closest Address:", address);
+      console.log("Full Geopolitical Information:", fullResults);
+    }
+  });
+
+
+
+  function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1);
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+    ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  function deg2rad(deg) {
+    return deg * (Math.PI/180)
+  }
+
+  function loadCSV() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsText(file, 'UTF-8');
+      reader.onload = evt => {
+        const csvData = evt.target.result;
+        const lines = csvData.split('\n').filter(line => line.trim() !== ''); // Filter out empty/whitespace-only lines
+        places = lines.map(line => {
+          const [lat, lon, address] = line.split(',');
+          return {
+            lat: parseFloat(lat).toFixed(5), // Format to 5 decimals
+            lon: parseFloat(lon).toFixed(5), // Format to 5 decimals
+            address: address.replace(/"/g, '').trim() // Remove " characters
+          };
+        });
+        alert('CSV Loaded!');
+      };
+      reader.onerror = evt => {
+        alert('Error reading CSV file');
+      };
+    } else {
+      alert('Please select a CSV file first.');
+    }
+  }
+
+
+  function updateLocation() {
+    navigator.geolocation.getCurrentPosition(position => {
+      const currentLat = position.coords.latitude;
+      const currentLon = position.coords.longitude;
+
+      places.forEach(place => {
+        const distanceKm = getDistanceFromLatLonInKm(currentLat, currentLon, parseFloat(place.lat), parseFloat(place.lon));
+        place.distanceKm = distanceKm;
+        place.distanceMiles = distanceKm * 0.621371; // Convert km to miles
+      });
+
+      // Sort by distance
+      places.sort((a, b) => a.distanceKm - b.distanceKm);
+
+      // Populate table
+      const tbody = document.getElementById("resultsTable").querySelector("tbody");
+      tbody.innerHTML = ''; // Clear previous results
+
+      // Display only the first 10 rows
+      for (let i = 0; i < Math.min(10, places.length); i++) {
+        const place = places[i];
+        const row = tbody.insertRow();
+        row.insertCell().textContent = place.lat;
+        row.insertCell().textContent = place.lon;
+        row.insertCell().textContent = place.distanceKm.toFixed(2) + " km / " + place.distanceMiles.toFixed(2) + " miles";
+        const addressCell = row.insertCell();
+        addressCell.textContent = place.address;
+        addressCell.style.cursor = "pointer";
+        addressCell.onclick = () => {
+          navigator.clipboard.writeText(place.address);
+        };
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

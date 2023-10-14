@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reverse Geocoding</title>
+  <script>
+    function initMap() {
+      // This function is called once the Google Maps library has loaded 40.56806259319948, -74.4425479497186
+      // You can call your reverseGeocode function here
+      // reverseGeocode(40.730610, -73.935242, function(address, fullResults) {
+        reverseGeocode(40.56806259319948, -74.4425479497186, function(address, fullResults) {
+        if(address) {
+          console.log("Closest Address:", address);
+          console.log("Full Geopolitical Information:", fullResults);
+        }
+      });
+    }
+
+    function reverseGeocode(lat, lon, callback) {
+      const geocoder = new google.maps.Geocoder;
+      const latlng = {lat: parseFloat(lat), lng: parseFloat(lon)};
+
+      geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK' && results[0]) {
+          callback(results[0].formatted_address, results);
+        } else {
+          console.error('Geocoder failed due to: ' + status);
+          callback(null);
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+<!-- Load the Google Maps JavaScript API -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap"></script>
+</body>
+</html>
