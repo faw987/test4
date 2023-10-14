@@ -38,6 +38,12 @@
       margin-bottom: 10px;
     }
 
+
+    .status {
+      font-size: 30px;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+
     #demoButton {
       font-size: 20px;
       padding: 10px 20px;
@@ -49,7 +55,13 @@
     .customImage {
       width: 300px;
       height: 150px;
+
+
+    input {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 30px;
     }
+
   </style>
 </head>
 
@@ -316,6 +328,9 @@
 
     clearText();
 
+    t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+    speakText(t2);
+
     console.log(`runRoutine time remaining=${tr}`)
 
     data.forEach(d => {
@@ -344,8 +359,8 @@
     // console.log(t1)
 
     if (tr == rHold) {
-      console.log(`rCountdownAt=${rCountdownAt}`)
-      t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
+      // t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
+      t2=`set ${Set}  repetition ${Rep}  hold ${rHold}  begin.`
       speakText(t2);
     }
 
@@ -374,6 +389,7 @@
 
       // speakText(`${t}, next`);
       speakText(`${t}`);
+      // speakText(`done`);
 
       if (Rep < rReps) {
         document.getElementById('status-rep').value = Number(Rep)+1;
@@ -383,12 +399,14 @@
         if (Set < rSets) {
           document.getElementById('status-set').value = Number(Set)+1;
           document.getElementById('status-rep').value = 1;
+          document.getElementById('status-time').value = rHold;
           setTimeout(test1_1sec,1000);
         } else {
           if (Exercise < numberExercises) {
             document.getElementById('status-exercise').value = Number(Exercise)+1;
             document.getElementById('status-set').value = 1;
             document.getElementById('status-rep').value = 1;
+            document.getElementById('status-time').value = rHold;
             setTimeout(test1_1sec,1000);
           } else {
             speakText("thats all folks");
