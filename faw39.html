@@ -68,7 +68,7 @@
 <table id="dataTable" border="1">
   <thead>
   <tr>
-    <th>Item</th>
+    <th>Click to select your routine.</th>
   </tr>
   </thead>
   <tbody>
@@ -235,7 +235,10 @@
 
       rows.forEach(row => {
         console.log(row);
-        routines.add(row.split(',')[0])
+        r = row.split(',')[0];
+        if (r !== "Routine") {
+          routines.add(row.split(',')[0])
+        }
       });
 
       // console.log(routines);
@@ -348,12 +351,14 @@
 
     if (tr > 0) {
       // if(tr % INIT_MOD === 0) {
-      slashesAdded='/'+rCountdownAt+'/';
+      slashesAddedCountdown='/'+rCountdownAt+'/';
+      slashesAddedTr='/'+tr+'/';
 
+      index=slashesAddedCountdown.indexOf(slashesAddedTr)
 
-      console.log(`tr="${tr}"     slashesAdded="${slashesAdded}"`);
+      console.log(`tr="${tr}"  index=${index}   slashesAddedCountdown="${slashesAddedCountdown}"   slashesAddedTr=${slashesAddedTr}`);
 
-      if (slashesAdded.includes('/'+tr+'/')) {
+      if (index !== -1) {
         t = `${tr} remaining.`;
         speakText(t);
       };
