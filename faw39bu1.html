@@ -252,30 +252,32 @@
 
   }
 
-    function findRoutineInit(rows) {
+  function findRoutineInit(rows) {
 
-      const routines = new Set();
+    // const things = ["Apple", "Banana", "Cherry", "Date", "Fig"];
+    const routines = new Set();
 
-      rows.forEach(row => {
-        console.log(row);
-        routines.add(row.split(',')[0])
+
+    rows.forEach(row => {
+      console.log(row);
+      routines.add(row.split(',')[0])
+    });
+
+    console.log(routines);
+
+    // Populate the table with the list of things
+    const tableBody = document.querySelector("#dataTable tbody");
+    routines.forEach(thing => {
+      let row = tableBody.insertRow();
+      let cell = row.insertCell();
+      cell.textContent = thing;
+
+      // Add click event to each row
+      row.addEventListener("click", function () {
+        processRow(this,rows);
       });
-
-      console.log(routines);
-
-      // Populate the table with the list of things
-      const tableBody = document.querySelector("#dataTable tbody");
-      routines.forEach(thing => {
-        let row = tableBody.insertRow();
-        let cell = row.insertCell();
-        cell.textContent = thing;
-
-        // Add click event to each row
-        row.addEventListener("click", function () {
-          processRow(this,rows);
-        });
-      });
-    }
+    });
+  }
 
   function loadSheetData(sheetUrl) {
     // Assume sheetUrl is in a format that leads to a CSV published file
@@ -283,6 +285,12 @@
             .then(response => response.text())
             .then(data => {
               let rows = data.split("\n");
+              // let today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+              // let relevantRows = rows.filter(row => {
+              //   let date = row.split(",")[2]; // Assuming date is in the third column (index 2)
+              //   return date === today;
+              // });
+              // displaySummary(relevantRows);
               displaySummary(rows);
               findRoutineInit(rows);
             })
@@ -314,28 +322,43 @@
   }
 
   function getExerciseDetails(table,index){
-    // console.log(`getExerciseDetails index=${index}`);
+    console.log(`getExerciseDetails index=${index}`);
     const tableRow = table[index];
+    // table.forEach((row, index) => {
+    //   console.log(`Processing Row ${index + 1}: "${row}"`);
+    //   // console.log(row);
+    // });
     return tableRow;
+    //
+    // console.log(table)
+    // console.log(index)
+    // console.log(tableRow)
+
   }
 
 
   function runRoutine(){
     let tr = document.getElementById('status-time').value;
 
-// hack ??? RepPause	SetPause	CountdownAt
+// hack ???
 
     let Exercise = document.getElementById('status-exercise').value;
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
-    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
+    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras] = d;
     document.getElementById('status-time').value = rHold
 
     clearText();
 
+    // alert(`tr=${tr}`)
     console.log(`runRoutine time remaining=${tr}`)
 
+    // document.getElementById('text-input').value;
+    // data.forEach((row, index) => {
+    //   console.log(`>>>>>>>>>. Processing Row number ${index}: ${row}`);
+    // });
+
     data.forEach(d => {
-        console.log(`data: ${d}`); // Outputs: "remainder of the string
+      console.log(`data: ${d}`); // Outputs: "remainder of the string
     });
 
     setTimeout(test1_1sec,1000)
@@ -343,32 +366,33 @@
 
   function test1_1sec(){
     let tr = document.getElementById('status-time').value;
+    console.log(`tr=${tr}`)
 
     let Exercise = document.getElementById('status-exercise').value;
     let Set = document.getElementById('status-set').value;
     let Rep = document.getElementById('status-rep').value;
 
+
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
-    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
+    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras] = d;
 
     highlightSpecificRow(Number(Exercise)-1);
+
+
 
     setImage(rPic)
     document.getElementById('exercise-description').value = rDescription;
 
-    t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
+    t1=`test1_1sec:   rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     console.log(t1)
 
     if (tr == rHold) {
-      console.log(`rCountdownAt=${rCountdownAt}`)
       t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
       speakText(t2);
     }
 
     if (tr > 0) {
-      // if(tr % INIT_MOD === 0) {
-      console.log(`tr="${tr}"     rCountdownAt="${rCountdownAt}"`);
-      if (rCountdownAt.includes(tr)) {
+      if(tr % INIT_MOD === 0) {
         t = `${tr} remaining.`;
         speakText(t);
       };
@@ -679,15 +703,15 @@
 
   }
 
-    document.getElementById('volume').addEventListener('input', function (event) {
+  document.getElementById('volume').addEventListener('input', function (event) {
     document.getElementById('volume-output').value = event.target.value;
   });
 
-    document.getElementById('rate').addEventListener('input', function (event) {
+  document.getElementById('rate').addEventListener('input', function (event) {
     document.getElementById('rate-output').value = event.target.value;
   });
 
-    document.getElementById('pitch').addEventListener('input', function (event) {
+  document.getElementById('pitch').addEventListener('input', function (event) {
     document.getElementById('pitch-output').value = event.target.value;
   });
 
