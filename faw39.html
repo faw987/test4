@@ -135,35 +135,12 @@
   </tbody>
 </table>
 
-
-<!--1,exercise one,1,2,10,2,supine_chin-tuck.png,-->
-<!--2,exercise two,1,1,10,2,,-->
-<!--3,three,1,2,10,2,supine_chin-tuck.png,-->
-
-<!--1,exercise one,1,2,5,2,supine_chin-tuck.png,-->
-<!--2,exercise two,2,2,3,2,,-->
-<!--3,three,1,4,30,2,,-->
-
-<!--1,supine Chin tucks,1,1,2,2,,-->
-
-<!--1,supine Chin tucks,2,3,4,2,,-->
-<!--2,seated Chin tucks,2,3,4,2,,-->
-
-<!--3,Vertical Rotation Stretch,1,4,30,2,,-->
-
-<!--1,supine Chin tucks,2,10,10,2,,-->
-<!--2,seated Chin tucks,2,10,10,2,,-->
-<!--3,Vertical Rotation Stretch,1,4,30,2,,-->
-
 <textarea id="text-input" placeholder="Speak or type something...">
 </textarea>
 
-<button onclick="clearText()">Clear</button>
-<button onclick="listenText()">Listen</button>
-<button onclick="speakTextField()">Say</button>
-<!--<button onclick="loadData()">Load</button>-->
-<button onclick="runRoutine()">Run</button>
-<button onclick="processData()">TBD</button>
+
+<button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
+
 <button id="demoButton" onclick="runDemo()">Demo</button>
 
 <h2>Data Summary</h2>
@@ -290,11 +267,15 @@
   }
 
   function displaySummary(relevantRows) {
-    let summaryElement = document.getElementById('summary');
+    // let summaryElement = document.getElementById('summary');
+    // relevantRows.forEach(row => {
+    //   let div = document.createElement('div');
+    //   div.innerText = row;
+    //   summaryElement.appendChild(div);
+    // });
+    // let summaryElement = document.getElementById('summary');
     relevantRows.forEach(row => {
-      let div = document.createElement('div');
-      div.innerText = row;
-      summaryElement.appendChild(div);
+      console.log(`summary row: ${row}`)
     });
   }
 
@@ -323,7 +304,7 @@
   function runRoutine(){
     let tr = document.getElementById('status-time').value;
 
-// hack ??? RepPause	SetPause	CountdownAt
+// hack ???
 
     let Exercise = document.getElementById('status-exercise').value;
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
@@ -357,7 +338,7 @@
     document.getElementById('exercise-description').value = rDescription;
 
     t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
-    console.log(t1)
+    // console.log(t1)
 
     if (tr == rHold) {
       console.log(`rCountdownAt=${rCountdownAt}`)
@@ -367,8 +348,12 @@
 
     if (tr > 0) {
       // if(tr % INIT_MOD === 0) {
-      console.log(`tr="${tr}"     rCountdownAt="${rCountdownAt}"`);
-      if (rCountdownAt.includes('/'+tr)) {
+      slashesAdded='/'+rCountdownAt+'/';
+
+
+      console.log(`tr="${tr}"     slashesAdded="${slashesAdded}"`);
+
+      if (slashesAdded.includes('/'+tr+'/')) {
         t = `${tr} remaining.`;
         speakText(t);
       };
@@ -376,12 +361,14 @@
       document.getElementById('status-time').value = tr;
       setTimeout(test1_1sec,1000);
     } else {
-      t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
+      // t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
+      t = `Set ${Set} Rep ${Rep} complete.`;
       console.log(t);
       // speakText(t);
       appendText('text-input',t);
 
-      speakText(`${t}, next`);
+      // speakText(`${t}, next`);
+      speakText(`${t}`);
 
       if (Rep < rReps) {
         document.getElementById('status-rep').value = Number(Rep)+1;
@@ -421,43 +408,6 @@
     textarea.value = currentText + "\n" + newText;
   }
 
-
-  function doNothing() {
-    console.log('Nothing was done!');
-  }
-
-
-
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-
-  async function blockForSeconds(seconds, Exercise, set, rep, Hold) {
-    let counter = 0;
-    const startTime = new Date().getTime();
-    let currentTime = startTime;
-
-    console.log("block seconds: " + seconds);
-
-    while (currentTime < startTime + (seconds * 1000)) {
-
-      // await delay(1000); // 1 second delay
-
-      // setTimeout(doNothing, 100);
-      updateStatus(Exercise, set, rep, Hold);
-      // setTimeout(doNothing, 100);
-
-      // await delay(1000); // 1 second delay
-      delay(1000); // 1 second delay
-
-      currentTime = new Date().getTime();
-      counter += 1;
-    }
-
-    console.log("Loops executed: " + counter);
-
-  }
 
   function speakCancel() {
     if ('speechSynthesis' in window) {
@@ -566,101 +516,6 @@
     } else {
       alert("Sorry, your browser does not support Speech Recognition!");
     }
-  }
-
-  // function loadData() {
-  //   //
-  //   // console.log('Start');
-  //   //
-  //   // setTimeout(() => {
-  //   //   console.log('After Timeout');
-  //   // }, 3000);
-  //   //
-  //   // console.log('End');
-  //
-  //   const textareaValue = document.getElementById('text-input').value;
-  //   const rows = textareaValue.split('\n');
-  //   numberExercises = rows.length;
-  //   data = rows.map(row => row.split(','));
-  //   // alert("Data loaded successfully!");
-  // }
-
-
-  // function delay(milliseconds) {
-  //   return new Promise(resolve => setTimeout(resolve, milliseconds));
-  // }
-
-  async function runExercise(row) {
-    const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
-
-    for (let set = 1; set <= Sets; set++) {
-      console.log(`set ${set}`);
-      for (let rep = 1; rep <= Reps; rep++) {
-        // console.log(`set ${set}, rep ${rep}  hold for ${Hold}`);
-        updateStatus(Exercise, set, rep, Hold);
-        speakCancel();
-        speakText(`set ${set}, repetition ${rep}, ${Hold} seconds`);
-        blockForSeconds(Hold, Exercise, set, rep, Hold);
-      }
-    }
-  }
-
-  function processOneRow(row) {
-    const [Exercise, Description, Sets, Reps, Hold, Freq, Pic, Extras] = row;
-
-    console.log("Processing a single row:");
-    console.log("Exercise:", Exercise);
-    console.log("Description:", Description);
-    console.log("Sets:", Sets);
-    console.log("Reps:", Reps);
-    console.log("Hold:", Hold);
-    console.log("Freq:", Freq);
-    console.log("Pic:", Pic);
-    console.log("Extras:", Extras);
-
-    speakCancel();
-    t = `Exercise: ${Exercise}   ${Description}  ${Sets} sets of ${Reps} reps each`;
-    console.log("t:", t);
-
-    speakText(t);
-    blockForSeconds(5, 1, 2, 3, 4);
-
-    runExercise(row);
-
-    // 10-second delay
-    // setTimeout(function() {
-    //   console.log("This message appears after 10 seconds");
-    // }, 10000); // 10000 milliseconds = 10 seconds
-
-
-  }
-
-  function processData() {
-    if(data.length === 0) {
-      alert("No data to process!");
-      return;
-    }
-
-    const startTimeRoutine = new Date();
-
-    console.log("Processing Data:");
-    data.forEach((row, index) => {
-      console.log(`Processing Row ${index + 1}:`);
-      processOneRow(row);
-    });
-
-    const endTimeRoutine = new Date();
-    secondsRoutine = (endTimeRoutine - startTimeRoutine)/1000
-
-    console.log(`Complete: ${startTimeRoutine.toString()}   ${endTimeRoutine.toString()}   ${secondsRoutine} seconds.`);
-
-    t = `great job!`;
-
-    speakText(t);
-    t = `You finished the routine in ${secondsRoutine} seconds.`;
-
-    speakText(t);
-
   }
 
   function runDemo() {
