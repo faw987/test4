@@ -146,10 +146,10 @@
   let rows = [];        // of routines
   let numberExercises = 0;
 
-  INIT_HOLD = 10
+  // INIT_HOLD = 10
   INIT_MOD = 5
 
-  document.getElementById('status-time').value = INIT_HOLD;
+  // document.getElementById('status-time').value = INIT_HOLD;
   document.getElementById('status-exercise').value = 1;
   document.getElementById('status-set').value = 1;
   document.getElementById('status-rep').value = 1;
@@ -267,8 +267,18 @@
 
   function runRoutine(){
     let tr = document.getElementById('status-time').value;
+
+// hack ???
+
+    let Exercise = document.getElementById('status-exercise').value;
+    let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
+    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras] = d;
+    document.getElementById('status-time').value = rHold
+
+    clearText();
+
     // alert(`tr=${tr}`)
-    console.log(`tr=${tr}`)
+    console.log(`runRoutine time remaining=${tr}`)
 
     // document.getElementById('text-input').value;
     // data.forEach((row, index) => {
@@ -276,9 +286,8 @@
     // });
 
     data.forEach(d => {
-        console.log(d); // Outputs: "remainder of the string
+        console.log(`data: ${d}`); // Outputs: "remainder of the string
     });
-
 
     setTimeout(test1_1sec,1000)
   }
@@ -298,7 +307,13 @@
     setImage(rPic)
     document.getElementById('exercise-description').value = rDescription;
 
-    console.log(`d=rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`)
+    t1=`test1_1sec:   rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
+    console.log(t1)
+
+    if (tr == rHold) {
+      t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
+      speakText(t2);
+    }
 
     if (tr > 0) {
       if(tr % INIT_MOD === 0) {
@@ -309,11 +324,13 @@
       document.getElementById('status-time').value = tr;
       setTimeout(test1_1sec,1000);
     } else {
-      t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
+      t = `${Exercise} Set ${Set} Rep ${Rep} complete.`;
       console.log(t);
       // speakText(t);
       appendText('text-input',t);
-      speakText("next");
+
+      speakText(`${t}, next`);
+
       if (Rep < rReps) {
         document.getElementById('status-rep').value = Number(Rep)+1;
         document.getElementById('status-time').value = rHold;
