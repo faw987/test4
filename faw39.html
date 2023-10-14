@@ -21,6 +21,8 @@
     }
 
     textarea {
+      font-family: Courier, monospace;
+      font-size: 10pt;
       width: 600px;
       height: 340px;
       margin-bottom: 20px;
@@ -55,7 +57,8 @@
 <h1>My Workout/PT/Exercise Coach</h1>
 
 
-<h3>(test: https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnwiTGyd8ZGiPq97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?gid=0&single=true&output=csv)</h3>
+<button onclick="loadDefaultData()">Load Default</button>
+<br/>
 <form id="urlForm">
   <label for="sheetUrl">Google Sheet URL:</label>
   <input type="url" id="sheetUrl" name="sheetUrl" required>
@@ -130,24 +133,26 @@
 </table>
 
 
-<textarea id="text-input" placeholder="Speak or type something...">1,exercise one,1,2,10,2,supine_chin-tuck.png,
-2,exercise two,1,1,10,2,,
-3,three,1,2,10,2,supine_chin-tuck.png,
+<!--1,exercise one,1,2,10,2,supine_chin-tuck.png,-->
+<!--2,exercise two,1,1,10,2,,-->
+<!--3,three,1,2,10,2,supine_chin-tuck.png,-->
 
-  1,exercise one,1,2,5,2,supine_chin-tuck.png,
-  2,exercise two,2,2,3,2,,
-  3,three,1,4,30,2,,
+<!--1,exercise one,1,2,5,2,supine_chin-tuck.png,-->
+<!--2,exercise two,2,2,3,2,,-->
+<!--3,three,1,4,30,2,,-->
 
-  1,supine Chin tucks,1,1,2,2,,
+<!--1,supine Chin tucks,1,1,2,2,,-->
 
-  1,supine Chin tucks,2,3,4,2,,
-  2,seated Chin tucks,2,3,4,2,,
+<!--1,supine Chin tucks,2,3,4,2,,-->
+<!--2,seated Chin tucks,2,3,4,2,,-->
 
-  3,Vertical Rotation Stretch,1,4,30,2,,
+<!--3,Vertical Rotation Stretch,1,4,30,2,,-->
 
-  1,supine Chin tucks,2,10,10,2,,
-  2,seated Chin tucks,2,10,10,2,,
-  3,Vertical Rotation Stretch,1,4,30,2,,
+<!--1,supine Chin tucks,2,10,10,2,,-->
+<!--2,seated Chin tucks,2,10,10,2,,-->
+<!--3,Vertical Rotation Stretch,1,4,30,2,,-->
+
+<textarea id="text-input" placeholder="Speak or type something...">
 </textarea>
 
 <button onclick="clearText()">Clear</button>
@@ -179,6 +184,13 @@
     let sheetUrl = document.getElementById('sheetUrl').value;
     loadSheetData(sheetUrl);
   });
+
+
+  function loadDefaultData(){
+    sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnwiTGyd8ZGiPq' +
+            '97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?gid=0&single=true&output=csv'
+    loadSheetData(sheetUrl);
+  }
 
   function highlightSpecificRow(r) {
     let tableBody = document.querySelector("#exerciseTable tbody");
