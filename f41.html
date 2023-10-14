@@ -9,7 +9,9 @@
 
 <input type="file" id="fileInput">
 <button onclick="loadCSV()">Load</button>
-<button onclick="updateLocation()">Update</button>
+
+<button onclick="updateLocation()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Update</button>
+
 
 <table id="resultsTable" border="1">
     <thead>
@@ -90,37 +92,39 @@
         }
     }
 
+
     function updateLocation() {
         navigator.geolocation.getCurrentPosition(position => {
             const currentLat = position.coords.latitude;
             const currentLon = position.coords.longitude;
 
-            // places.forEach(place => {
-            //     console.log(`${place.lat},${place.lon},${place.address}`);
-            // });
-
             places.forEach(place => {
-                place.distance = getDistanceFromLatLonInKm(currentLat, currentLon, parseFloat(place.lat), parseFloat(place.lon));
+                const distanceKm = getDistanceFromLatLonInKm(currentLat, currentLon, parseFloat(place.lat), parseFloat(place.lon));
+                place.distanceKm = distanceKm;
+                place.distanceMiles = distanceKm * 0.621371; // Convert km to miles
             });
 
             // Sort by distance
-            places.sort((a, b) => a.distance - b.distance);
+            places.sort((a, b) => a.distanceKm - b.distanceKm);
 
             // Populate table
             const tbody = document.getElementById("resultsTable").querySelector("tbody");
             tbody.innerHTML = ''; // Clear previous results
-            places.forEach(place => {
+
+            // Display only the first 10 rows
+            for (let i = 0; i < Math.min(10, places.length); i++) {
+                const place = places[i];
                 const row = tbody.insertRow();
                 row.insertCell().textContent = place.lat;
                 row.insertCell().textContent = place.lon;
-                row.insertCell().textContent = place.distance.toFixed(2);
+                row.insertCell().textContent = place.distanceKm.toFixed(2) + " km / " + place.distanceMiles.toFixed(2) + " miles";
                 const addressCell = row.insertCell();
                 addressCell.textContent = place.address;
                 addressCell.style.cursor = "pointer";
                 addressCell.onclick = () => {
                     navigator.clipboard.writeText(place.address);
                 };
-            });
+            }
         });
     }
 </script>
