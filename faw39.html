@@ -139,19 +139,64 @@
   <br>
 </div>
 <br/>
-<div class="status">
-  <label>Exercise:</label>
-  <input type="text" id="status-exercise" >
-  <label>Description:</label>
-  <input type="text" id="exercise-description">
-  <br>
-  <label>Set:</label>
-  <input type="text" id="status-set" >
-  <label>Rep:</label>
-  <input type="text" id="status-rep" >
+<div class="field">
+  <label for="input1" class="field-label">Label 1:</label>
+  <input id="input1" class="field-input" type="text" value="Value 1">
+</div>
+<div class="field">
+  <label for="input2" class="field-label">Label 2:</label>
+  <input id="input2" class="field-input" type="text" value="Value 2">
+</div>
+
+
+<div class="status" id="status_id">
+<!--  <label>Exercise:</label>-->
+<!--  <input type="text" id="status-exercise" >-->
+<!--  <br>-->
+<!--  <label>Description:</label>-->
+<!--  <input type="text" id="exercise-description">-->
+<!--  <br>-->
+<!--  <label>Set:      </label>-->
+<!--  <input type="text" id="status-set" >-->
+<!--  <br>-->
+<!--  <label>Rep:       </label>-->
+<!--  <input type="text" id="status-rep" >-->
+<!--  <br>-->
+<!--  <label>Time Left: </label>-->
+<!--  <input type="text" id="status-time" readonly>-->
+
+  <table id="dataTable2" border="1">
+    <thead>
+    <tr>
+      <th>Click to select your routine.</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><label>Exercise:</label></td>
+      <td><input type="text" id="status-exercise" ></td>
+    </tr>
+    <tr>
+      <td><label>Description:</label></td>
+      <td><input type="text" id="exercise-description"></td>
+    </tr>
+    <tr>
+      <td><label>Set:      </label></td>
+      <td><input type="text" id="status-set" ></td>
+    </tr>
+    <tr>
+      <td><label>Rep:       </label>
+      <td><input type="text" id="status-rep" ></td>
+    </tr>
+    <tr>
+      <td><label>Time Left: </label>
+      <td><input type="text" id="status-time" readonly></td>
+    </tr>
+    <!-- Rows will be populated by JavaScript -->
+    </tbody>
+  </table>
   <br/>
-  <label>Time Left:</label>
-  <input type="text" id="status-time" readonly>
+
 </div>
 <label for="text-input">Routine</label>
 
