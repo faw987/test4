@@ -5,93 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Workout/PT/Exercise Coach</title>
-<!--  <style>-->
-<!--    body {-->
-<!--      display: flex;-->
-<!--      flex-direction: column;-->
-<!--      align-items: center;-->
-<!--      justify-content: center;-->
-<!--      height: 100vh;-->
-<!--      margin: 0;-->
-<!--    }-->
 
-<!--    h1 {-->
-<!--      font-size: 24px;-->
-<!--      margin-bottom: 20px;-->
-<!--    }-->
-
-<!--    textarea {-->
-<!--      font-family: Courier, monospace;-->
-<!--      font-size: 10pt;-->
-<!--      width: 600px;-->
-<!--      height: 340px;-->
-<!--      margin-bottom: 20px;-->
-<!--    }-->
-
-<!--    label {-->
-<!--      margin-right: 10px;-->
-<!--    }-->
-
-<!--    .controls, .status {-->
-<!--      /*display: flex;*/-->
-<!--      gap: 10px;-->
-<!--      margin-bottom: 10px;-->
-<!--    }-->
-
-
-<!--    /*.status {*/-->
-<!--    /*  font-size: 24px;*/-->
-<!--    /*  font-family: Helvetica, Areprial, sans-serif;*/-->
-<!--    /*}*/-->
-
-<!--    .status {-->
-<!--      font-family: 'Arial', sans-serif;  /* Font family */-->
-<!--      font-size: 24px;                   /* Font size */-->
-<!--      font-weight: bold;                 /* Font weight */-->
-<!--      font-style: italic;                /* Font style */-->
-<!--      color: #333;                       /* Font color */-->
-<!--      line-height: 1.5;                  /* Line height (spacing between lines) */-->
-<!--      text-align: left;                  /* Text alignment */-->
-<!--      /*width: 30px;*/-->
-<!--      /* Add any other font or styling properties you want */-->
-<!--    }-->
-
-<!--    .status input{-->
-<!--      font-family: 'Arial', sans-serif;  /* Font family */-->
-<!--      font-size: 24px;                   /* Font size */-->
-<!--      font-weight: bold;                 /* Font weight */-->
-<!--      font-style: italic;                /* Font style */-->
-<!--      color: #333;                       /* Font color */-->
-<!--      line-height: 1.5;                  /* Line height (spacing between lines) */-->
-<!--      text-align: left;                  /* Text alignment */-->
-<!--      width: 30px;-->
-<!--      /* Add any other font or styling properties you want */-->
-<!--    }-->
-
-<!--    input#exercise-description{-->
-<!--      width:250px;-->
-<!--    }-->
-
-<!--    /**/-->
-<!--    #demoButton {-->
-<!--      font-size: 20px;-->
-<!--      padding: 10px 20px;-->
-<!--      background-color: lightgreen;-->
-<!--      border: none;-->
-<!--      cursor: pointer;-->
-<!--    }-->
-
-<!--    .customImage {-->
-<!--      width: 300px;-->
-<!--      height: 150px;-->
-
-
-<!--    input {-->
-<!--      font-family: Helvetica, Arial, sans-serif;-->
-<!--      font-size: 30px;-->
-<!--    }-->
-
-<!--  </style>-->
   <link rel="stylesheet" href="styles5.css">
 
 </head>
@@ -100,36 +14,39 @@
 <h1>My Workout/PT/Exercise Coach</h1>
 
 
-<button onclick="loadDefaultData()">Load Default</button>
-<br/>
-<form id="urlForm">
-  <label for="sheetUrl">Google Sheet URL:</label>
-  <input type="url" id="sheetUrl" name="sheetUrl" required>
-  <button type="submit">Load Data</button>
-</form>
-<br/>
-<table id="dataTable" border="1">
-  <thead>
-  <tr>
-    <th>Click to select your routine.</th>
-  </tr>
-  </thead>
-  <tbody>
-  <!-- Rows will be populated by JavaScript -->
-  </tbody>
-</table>
-<br/>
-<div class="controls">
+<div class="flex-container">
+  <!-- Panel 1: Table -->
+  <div class="flex-item">
+    <button onclick="loadDefaultData()">Load Default</button>
+    <br/>
+    <form id="urlForm">
+      <label for="sheetUrl">Google Sheet URL:</label>
+      <input type="url" id="sheetUrl" name="sheetUrl" required>
+      <button type="submit">Load Data</button>
+    </form>
+    <br/>
+    <table id="dataTable" border="1">
+      <thead>
+      <tr>
+        <th>Click to select your routine.</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Rows will be populated by JavaScript -->
+      </tbody>
+    </table>
+    <br/>
+  </div>
+
+  <div class="flex-item">
   <label for="volume">Volume: </label>
   <input type="range" id="volume" min="0" max="1" step="0.10" value="0.5">
   <output id="volume-output" for="volume">0.5</output>
   <br>
-
   <label for="rate">Rate: </label>
   <input type="range" id="rate" min="0.1" max="10" step="0.1" value="1">
   <output id="rate-output" for="rate">1</output>
   <br>
-
   <label for="pitch">Pitch: </label>
   <input type="range" id="pitch" min="0" max="2" step="0.01" value="1">
   <output id="pitch-output" for="pitch">1</output>
@@ -137,71 +54,72 @@
   <label for="voice">Voice: </label>
   <select id="voice" name="voice"></select>
   <br>
-</div>
-<br/>
-<div class="field">
-  <label for="input1" class="field-label">Label 1:</label>
-  <input id="input1" class="field-input" type="text" value="Value 1">
-</div>
-<div class="field">
-  <label for="input2" class="field-label">Label 2:</label>
-  <input id="input2" class="field-input" type="text" value="Value 2">
-</div>
-
-
-<div class="status" id="status_id">
-<!--  <label>Exercise:</label>-->
-<!--  <input type="text" id="status-exercise" >-->
-<!--  <br>-->
-<!--  <label>Description:</label>-->
-<!--  <input type="text" id="exercise-description">-->
-<!--  <br>-->
-<!--  <label>Set:      </label>-->
-<!--  <input type="text" id="status-set" >-->
-<!--  <br>-->
-<!--  <label>Rep:       </label>-->
-<!--  <input type="text" id="status-rep" >-->
-<!--  <br>-->
-<!--  <label>Time Left: </label>-->
-<!--  <input type="text" id="status-time" readonly>-->
-
-  <table id="dataTable2" border="1">
-    <thead>
-    <tr>
-      <th>Click to select your routine.</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <td><label>Exercise:</label></td>
-      <td><input type="text" id="status-exercise" ></td>
-    </tr>
-    <tr>
-      <td><label>Description:</label></td>
-      <td><input type="text" id="exercise-description"></td>
-    </tr>
-    <tr>
-      <td><label>Set:      </label></td>
-      <td><input type="text" id="status-set" ></td>
-    </tr>
-    <tr>
-      <td><label>Rep:       </label>
-      <td><input type="text" id="status-rep" ></td>
-    </tr>
-    <tr>
-      <td><label>Time Left: </label>
-      <td><input type="text" id="status-time" readonly></td>
-    </tr>
-    <!-- Rows will be populated by JavaScript -->
-    </tbody>
-  </table>
   <br/>
-
 </div>
-<label for="text-input">Routine</label>
+
+  <div class="flex-item">
+
+
+    <button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
+
+    <button id="demoButton" onclick="runDemo()">Demo</button>
+
+  </div>
+
+  </div>
+
+<div class="flex-container">
+  <!-- Panel 1: Table -->
+
+
+  <div class="flex-item">
+    <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
+  </div>
+
+  <!-- Panel 2: Inputs -->
+<!--  <div class="flex-item">-->
+  <div class="flex-item" id="status_id">
+      <table id="dataTable2" border="1">
+        <thead>
+        <tr>
+          <th>Routine progress dashboard.</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><label>Exercise:</label></td>
+          <td><input type="text" id="status-exercise" ></td>
+        </tr>
+        <tr>
+          <td><label>Description:</label></td>
+          <td><input type="text" id="exercise-description"></td>
+        </tr>
+        <tr>
+          <td><label>Set:      </label></td>
+          <td><input type="text" id="status-set" ></td>
+        </tr>
+        <tr>
+          <td><label>Rep:       </label>
+          <td><input type="text" id="status-rep" ></td>
+        </tr>
+        <tr>
+          <td><label>Time Left: </label>
+          <td><input type="text" id="status-time" readonly></td>
+        </tr>
+        <!-- Rows will be populated by JavaScript -->
+        </tbody>
+      </table>
+      <br/>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!--<label for="text-input">Routine</label>-->
 
 <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
-<img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
 
 
 <table border="1" id="exerciseTable">
@@ -227,14 +145,6 @@
 
 <textarea id="text-input" placeholder="Speak or type something...">
 </textarea>
-
-
-<button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
-
-<button id="demoButton" onclick="runDemo()">Demo</button>
-
-<h2>Data Summary</h2>
-<div id="summary"></div>
 
 <script>
   let data = [];

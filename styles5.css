@@ -82,6 +82,21 @@ th {
     text-align: left;
 }
 
+.flex-container {
+    display: flex;
+    justify-content: space-between; /* Adjusts space between panels */
+}
+.flex-item {
+    flex: 1; /* Each panel takes up an equal amount of space */
+    padding: 10px;
+    border: 1px solid #ddd; /* Adding a border for visual separation */
+    box-sizing: border-box; /* Ensures padding and border are included in width */
+    margin-right: 10px; /* Spacing between panels */
+}
+.flex-item:last-child {
+    margin-right: 0;  /* Removes margin from the last panel */
+}
+
 
 @media only screen and (max-width: 600px) {
     table {
