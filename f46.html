@@ -22,8 +22,9 @@
     const data = { bearing, speed };
 
     try {
-      await fetch('http://localhost:8001', {
-        method: 'POST',
+      // await fetch('http://localhost:8001', {
+      await fetch('http://10.0.1.12:8001', {
+      method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },

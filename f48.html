@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bearing and Accelerometer</title>
+  <title>Bearing and Accelerometer 9:04</title>
 </head>
 <body>
 <h1>Monitoring Device Orientation and Motion</h1>
@@ -67,6 +67,10 @@
       });
     } catch (error) {
       console.error('Error sending data:', error);
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+
     }
   }
 </script>
