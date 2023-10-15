@@ -8,7 +8,7 @@ body {
 }
 
 a {
-            font-size: 12pt;
+            font-size: 16pt;
             font-family: Arial, sans-serif;
             color: black;
         }
@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h3>Saturday 14 - 10/15/2023 5:55 AM </h3>
+<h3>Saturday 14 - 10/15/2023 5:59 AM </h3>
 <br/>
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
