@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page 2</title>
+</head>
+<body>
+<h1>Retrieve Bearing and Speed from Server</h1>
+<button onclick="retrieveData()">Retrieve</button>
+
+<script>
+  async function retrieveData() {
+    try {
+      const response = await fetch('http://localhost:8002', {
+        method: 'POST'
+      });
+      const data = await response.json();
+      alert('Received data: ' + JSON.stringify(data));
+    } catch (err) {
+      alert('Error retrieving data: ' + err.message);
+    }
+  }
+</script>
+</body>
+</html>

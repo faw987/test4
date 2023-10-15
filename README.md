@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h3>Saturday 14 - 10/15/2023 5:59 AM </h3>
+<h3>Saturday 14 - 10/15/2023 9:01 AM </h3>
 <br/>
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
@@ -104,6 +104,19 @@ a {
 
 <a href="f45.html">shake experiment</a>
 <br><br>
+
+
+<a href="f46.html">send</a>
+<br><br>
+
+<a href="f47.html">retrieve</a>
+<br><br>
+
+
+<a href="f48.html">send bearing</a>
+<br><br>
+
+
 
 
 <a href="clemap1.png">cle</a>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bearing and Accelerometer</title>
+</head>
+<body>
+<h1>Monitoring Device Orientation and Motion</h1>
+<button onclick="requestPermission()">Enable Sensors</button>
+
+<script>
+  async function requestPermission() {
+    // Check for iOS devices
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      try {
+        const response = await DeviceOrientationEvent.requestPermission();
+        if (response == 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation, true);
+        } else {
+          alert('Permission not granted');
+        }
+      } catch (error) {
+        alert('Error requesting permission: ' + error);
+      }
+    } else {
+      // For non-iOS devices
+      window.addEventListener('deviceorientation', handleOrientation, true);
+    }
+
+    // Similar permissions check can be done for devicemotion if needed
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      try {
+        const response = await DeviceMotionEvent.requestPermission();
+        if (response == 'granted') {
+          window.addEventListener('devicemotion', handleMotion, true);
+        } else {
+          alert('Permission not granted');
+        }
+      } catch (error) {
+        alert('Error requesting permission: ' + error);
+      }
+    } else {
+      window.addEventListener('devicemotion', handleMotion, true);
+    }
+  }
+
+  function handleOrientation(event) {
+    const bearing = event.alpha;
+    sendDataToServer({ bearing });
+  }
+
+  function handleMotion(event) {
+    const { x, y, z } = event.accelerationIncludingGravity;
+    sendDataToServer({ x, y, z });
+  }
+
+  async function sendDataToServer(data) {
+    try {
+      await fetch('http://localhost:8001', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
+  }
+</script>
+</body>
+</html>
