@@ -70,6 +70,13 @@
 
   <div class="flex-item">
     <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
+
+<!--    <video id="myVideo" width="640" height="360" alt="Image" onerror="imgError(this);" class="customImage" controls>-->
+<!--      <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
+<!--      Your browser does not support the video tag.-->
+<!--    </video>-->
+
+
   </div>
 
   <!-- Panel 2: Inputs -->
@@ -160,6 +167,23 @@
     let sheetUrl = document.getElementById('sheetUrl').value;
     loadSheetData(sheetUrl);
   });
+
+
+
+  function changeVideoSource(newSrc) {
+    // Select the source and video elements
+    var videoSrc = document.getElementById('videoSrc');
+    var myVideo = document.getElementById('myVideo');
+
+    // Change the source of the video
+    videoSrc.src = newSrc;
+
+    // Load and play the new source
+    myVideo.load();
+    myVideo.play();
+  }
+
+
 
   function loadDefaultData(){
     sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnw' +
@@ -317,9 +341,12 @@
   function setImage(image) {
     // Get the image element by its id
     let imageElement = document.getElementById('myImage');
-
-    // Change the source of the image
+    //
+    // // Change the source of the image
     imageElement.src = image;
+
+
+    // changeVideoSource(image);
   }
 
   function getExerciseDetails(table,index){
