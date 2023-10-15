@@ -1,3 +1,4 @@
+<!-- page1.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,33 +7,28 @@
   <title>Page 1</title>
 </head>
 <body>
-<h1>Send Bearing and Speed to Server</h1>
+<h1>Send Bearing and Speed</h1>
 <label for="bearing">Bearing:</label>
-<input type="number" id="bearing">
-<br>
+<input type="number" id="bearing" name="bearing">
 <label for="speed">Speed:</label>
-<input type="number" id="speed">
-<br>
+<input type="number" id="speed" name="speed">
 <button onclick="sendData()">Send</button>
-
 <script>
   async function sendData() {
     const bearing = document.getElementById('bearing').value;
     const speed = document.getElementById('speed').value;
-    const data = { bearing, speed };
-
     try {
-      // await fetch('http://localhost:8001', {
-      await fetch('http://10.0.1.12:8001', {
-      method: 'POST',
+      const response = await fetch('https://10.0.1.12:8001/update', {
+        // const response = await fetch('https://localhost:8001/update', {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({ bearing: parseFloat(bearing), speed: parseFloat(speed) }),
       });
-      alert('Data sent successfully!');
-    } catch (err) {
-      alert('Error sending data: ' + err.message);
+      alert(await response.text());
+    } catch (error) {
+      alert('Failed to send data: ' + error.message);
     }
   }
 </script>

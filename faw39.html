@@ -5,93 +5,95 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Workout/PT/Exercise Coach</title>
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
+<!--  <style>-->
+<!--    body {-->
+<!--      display: flex;-->
+<!--      flex-direction: column;-->
+<!--      align-items: center;-->
+<!--      justify-content: center;-->
+<!--      height: 100vh;-->
+<!--      margin: 0;-->
+<!--    }-->
 
-    h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
+<!--    h1 {-->
+<!--      font-size: 24px;-->
+<!--      margin-bottom: 20px;-->
+<!--    }-->
 
-    textarea {
-      font-family: Courier, monospace;
-      font-size: 10pt;
-      width: 600px;
-      height: 340px;
-      margin-bottom: 20px;
-    }
+<!--    textarea {-->
+<!--      font-family: Courier, monospace;-->
+<!--      font-size: 10pt;-->
+<!--      width: 600px;-->
+<!--      height: 340px;-->
+<!--      margin-bottom: 20px;-->
+<!--    }-->
 
-    label {
-      margin-right: 10px;
-    }
+<!--    label {-->
+<!--      margin-right: 10px;-->
+<!--    }-->
 
-    .controls, .status {
-      /*display: flex;*/
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-
-    /*.status {*/
-    /*  font-size: 24px;*/
-    /*  font-family: Helvetica, Areprial, sans-serif;*/
-    /*}*/
-
-    .status {
-      font-family: 'Arial', sans-serif;  /* Font family */
-      font-size: 24px;                   /* Font size */
-      font-weight: bold;                 /* Font weight */
-      font-style: italic;                /* Font style */
-      color: #333;                       /* Font color */
-      line-height: 1.5;                  /* Line height (spacing between lines) */
-      text-align: left;                  /* Text alignment */
-      /*width: 30px;*/
-      /* Add any other font or styling properties you want */
-    }
-
-    .status input{
-      font-family: 'Arial', sans-serif;  /* Font family */
-      font-size: 24px;                   /* Font size */
-      font-weight: bold;                 /* Font weight */
-      font-style: italic;                /* Font style */
-      color: #333;                       /* Font color */
-      line-height: 1.5;                  /* Line height (spacing between lines) */
-      text-align: left;                  /* Text alignment */
-      width: 30px;
-      /* Add any other font or styling properties you want */
-    }
-
-    input#exercise-description{
-      width:250px;
-    }
-
-    /**/
-    #demoButton {
-      font-size: 20px;
-      padding: 10px 20px;
-      background-color: lightgreen;
-      border: none;
-      cursor: pointer;
-    }
-
-    .customImage {
-      width: 300px;
-      height: 150px;
+<!--    .controls, .status {-->
+<!--      /*display: flex;*/-->
+<!--      gap: 10px;-->
+<!--      margin-bottom: 10px;-->
+<!--    }-->
 
 
-    input {
-      font-family: Helvetica, Arial, sans-serif;
-      font-size: 30px;
-    }
+<!--    /*.status {*/-->
+<!--    /*  font-size: 24px;*/-->
+<!--    /*  font-family: Helvetica, Areprial, sans-serif;*/-->
+<!--    /*}*/-->
 
-  </style>
+<!--    .status {-->
+<!--      font-family: 'Arial', sans-serif;  /* Font family */-->
+<!--      font-size: 24px;                   /* Font size */-->
+<!--      font-weight: bold;                 /* Font weight */-->
+<!--      font-style: italic;                /* Font style */-->
+<!--      color: #333;                       /* Font color */-->
+<!--      line-height: 1.5;                  /* Line height (spacing between lines) */-->
+<!--      text-align: left;                  /* Text alignment */-->
+<!--      /*width: 30px;*/-->
+<!--      /* Add any other font or styling properties you want */-->
+<!--    }-->
+
+<!--    .status input{-->
+<!--      font-family: 'Arial', sans-serif;  /* Font family */-->
+<!--      font-size: 24px;                   /* Font size */-->
+<!--      font-weight: bold;                 /* Font weight */-->
+<!--      font-style: italic;                /* Font style */-->
+<!--      color: #333;                       /* Font color */-->
+<!--      line-height: 1.5;                  /* Line height (spacing between lines) */-->
+<!--      text-align: left;                  /* Text alignment */-->
+<!--      width: 30px;-->
+<!--      /* Add any other font or styling properties you want */-->
+<!--    }-->
+
+<!--    input#exercise-description{-->
+<!--      width:250px;-->
+<!--    }-->
+
+<!--    /**/-->
+<!--    #demoButton {-->
+<!--      font-size: 20px;-->
+<!--      padding: 10px 20px;-->
+<!--      background-color: lightgreen;-->
+<!--      border: none;-->
+<!--      cursor: pointer;-->
+<!--    }-->
+
+<!--    .customImage {-->
+<!--      width: 300px;-->
+<!--      height: 150px;-->
+
+
+<!--    input {-->
+<!--      font-family: Helvetica, Arial, sans-serif;-->
+<!--      font-size: 30px;-->
+<!--    }-->
+
+<!--  </style>-->
+  <link rel="stylesheet" href="styles5.css">
+
 </head>
 
 <body>
@@ -252,12 +254,14 @@
         }, 2000); // Unhighlight after 2 seconds for demonstration
       };
     });
+
   }
 
   // Function to process the clicked row
   function processRoutineSelectRow(row, rows) {
-    let clickedData = row.cells[0].textContent;
-
+    // let clickedData = row.cells[0].textContent;
+    let clickedData = row.name;
+    console.log(`clickedData=${clickedData}`)
     data = [];
     rows.forEach(eachrow => {
       if (eachrow.startsWith(clickedData + ",")) {
@@ -290,16 +294,43 @@
 
       // Populate the table with the list of things- routine names for user selection
       const tableBody = document.querySelector("#dataTable tbody");
+      // routines.forEach(thing => {
+      //   let row = tableBody.insertRow();
+      //   let cell = row.insertCell();
+      //   cell.textContent = thing;
+      //
+      //   // Add click event to each row
+      //   row.addEventListener("click", function () {
+      //     processRoutineSelectRow(this,rows);
+      //   });
+      // });
+
+
+
+
+      // const radioContainer = document.getElementById('radioContainer');
+
       routines.forEach(thing => {
-        let row = tableBody.insertRow();
-        let cell = row.insertCell();
-        cell.textContent = thing;
+        const radioButton = document.createElement('input');
+        radioButton.type = 'radio';
+        radioButton.name = thing;
+        radioButton.value = thing.toLowerCase();
+        radioButton.id = thing.toLowerCase();
+
+        const label = document.createElement('label');
+        label.htmlFor = thing.toLowerCase();
+        label.innerText = thing;
+
+        tableBody.appendChild(radioButton);
+        tableBody.appendChild(label);
+
 
         // Add click event to each row
-        row.addEventListener("click", function () {
+        radioButton.addEventListener("click", function () {
           processRoutineSelectRow(this,rows);
         });
       });
+
     }
 
   function loadSheetData(sheetUrl) {
