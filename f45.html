@@ -1,23 +1,76 @@
-function shakeDetection(event) {
-const acceleration = event.accelerationIncludingGravity;
-if (lastX !== null && lastY !== null && lastZ !== null) {
-const deltaX = Math.abs(lastX - acceleration.x);
-const deltaY = Math.abs(lastY - acceleration.y);
-const deltaZ = Math.abs(lastZ - acceleration.z);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shake Detection</title>
+</head>
+<body>
 
-if ((deltaX > shakeThreshold && deltaY > shakeThreshold) ||
-(deltaX > shakeThreshold && deltaZ > shakeThreshold) ||
-(deltaY > shakeThreshold && deltaZ > shakeThreshold)) {
+<button onclick="requestMotionPermission()">Enable Shake Detection</button>
+<br>
+<label for="shakeThreshold">Shake Threshold: </label>
+<input type="range" id="shakeThreshold" min="1" max="50" value="15">
+<p id="thresholdDisplay">Current Threshold: 15</p>
 
-const currentTime = new Date();
-if (currentTime - lastTime > 1000) {
-alert(`Shake detected!\n\nDeltaX: ${deltaX.toFixed(2)}\nDeltaY: ${deltaY.toFixed(2)}\nDeltaZ: ${deltaZ.toFixed(2)}`);
-lastTime = currentTime;
-}
-}
-}
+<script>
+  let lastTime = new Date();
+  let lastX = null;
+  let lastY = null;
+  let lastZ = null;
+  let shakeThreshold = 15;
 
-lastX = acceleration.x;
-lastY = acceleration.y;
-lastZ = acceleration.z;
-}
+  function updateThresholdDisplay() {
+    document.getElementById('thresholdDisplay').innerText = "Current Threshold: " + shakeThreshold;
+  }
+
+  document.getElementById('shakeThreshold').addEventListener('input', function(event) {
+    shakeThreshold = event.target.value;
+    updateThresholdDisplay();
+  });
+
+  function shakeDetection(event) {
+    const acceleration = event.accelerationIncludingGravity;
+    if (lastX !== null && lastY !== null && lastZ !== null) {
+      const deltaX = Math.abs(lastX - acceleration.x);
+      const deltaY = Math.abs(lastY - acceleration.y);
+      const deltaZ = Math.abs(lastZ - acceleration.z);
+
+      if ((deltaX > shakeThreshold && deltaY > shakeThreshold) ||
+              (deltaX > shakeThreshold && deltaZ > shakeThreshold) ||
+              (deltaY > shakeThreshold && deltaZ > shakeThreshold)) {
+
+        const currentTime = new Date();
+        if (currentTime - lastTime > 1000) {
+          alert(`Shake detected!\n\nDeltaX: ${deltaX.toFixed(2)}\nDeltaY: ${deltaY.toFixed(2)}\nDeltaZ: ${deltaZ.toFixed(2)}`);
+          lastTime = currentTime;
+        }
+      }
+    }
+
+    lastX = acceleration.x;
+    lastY = acceleration.y;
+    lastZ = acceleration.z;
+  }
+
+
+  function requestMotionPermission() {
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission()
+              .then(permissionState => {
+                if (permissionState === 'granted') {
+                  window.addEventListener('devicemotion', shakeDetection, false);
+                } else {
+                  alert('Permission denied');
+                }
+              })
+              .catch(console.error);
+    } else {
+      // Non iOS 13+ devices
+      window.addEventListener('devicemotion', shakeDetection, false);
+    }
+  }
+</script>
+
+</body>
+</html>
