@@ -3,9 +3,9 @@
 <head>
 <title>general launch point</title> 
 <style>
-body {
-  background-image: url('images/sunset-on-river.jpg');
-}
+/*body {*/
+/*  background-image: url('images/sunset-on-river.jpg');*/
+/*}*/
 
 a {
             font-size: 16pt;
@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h3>Saturday 14 - 10/15/2023 14:51 PM </h3>
+<h3>Saturday 14 - 10/16/2023 13:54 PM </h3>
 <br/>
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
