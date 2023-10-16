@@ -17,8 +17,7 @@
 <div class="flex-container">
   <!-- Panel 1: Table -->
   <div class="flex-item">
-    <button onclick="loadDefaultData()">Load Default</button>
-    <br/>
+    <button onclick="loadDefaultData()">Load Demo</button>
     <form id="urlForm">
       <label for="sheetUrl">Google Sheet URL:</label>
       <input type="url" id="sheetUrl" name="sheetUrl" required>
@@ -27,8 +26,8 @@
     <br/>
     <table id="dataTable" border="1">
       <thead>
-      <tr>
-        <th>Click to select your routine.</th>
+      <tr style="height: 10px;">
+        <th style="height: 10px; font-family: Arial, sans-serif; font-size: 12px;">Click to select your routine.</th>
       </tr>
       </thead>
       <tbody>
@@ -36,13 +35,16 @@
       </tbody>
     </table>
     <br/>
+
   </div>
 
 
-  <div class="flex-item">
-    <button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
-    <button id="demoButton" onclick="runDemo()">Demo</button>
-  </div>
+<!--  <div class="flex-item">-->
+<!--    <button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>-->
+<!--    <button onclick="pauseRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>-->
+<!--    <button onclick="resumeRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>-->
+<!--    <button onclick="stopRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>-->
+<!--  </div>-->
 
   <div class="flex-item">
     <label for="volume">Volume: </label>
@@ -79,6 +81,15 @@
 
   </div>
 
+
+  <div class="flex-item">
+    <button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
+    <button onclick="pauseRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>
+    <button onclick="resumeRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>
+    <button onclick="stopRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>
+  </div>
+
+
   <!-- Panel 2: Inputs -->
 <!--  <div class="flex-item">-->
   <div class="flex-item" id="status_id">
@@ -91,6 +102,7 @@
         <tbody id="big1">
         <tr>
           <td><label>Exercise:</label></td>
+          <td><button onclick="nextExercise()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
           <td><input type="text" id="status-exercise" font-size="30px"></td>
         </tr>
         <tr>
@@ -191,6 +203,7 @@
             //
             // 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnwiTGyd8ZGiPq' +
             // '97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?gid=0&single=true&output=csv'
+    alert(sheetUrl)
     loadSheetData(sheetUrl);
   }
 
@@ -259,14 +272,15 @@
       const routines = new Set();
 
       rows.forEach(row => {
-        console.log(row);
+        console.log(`row: ${row}`);
         r = row.split(',')[0];
+        console.log(`r: ${r}      routines: ${routines}`);
         if (r !== "Routine") {
           routines.add(row.split(',')[0])
         }
       });
 
-      // console.log(routines);
+      console.log(`routines: ${routines}`);
 
       // Populate the table with the list of things- routine names for user selection
       const tableBody = document.querySelector("#dataTable tbody");
@@ -290,6 +304,7 @@
         radioButton.name = thing;
         radioButton.value = thing.toLowerCase();
         radioButton.id = thing.toLowerCase();
+        // radioButton.               !!!!!!!!!!!!!!!!!!!!
 
         // const label = document.createElement('label');
         // label.htmlFor = thing.toLowerCase();
@@ -357,6 +372,15 @@
 
 
   function runRoutine(){
+
+    // Select the div with class "flex-container"
+    var divElement = document.querySelector('.flex-container');
+
+// Set its display property to "none" to hide it
+    divElement.style.display = 'none';
+
+
+
     let tr = document.getElementById('status-time').value;
 
 // hack ???
