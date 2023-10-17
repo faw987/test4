@@ -17,7 +17,7 @@
 <div class="flex-container">
   <!-- Panel 1: Table -->
   <div class="flex-item">
-    <button onclick="loadDefaultData()">Load Demo</button>
+<!--    <button onclick="loadDefaultData()">Load Demo</button>-->
     <form id="urlForm">
       <label for="sheetUrl">Google Sheet URL:</label>
       <input type="url" id="sheetUrl" name="sheetUrl" required>
@@ -92,7 +92,7 @@
         <tbody id="big1">
         <tr>
           <td><label>Status:</label></td>
-          <td><input type="text" id="overallStatus"></td>
+          <td><input type="text" id="overallStatus" readonly></td>
         </tr>
         <tr>
           <td><label>Exercise:</label></td>
@@ -133,6 +133,7 @@
     <table border="1" id="exerciseTable">
       <thead>
       <tr>
+        <th style="width: 15px;">Select</th>
         <th>Exercise</th>
         <th>Description</th>
         <th>Sets</th>
@@ -254,6 +255,14 @@
       ex = Object.values(rowData).slice(0, 1);
       row.id = "ex-" + ex; // This will set IDs like row-0, row-1, etc.
       console.log(`row id: ${row.id}`)
+
+
+      // Add a checkbox at the beginning of each row
+      let checkboxCell = row.insertCell(0);
+      let checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkboxCell.appendChild(checkbox);
+
       // 0-6 is Exercise	Description	Sets	Reps	Hold	Frequency
       Object.values(rowData).slice(0, 6).forEach(cellData => {
         let cell = row.insertCell();
@@ -417,7 +426,7 @@
 
     let Exercise = document.getElementById('status-exercise').value;
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
-    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
+    const [rSelect, rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
     document.getElementById('status-time').value = rHold
 
     clearText();
@@ -458,6 +467,61 @@
       setTimeout(test1_1sec,1000);
       return;
     }
+
+    let tableBody = document.querySelector("#exerciseTable tbody");
+    let specificRow = tableBody.rows[Number(Exercise)-1]; // This gets the second row (index starts at 0)
+
+     firstCell = specificRow.cells[0];
+     firstCellValue = firstCell.textContent || firstCell.innerText;
+
+
+    // Here you can access the data of the selected row and process it as required
+    // let cells = specificRow.cells;
+    // // let selectIt = cells[0].innerText; // Adjust the index as per your table structure
+    // let selectIt = specificRow[0].innerText; // Adjust the index as per your table structure
+    //
+    //
+    // let selectIt = firstCell.textContent || firstCell.innerText;
+
+    // console.log(`cells=${cells}  `)
+    let checkbox = specificRow.cells[0].querySelector("input[type='checkbox']");
+    if (checkbox && checkbox.checked) {
+      console.log(`checked       specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
+    }  else       {
+      console.log(`not checked       specificRow=${specificRow}         firstCellValue=${firstCellValue}`)};
+
+
+
+    firstCell = specificRow.cells[1];
+     firstCellValue = firstCell.textContent || firstCell.innerText;
+
+
+    // Here you can access the data of the selected row and process it as required
+    // let cells = specificRow.cells;
+    // // let selectIt = cells[0].innerText; // Adjust the index as per your table structure
+    // let selectIt = specificRow[0].innerText; // Adjust the index as per your table structure
+    //
+    //
+    // let selectIt = firstCell.textContent || firstCell.innerText;
+
+    // console.log(`cells=${cells}  `)
+    console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
+    firstCell = specificRow.cells[2];
+    firstCellValue = firstCell.textContent || firstCell.innerText;
+
+
+    // Here you can access the data of the selected row and process it as required
+    // let cells = specificRow.cells;
+    // // let selectIt = cells[0].innerText; // Adjust the index as per your table structure
+    // let selectIt = specificRow[0].innerText; // Adjust the index as per your table structure
+    //
+    //
+    // let selectIt = firstCell.textContent || firstCell.innerText;
+
+    // console.log(`cells=${cells}  `)
+    console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
+
+
 
     highlightSpecificRowColor(Number(Exercise)-1,myYellow);
 
@@ -678,6 +742,7 @@
       // Additional code to handle voice change...
     });
 
+    loadDefaultData(); // ???????
   };
 
 </script>
