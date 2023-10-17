@@ -72,11 +72,12 @@
 
 
   <div class="flex-item">
-    <button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
-    <button onclick="pauseRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>
-    <button onclick="resumeRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>
-    <button onclick="stopRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>
+    <button onclick="goRoutine()" id="goButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
+    <button onclick="pauseRoutine()" id="pauseButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>
+    <button onclick="resumeRoutine()" id="resumeButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>
+    <button onclick="stopRoutine()" id="stopButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>
   </div>
+
 
 
   <!-- Panel 2: Inputs -->
@@ -123,31 +124,34 @@
 
     </div>
   </div>
-</div>
+
 
 <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
 
-<div class="scrollable-table">
-<table border="1" id="exerciseTable">
-  <thead>
-  <tr>
-    <th>Exercise</th>
-    <th>Description</th>
-    <th>Sets</th>
-    <th>Reps</th>
-    <th>Hold</th>
-    <th>Frequency</th>
-<!--    <th>Picture</th>-->
-<!--    <th>Extras</th>-->
-<!--    <th>Rep Pause</th>-->
-<!--    <th>Set Pause</th>-->
-<!--    <th>Countdown At</th>-->
-  </tr>
-  </thead>
-  <tbody>
-  <!-- Rows will be populated by JavaScript -->
-  </tbody>
-</table>
+<div class="flex-item">
+  <div class="scrollable-table">
+    <table border="1" id="exerciseTable">
+      <thead>
+      <tr>
+        <th>Exercise</th>
+        <th>Description</th>
+        <th>Sets</th>
+        <th>Reps</th>
+        <th>Hold</th>
+        <th>Frequency</th>
+        <!--    <th>Picture</th>-->
+        <!--    <th>Extras</th>-->
+        <!--    <th>Rep Pause</th>-->
+        <!--    <th>Set Pause</th>-->
+        <!--    <th>Countdown At</th>-->
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Rows will be populated by JavaScript -->
+      </tbody>
+    </table>
+  </div>
+</div>
 </div>
 
 
@@ -167,6 +171,8 @@
   myYellow = "#FDEE00";
   myGreen = "#50C878"
 
+  document.getElementById('pauseButton').disabled = true;
+  document.getElementById('resumeButton').disabled = true;
 
   // document.getElementById('status-time').value = INIT_HOLD;
   document.getElementById('status-exercise').value = 1;
@@ -178,6 +184,17 @@
     let sheetUrl = document.getElementById('sheetUrl').value;
     loadSheetData(sheetUrl);
   });
+
+
+  function scrollToRow(rowId) {
+    const rowElement = document.getElementById(rowId);
+    console.log(`rowElement: ${rowElement}`)
+    const containerElement = document.querySelector('.scrollable-table');
+
+    if (rowElement && containerElement) {
+      containerElement.scrollTop = rowElement.offsetTop - containerElement.offsetTop;
+    }
+  }
 
   function changeVideoSource(newSrc) {
     // Select the source and video elements
@@ -234,6 +251,9 @@
     tableBody.innerHTML = ''
     dataTable.forEach(rowData => {
       let row = tableBody.insertRow();
+      ex = Object.values(rowData).slice(0, 1);
+      row.id = "ex-" + ex; // This will set IDs like row-0, row-1, etc.
+      console.log(`row id: ${row.id}`)
       // 0-6 is Exercise	Description	Sets	Reps	Hold	Frequency
       Object.values(rowData).slice(0, 6).forEach(cellData => {
         let cell = row.insertCell();
@@ -360,11 +380,15 @@
   function pauseRoutine(){
     pauseSwitch = true;
     document.getElementById('overallStatus').value = "Paused"
+    document.getElementById('pauseButton').disabled = true;
+    document.getElementById('resumeButton').disabled = false;
   }
 
   function resumeRoutine(){
     pauseSwitch = false;
     document.getElementById('overallStatus').value = "Running"
+    document.getElementById('pauseButton').disabled = false;
+    document.getElementById('resumeButton').disabled = true;
     test1_1sec();
   }
 
@@ -375,7 +399,11 @@
 
 
 
-  function runRoutine(){
+  function goRoutine(){
+
+    document.getElementById('goButton').disabled = true;
+    document.getElementById('pauseButton').disabled = false;
+    document.getElementById('resumeButton').disabled = true;
 
     // Select the div with class "flex-container"
     var divElement = document.querySelector('.flex-container');
@@ -418,6 +446,13 @@
 
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
+
+
+    let rid= `ex-${Exercise}`;
+    // alert(rid);
+
+    scrollToRow(rid);
+
 
     if (pauseSwitch) {
       setTimeout(test1_1sec,1000);

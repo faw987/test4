@@ -30,6 +30,13 @@ button:hover {
     background-color: #45a049;
 }
 
+button:disabled {
+    background-color: #cccccc;  /* Color for the disabled state */
+    color: #888888;
+}
+
+
+
 footer {
     background-color: #4CAF50;
     color: white;
@@ -85,6 +92,7 @@ th {
 .flex-container {
     display: flex;
     justify-content: space-between; /* Adjusts space between panels */
+    flex-direction: row;
 }
 .flex-item {
     flex: 1; /* Each panel takes up an equal amount of space */
