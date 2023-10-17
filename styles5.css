@@ -112,6 +112,12 @@ input {
     font-weight: bold;
 }
 
+.scrollable-table {
+    width: 100%;      /* Adjust as needed */
+    height: 300px;    /* Adjust as needed */
+    overflow: auto;   /* Makes it scrollable */
+    border: 1px solid #ccc; /* Optional: Adds a border around the scrollable area */
+}
 
 
 
