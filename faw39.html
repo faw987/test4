@@ -38,14 +38,6 @@
 
   </div>
 
-
-<!--  <div class="flex-item">-->
-<!--    <button onclick="runRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>-->
-<!--    <button onclick="pauseRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>-->
-<!--    <button onclick="resumeRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>-->
-<!--    <button onclick="stopRoutine()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>-->
-<!--  </div>-->
-
   <div class="flex-item">
     <label for="volume">Volume: </label>
     <input type="range" id="volume" min="0" max="1" step="0.10" value="0.5">
@@ -63,12 +55,10 @@
     <select id="voice" name="voice"></select>
   </div>
 
-
 </div>
 
 <div class="flex-container">
   <!-- Panel 1: Table -->
-
 
   <div class="flex-item">
     <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
@@ -77,7 +67,6 @@
 <!--      <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
 <!--      Your browser does not support the video tag.-->
 <!--    </video>-->
-
 
   </div>
 
@@ -101,9 +90,13 @@
         </thead>
         <tbody id="big1">
         <tr>
+          <td><label>Status:</label></td>
+          <td><input type="text" id="overallStatus"></td>
+        </tr>
+        <tr>
           <td><label>Exercise:</label></td>
-          <td><button onclick="nextExercise()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
           <td><input type="text" id="status-exercise" font-size="30px"></td>
+          <td><button onclick="nextExercise()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
         </tr>
         <tr>
           <td><label>Description:</label></td>
@@ -112,10 +105,12 @@
         <tr>
           <td><label>Set:      </label></td>
           <td><input type="text" id="status-set" ></td>
+          <td><button onclick="nextSet()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
         </tr>
         <tr>
           <td><label>Rep:       </label>
           <td><input type="text" id="status-rep" ></td>
+          <td><button onclick="nextRep()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
         </tr>
         <tr>
           <td><label>Time Left: </label>
@@ -130,10 +125,6 @@
   </div>
 </div>
 
-
-
-<!--<label for="text-input">Routine</label>-->
-
 <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
 
 
@@ -146,11 +137,11 @@
     <th>Reps</th>
     <th>Hold</th>
     <th>Frequency</th>
-    <th>Picture</th>
-    <th>Extras</th>
-    <th>Rep Pause</th>
-    <th>Set Pause</th>
-    <th>Countdown At</th>
+<!--    <th>Picture</th>-->
+<!--    <th>Extras</th>-->
+<!--    <th>Rep Pause</th>-->
+<!--    <th>Set Pause</th>-->
+<!--    <th>Countdown At</th>-->
   </tr>
   </thead>
   <tbody>
@@ -169,6 +160,12 @@
   // INIT_HOLD = 10
   INIT_MOD = 5
 
+  pauseSwitch = false;
+
+  myYellow = "#FDEE00";
+  myGreen = "#50C878"
+
+
   // document.getElementById('status-time').value = INIT_HOLD;
   document.getElementById('status-exercise').value = 1;
   document.getElementById('status-set').value = 1;
@@ -179,8 +176,6 @@
     let sheetUrl = document.getElementById('sheetUrl').value;
     loadSheetData(sheetUrl);
   });
-
-
 
   function changeVideoSource(newSrc) {
     // Select the source and video elements
@@ -195,15 +190,13 @@
     myVideo.play();
   }
 
-
-
   function loadDefaultData(){
     sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnw' +
             'iTGyd8ZGiPq97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?output=csv'
             //
             // 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-h0k-U8hiLu00qWnwiTGyd8ZGiPq' +
             // '97G1T1qMvN79DuXoI7q8hzvv6zilsM6U5KmnhJ8PTTt4-XxDE/pub?gid=0&single=true&output=csv'
-    alert(sheetUrl)
+    console.log(`URL=${sheetUrl}`);
     loadSheetData(sheetUrl);
   }
 
@@ -211,11 +204,21 @@
     let tableBody = document.querySelector("#exerciseTable tbody");
     let specificRow = tableBody.rows[r]; // This gets the second row (index starts at 0)
     highlightRow(specificRow);
+
+  }function highlightSpecificRowColor(r,c) {
+    let tableBody = document.querySelector("#exerciseTable tbody");
+    let specificRow = tableBody.rows[r]; // This gets the second row (index starts at 0)
+    highlightRowColor(specificRow,c);
   }
 
   // Highlight row function
   function highlightRow(row) {
-    row.style.backgroundColor = "yellow"; // Change color as desired
+    row.style.backgroundColor = myYellow; // Change color as desired
+  }
+
+  // Highlight row function
+  function highlightRowColor(row,color) {
+    row.style.backgroundColor = color; // Change color as desired
   }
 
   // Unhighlight row function
@@ -229,8 +232,8 @@
     tableBody.innerHTML = ''
     dataTable.forEach(rowData => {
       let row = tableBody.insertRow();
-
-      Object.values(rowData).forEach(cellData => {
+      // 0-6 is Exercise	Description	Sets	Reps	Hold	Frequency
+      Object.values(rowData).slice(0, 6).forEach(cellData => {
         let cell = row.insertCell();
         cell.textContent = cellData;
       });
@@ -286,32 +289,14 @@
       const tableBody = document.querySelector("#dataTable tbody");
       tableBody.innerHTML = ''              // clear table before generating based on csv data and user input
 
-      // routines.forEach(thing => {
-      //   let row = tableBody.insertRow();
-      //   let cell = row.insertCell();
-      //   cell.textContent = thing;
-      //
-      //   // Add click event to each row
-      //   row.addEventListener("click", function () {
-      //     processRoutineSelectRow(this,rows);
-      //   });
-      // });
-      // const radioContainer = document.getElementById('radioContainer');
-
       routines.forEach(thing => {
         const radioButton = document.createElement('input');
         radioButton.type = 'button';
         radioButton.name = thing;
         radioButton.value = thing.toLowerCase();
         radioButton.id = thing.toLowerCase();
-        // radioButton.               !!!!!!!!!!!!!!!!!!!!
-
-        // const label = document.createElement('label');
-        // label.htmlFor = thing.toLowerCase();
-        // label.innerText = thing;
 
         tableBody.appendChild(radioButton);
-        // tableBody.appendChild(label);
 
         // Add click event to each row
         radioButton.addEventListener("click", function () {
@@ -370,6 +355,23 @@
     return tableRow;
   }
 
+  function pauseRoutine(){
+    pauseSwitch = true;
+    document.getElementById('overallStatus').value = "Paused"
+  }
+
+  function resumeRoutine(){
+    pauseSwitch = false;
+    document.getElementById('overallStatus').value = "Running"
+    test1_1sec();
+  }
+
+
+  function stopRoutine(){
+    stop = true;
+  }
+
+
 
   function runRoutine(){
 
@@ -378,8 +380,6 @@
 
 // Set its display property to "none" to hide it
     divElement.style.display = 'none';
-
-
 
     let tr = document.getElementById('status-time').value;
 
@@ -391,6 +391,9 @@
     document.getElementById('status-time').value = rHold
 
     clearText();
+
+    document.getElementById('overallStatus').value = "Running"
+
 
     t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
     speakText(t2);
@@ -414,7 +417,12 @@
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
 
-    highlightSpecificRow(Number(Exercise)-1);
+    if (pauseSwitch) {
+      setTimeout(test1_1sec,1000);
+      return;
+    }
+
+    highlightSpecificRowColor(Number(Exercise)-1,myYellow);
 
     setImage(rPic)
     document.getElementById('exercise-description').value = rDescription;
@@ -424,7 +432,7 @@
 
     if (tr == rHold) {
       // t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
-      t2=`begin set ${Set}  repetition ${Rep}  hold ${rHold}.`
+      t2=`repetition  ${Rep}  hold ${rHold}.`
       speakText(t2);
     }
 
@@ -445,8 +453,10 @@
       document.getElementById('status-time').value = tr;
       setTimeout(test1_1sec,1000);
     } else {
+      highlightSpecificRowColor(Number(Exercise)-1,myGreen);
       // t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
-      t = `Set ${Set} repetition ${Rep} complete.`;
+      // t = `Set ${Set} repetition ${Rep} complete.`;
+      t = `repetition ${Rep} complete.`;
       console.log(t);
       // speakText(t);
       // appendText('text-input',t);
@@ -490,10 +500,7 @@
     // Get the current text in the textarea
     var currentText = textarea.value;
 
-    // The text to append
-    // var newText = "This is the appended text.";
-
-    // Append the new text with a newline character
+   // Append the new text with a newline character
     textarea.value = currentText + "\n" + newText;
   }
 
@@ -582,21 +589,6 @@
     }
   }
 
-  function runDemo() {
-    // Set the demo text
-    // const demoText = "1,supine Chin tucks,1,2,4,2,,";
-    const demoText = `1,exercise one,1,2,10,2,supine_chin-tuck.png,
-            2,exercise two,1,1,10,2,,
-            3,three,1,2,10,2,supine_chin-tuck.png`;
-
-    document.getElementById('text-input').value = demoText;
-    document.getElementById('text-input').innerText = demoText;
-
-    // Simulate clicking Load and Go buttons
-    // loadData();
-    loadDefaultData();
-    runRoutine();
-  }
 
     document.getElementById('volume').addEventListener('input', function (event) {
     document.getElementById('volume-output').value = event.target.value;
@@ -649,12 +641,7 @@
       // Additional code to handle voice change...
     });
 
-
-
   };
-
-
-
 
 </script>
 </body>
