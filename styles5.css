@@ -127,7 +127,7 @@ input {
     border: 1px solid #ccc; /* Optional: Adds a border around the scrollable area */
 }
 
-#overallStatus, #status-exercise, #status-time, #status-rep, #status-set {
+#overallStatus, #status-exercise, #status-time, #status-rep, #status-set, #dash {
     font-size: 36px;
 }
 

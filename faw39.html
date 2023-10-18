@@ -113,18 +113,18 @@
       <table id="dataTable2" border="1">
         <thead>
         <tr>
-          <th>Routine progress dashboard.</th>
+          <th style="height: 24px; font-family: Arial, sans-serif; font-size: 20px;">Dashboard</th>
         </tr>
         </thead>
         <tbody id="big1">
         <tr>
-          <td><label>Status:</label></td>
+          <td><label id="dash">Status:</label></td>
           <td><span id="overallStatus"></span></td>
         </tr>
         <tr>
           <td><label>Exercise:</label></td>
           <td><span id="status-exercise"></span></td>
-          <td><button onclick="nextExercise()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
+<!--          <td><button onclick="nextExercise()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>-->
         </tr>
         <tr>
           <td><label>Description:</label></td>
@@ -133,13 +133,13 @@
         <tr>
           <td><label>Set:      </label></td>
           <td><span id="status-set">Set</span></td>
-          <td><button onclick="nextSet()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
+<!--          <td><button onclick="nextSet()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>-->
         </tr>
         <tr>
           <td><label>Rep:       </label>
 <!--          <td><input type="text" id="status-rep" ></td>-->
           <td><span id="status-rep"></span></td>
-          <td><button onclick="nextRep()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
+<!--          <td><button onclick="nextRep()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>-->
         </tr>
         <tr>
           <td><label>Time Left: </label>
@@ -427,7 +427,7 @@
 
     let Exercise = document.getElementById('status-exercise').innerText;
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
-    const [rSelect, rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
+    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
     document.getElementById('status-time').innerText = rHold
 
     // clearText();
