@@ -22,7 +22,7 @@ button {
     padding: 10px 20px;
     border: none;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     margin: 5px;
 }
 
@@ -127,8 +127,14 @@ input {
     border: 1px solid #ccc; /* Optional: Adds a border around the scrollable area */
 }
 
+#overallStatus, #status-exercise, #status-time, #status-rep, #status-set {
+    font-size: 36px;
+}
 
 
+#exercise-description {
+    font-size: 24px;
+}
 
 @media only screen and (max-width: 600px) {
     table {

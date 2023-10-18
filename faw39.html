@@ -68,6 +68,33 @@
 <!--      Your browser does not support the video tag.-->
 <!--    </video>-->
 
+    <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
+
+    <div class="flex-item">
+      <div class="scrollable-table">
+        <table border="1" id="exerciseTable">
+          <thead>
+          <tr>
+            <th style="width: 15px;">Select</th>
+            <th>Exercise</th>
+            <th>Description</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th>Hold</th>
+            <th>Frequency</th>
+            <!--    <th>Picture</th>-->
+            <!--    <th>Extras</th>-->
+            <!--    <th>Rep Pause</th>-->
+            <!--    <th>Set Pause</th>-->
+            <!--    <th>Countdown At</th>-->
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Rows will be populated by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
 
@@ -92,30 +119,31 @@
         <tbody id="big1">
         <tr>
           <td><label>Status:</label></td>
-          <td><input type="text" id="overallStatus" readonly></td>
+          <td><span id="overallStatus"></span></td>
         </tr>
         <tr>
           <td><label>Exercise:</label></td>
-          <td><input type="text" id="status-exercise" font-size="30px"></td>
+          <td><span id="status-exercise"></span></td>
           <td><button onclick="nextExercise()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
         </tr>
         <tr>
           <td><label>Description:</label></td>
-          <td><input type="text" id="exercise-description"></td>
+          <td><span id="exercise-description"></span></td>
         </tr>
         <tr>
           <td><label>Set:      </label></td>
-          <td><input type="text" id="status-set" ></td>
+          <td><span id="status-set">Set</span></td>
           <td><button onclick="nextSet()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
         </tr>
         <tr>
           <td><label>Rep:       </label>
-          <td><input type="text" id="status-rep" ></td>
+<!--          <td><input type="text" id="status-rep" ></td>-->
+          <td><span id="status-rep"></span></td>
           <td><button onclick="nextRep()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>
         </tr>
         <tr>
           <td><label>Time Left: </label>
-          <td><input type="text" id="status-time" readonly></td>
+          <td><span id="status-time"></span></td>
         </tr>
         <!-- Rows will be populated by JavaScript -->
         </tbody>
@@ -126,38 +154,11 @@
   </div>
 
 
-<!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
-
-<div class="flex-item">
-  <div class="scrollable-table">
-    <table border="1" id="exerciseTable">
-      <thead>
-      <tr>
-        <th style="width: 15px;">Select</th>
-        <th>Exercise</th>
-        <th>Description</th>
-        <th>Sets</th>
-        <th>Reps</th>
-        <th>Hold</th>
-        <th>Frequency</th>
-        <!--    <th>Picture</th>-->
-        <!--    <th>Extras</th>-->
-        <!--    <th>Rep Pause</th>-->
-        <!--    <th>Set Pause</th>-->
-        <!--    <th>Countdown At</th>-->
-      </tr>
-      </thead>
-      <tbody>
-      <!-- Rows will be populated by JavaScript -->
-      </tbody>
-    </table>
-  </div>
-</div>
 </div>
 
 
-<textarea id="text-input" placeholder="Speak or type something...">
-</textarea>
+<!--<textarea id="text-input" placeholder="Speak or type something...">-->
+<!--</textarea>-->
 
 <script>
   let data = [];
@@ -176,9 +177,9 @@
   document.getElementById('resumeButton').disabled = true;
 
   // document.getElementById('status-time').value = INIT_HOLD;
-  document.getElementById('status-exercise').value = 1;
-  document.getElementById('status-set').value = 1;
-  document.getElementById('status-rep').value = 1;
+  document.getElementById('status-exercise').innerText = 1;
+  document.getElementById('status-set').innerText = 1;
+  document.getElementById('status-rep').innerText = 1;
 
   document.getElementById('urlForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -388,14 +389,14 @@
 
   function pauseRoutine(){
     pauseSwitch = true;
-    document.getElementById('overallStatus').value = "Paused"
+    document.getElementById('overallStatus').innerText = "Paused"
     document.getElementById('pauseButton').disabled = true;
     document.getElementById('resumeButton').disabled = false;
   }
 
   function resumeRoutine(){
     pauseSwitch = false;
-    document.getElementById('overallStatus').value = "Running"
+    document.getElementById('overallStatus').innerText = "Running"
     document.getElementById('pauseButton').disabled = false;
     document.getElementById('resumeButton').disabled = true;
     test1_1sec();
@@ -420,18 +421,18 @@
 // Set its display property to "none" to hide it
     divElement.style.display = 'none';
 
-    let tr = document.getElementById('status-time').value;
+    let tr = document.getElementById('status-time').innerText;
 
 // hack ???
 
-    let Exercise = document.getElementById('status-exercise').value;
+    let Exercise = document.getElementById('status-exercise').innerText;
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rSelect, rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
-    document.getElementById('status-time').value = rHold
+    document.getElementById('status-time').innerText = rHold
 
-    clearText();
+    // clearText();
 
-    document.getElementById('overallStatus').value = "Running"
+    document.getElementById('overallStatus').innerText = "Running"
 
 
     t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
@@ -447,11 +448,11 @@
   }
 
   function test1_1sec(){
-    let tr = document.getElementById('status-time').value;
+    let tr = document.getElementById('status-time').innerText;
 
-    let Exercise = document.getElementById('status-exercise').value;
-    let Set = document.getElementById('status-set').value;
-    let Rep = document.getElementById('status-rep').value;
+    let Exercise = document.getElementById('status-exercise').innerText;
+    let Set = document.getElementById('status-set').innerText;
+    let Rep = document.getElementById('status-rep').innerText;
 
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
@@ -526,7 +527,7 @@
     highlightSpecificRowColor(Number(Exercise)-1,myYellow);
 
     setImage(rPic)
-    document.getElementById('exercise-description').value = rDescription;
+    document.getElementById('exercise-description').innerText = rDescription;
 
     t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     // console.log(t1)
@@ -551,7 +552,7 @@
         speakText(t);
       };
       tr=Number(tr)-1;
-      document.getElementById('status-time').value = tr;
+      document.getElementById('status-time').innerText = tr;
       setTimeout(test1_1sec,1000);
     } else {
       highlightSpecificRowColor(Number(Exercise)-1,myGreen);
@@ -569,24 +570,30 @@
       console.log(`Rep ${Rep}   rReps ${rReps}`);
 
       if (parseInt(Rep) < parseInt(rReps)) {
-        document.getElementById('status-rep').value = Number(Rep)+1;
-        document.getElementById('status-time').value = rHold;
+        document.getElementById('status-rep').innerText = Number(Rep)+1;
+        document.getElementById('status-time').innerText = rHold;
         setTimeout(test1_1sec,1000);
       } else {
         if (parseInt(Set) < parseInt(rSets)) {
-          document.getElementById('status-set').value = Number(Set)+1;
-          document.getElementById('status-rep').value = 1;
-          document.getElementById('status-time').value = rHold;
+          document.getElementById('status-set').innerText = Number(Set)+1;
+          document.getElementById('status-rep').innerText = 1;
+          document.getElementById('status-time').innerText = rHold;
           setTimeout(test1_1sec,1000);
         } else {
           if (parseInt(Exercise) < numberExercises) {
-            document.getElementById('status-exercise').value = Number(Exercise)+1;
-            document.getElementById('status-set').value = 1;
-            document.getElementById('status-rep').value = 1;
-            document.getElementById('status-time').value = rHold;
+            document.getElementById('status-exercise').innerText = Number(Exercise)+1;
+            document.getElementById('status-set').innerText = 1;
+            document.getElementById('status-rep').innerText = 1;
+            document.getElementById('status-time').innerText = rHold;
             setTimeout(test1_1sec,1000);
           } else {
             speakText("thats all folks");
+            document.getElementById('overallStatus').innerText = "Complete"
+
+            document.getElementById('goButton').disabled = false;
+            document.getElementById('pauseButton').disabled = true;
+            document.getElementById('resumeButton').disabled = true;
+            document.getElementById('stopButton').disabled = true;
 
           }
         }
@@ -663,23 +670,24 @@
       alert("Sorry, your browser does not support Text to Speech!");
     }
   }
-
-  function speakTextField() {
-    let text = document.getElementById('text-input').value;
-    speakText(text);
-  }
-
-
-  function clearText() {
-    document.getElementById('text-input').value = '';
-  }
+  //
+  // function speakTextField() {
+  //   let text = document.getElementById('text-input').value;
+  //   speakText(text);
+  // }
+  //
+  //
+  // function clearText() {
+  //   document.getElementById('text-input').value = '';
+  // }
 
   function listenText() {
     if ('webkitSpeechRecognition' in window) {
       const recognition = new webkitSpeechRecognition();
       recognition.lang = 'en-US';
       recognition.onresult = function(event) {
-        document.getElementById('text-input').value = event.results[0][0].transcript;
+        // document.getElementById('text-input').value = event.results[0][0].transcript;
+        alert(event.results[0][0].transcript);
       };
       recognition.onerror = function(event) {
         alert('Error occurred in recognition: ' + event.error);
