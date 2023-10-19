@@ -437,7 +437,8 @@
 
     // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
     t2=`exercise ${Exercise} `
-    speakText(t2);
+    // speakText(t2);
+    speakTextCallback(t2,speak1done);
 
     console.log(`runRoutine time remaining=${tr}`)
 
@@ -449,6 +450,13 @@
     test1_1sec()            // first call is not delayed by 1000 ms, subsequent calls are delayed
   }
 
+// look more at this
+
+  function speak1done(){
+    // alert('speak1done')
+  }
+
+
   function test1_1sec(){
     let tr = document.getElementById('status-time').innerText;
 
@@ -459,12 +467,9 @@
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
 
-
     let rid= `ex-${Exercise}`;
-    // alert(rid);
 
     scrollToRow(rid);
-
 
     if (pauseSwitch) {
       setTimeout(test1_1sec,1000);
@@ -477,66 +482,29 @@
      firstCell = specificRow.cells[0];
      firstCellValue = firstCell.textContent || firstCell.innerText;
 
-
-    // Here you can access the data of the selected row and process it as required
-    // let cells = specificRow.cells;
-    // // let selectIt = cells[0].innerText; // Adjust the index as per your table structure
-    // let selectIt = specificRow[0].innerText; // Adjust the index as per your table structure
-    //
-    //
-    // let selectIt = firstCell.textContent || firstCell.innerText;
-
-    // console.log(`cells=${cells}  `)
     let checkbox = specificRow.cells[0].querySelector("input[type='checkbox']");
     if (checkbox && checkbox.checked) {
       console.log(`checked       specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
     }  else       {
       console.log(`not checked       specificRow=${specificRow}         firstCellValue=${firstCellValue}`)};
 
-
-
     firstCell = specificRow.cells[1];
-     firstCellValue = firstCell.textContent || firstCell.innerText;
+    firstCellValue = firstCell.textContent || firstCell.innerText;
 
-
-    // Here you can access the data of the selected row and process it as required
-    // let cells = specificRow.cells;
-    // // let selectIt = cells[0].innerText; // Adjust the index as per your table structure
-    // let selectIt = specificRow[0].innerText; // Adjust the index as per your table structure
-    //
-    //
-    // let selectIt = firstCell.textContent || firstCell.innerText;
-
-    // console.log(`cells=${cells}  `)
     console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
     firstCell = specificRow.cells[2];
     firstCellValue = firstCell.textContent || firstCell.innerText;
 
-
-    // Here you can access the data of the selected row and process it as required
-    // let cells = specificRow.cells;
-    // // let selectIt = cells[0].innerText; // Adjust the index as per your table structure
-    // let selectIt = specificRow[0].innerText; // Adjust the index as per your table structure
-    //
-    //
-    // let selectIt = firstCell.textContent || firstCell.innerText;
-
-    // console.log(`cells=${cells}  `)
     console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
-
-
 
     highlightSpecificRowColor(Number(Exercise)-1,myYellow);
 
-    setImage(rPic)
-    document.getElementById('exercise-description').innerText = rDescription;
-
-    t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
+       t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     // console.log(t1)
 
-    if (tr == rHold) {
+    if (tr === rHold) {
       // t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
-      t2=`repetition  ${Rep}  hold ${rHold}.`
+      t2=`set  ${Set} repetition  ${Rep}  hold ${rHold}.`
       speakText(t2);
     }
 
@@ -553,21 +521,19 @@
         t = `${tr} remaining.`;
         speakText(t);
       };
+
       tr=Number(tr)-1;
       document.getElementById('status-time').innerText = tr;
       setTimeout(test1_1sec,1000);
+
     } else {
+
       highlightSpecificRowColor(Number(Exercise)-1,myGreen);
       // t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
       // t = `Set ${Set} repetition ${Rep} complete.`;
       t = `repetition ${Rep} complete.`;
       console.log(t);
-      // speakText(t);
-      // appendText('text-input',t);
-
-      // speakText(`${t}, next`);
       speakText(`${t}`);
-      // speakText(`done`);
 
       console.log(`Rep ${Rep}   rReps ${rReps}`);
 
@@ -589,6 +555,8 @@
           // setTimeout(test1_1sec,1000);
         } else {
           if (parseInt(Exercise) < numberExercises) {
+            setImage(rPic);
+            document.getElementById('exercise-description').innerText = rDescription;
             document.getElementById('status-exercise').innerText = Number(Exercise)+1;
             document.getElementById('status-set').innerText = 1;
             document.getElementById('status-rep').innerText = 1;
@@ -630,21 +598,21 @@
     }
   }
   //
-  // function speakTextCallback(text, callback) {
-  //   // Create a new speech utterance instance
-  //   const utterance = new SpeechSynthesisUtterance(text);
-  //
-  //   // Attach an event handler for the 'end' event
-  //   utterance.onend = function(event) {
-  //     console.log('Speech has finished');
-  //     if (callback) {
-  //       callback();
-  //     }
-  //   };
-  //
-  //   // Speak the text
-  //   window.speechSynthesis.speak(utterance);
-  // }
+  function speakTextCallback(text, callback) {
+    // Create a new speech utterance instance
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // Attach an event handler for the 'end' event
+    utterance.onend = function(event) {
+      console.log('Speech has finished');
+      if (callback) {
+        callback();
+      }
+    };
+
+    // Speak the text
+    window.speechSynthesis.speak(utterance);
+  }
 
   function speakText(text) {
     if ('speechSynthesis' in window) {
