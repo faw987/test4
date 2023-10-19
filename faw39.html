@@ -435,7 +435,8 @@
     document.getElementById('overallStatus').innerText = "Running"
 
 
-    t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+    // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+    t2=`exercise ${Exercise} `
     speakText(t2);
 
     console.log(`runRoutine time remaining=${tr}`)
@@ -444,7 +445,8 @@
         console.log(`data: ${d}`); // Outputs: "remainder of the string
     });
 
-    setTimeout(test1_1sec,1000)
+    // setTimeout(test1_1sec,1000)
+    test1_1sec()            // first call is not delayed by 1000 ms, subsequent calls are delayed
   }
 
   function test1_1sec(){
@@ -572,13 +574,19 @@
       if (parseInt(Rep) < parseInt(rReps)) {
         document.getElementById('status-rep').innerText = Number(Rep)+1;
         document.getElementById('status-time').innerText = rHold;
-        setTimeout(test1_1sec,1000);
+        console.log(`rRepP=${rRepP}   pausing`);
+        speakText(`pause ${rRepP}`);
+        setTimeout(test1_1sec,rRepP*1000);
+        // setTimeout(test1_1sec,1000);
       } else {
         if (parseInt(Set) < parseInt(rSets)) {
           document.getElementById('status-set').innerText = Number(Set)+1;
           document.getElementById('status-rep').innerText = 1;
           document.getElementById('status-time').innerText = rHold;
-          setTimeout(test1_1sec,1000);
+          console.log(`rSetP=${rSetP}  pausing`);
+          speakText(`pause ${rSetP}`);
+          setTimeout(test1_1sec,rSetP*1000);
+          // setTimeout(test1_1sec,1000);
         } else {
           if (parseInt(Exercise) < numberExercises) {
             document.getElementById('status-exercise').innerText = Number(Exercise)+1;
