@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h3>Tues 17 - 10/20/2023 9:16 AM </h3>
+<h3>Tues 17 - 10/20/2023 9:41 AM </h3>
 <br/>
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
@@ -114,6 +114,10 @@ a {
 
 
 <a href="f48.html">send bearing</a>
+<br><br>
+
+
+<a href="f49.html">try websocket</a>
 <br><br>
 
 

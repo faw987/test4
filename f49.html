@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UDP Client</title>
+</head>
+<body>
+<h2>Send Message to UDP Server - p1 Endpoint via WebSocket</h2>
+<div>
+  <textarea id="message" placeholder="Enter your JSON message here" rows="4" cols="50"></textarea>
+</div>
+<button onclick="sendMessage()">Send Message</button>
+
+<script>
+  // const ws = new WebSocket('ws://localhost:8080');
+  const ws = new WebSocket('ws://10.0.1.12:8080');
+
+  ws.onopen = () => {
+    console.log('Connected to the WebSocket server.');
+  };
+
+  function sendMessage() {
+    const message = document.getElementById('message').value;
+
+    // Validate if the input is a valid JSON
+    try {
+      const jsonMessage = JSON.parse(message);
+      jsonMessage.endpoint = 'p1';  // Set the endpoint to p1
+      ws.send(JSON.stringify(jsonMessage));
+      console.log("Sent message to WebSocket server:", jsonMessage);
+    } catch (error) {
+      alert('Invalid JSON message!');
+    }
+  }
+</script>
+</body>
+</html>
