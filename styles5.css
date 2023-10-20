@@ -101,6 +101,26 @@ th {
     box-sizing: border-box; /* Ensures padding and border are included in width */
     margin-right: 10px; /* Spacing between panels */
 }
+
+
+.flex-item-a {
+    /*flex: 1; !* Each panel takes up an equal amount of space *!*/
+    width: 160px;
+    padding: 10px;
+    border: 1px solid #ddd; /* Adding a border for visual separation */
+    box-sizing: border-box; /* Ensures padding and border are included in width */
+    margin-right: 10px; /* Spacing between panels */
+}
+
+.flex-item-b {
+    /*flex: 1; !* Each panel takes up an equal amount of space *!*/
+    width: 320px;
+    padding: 10px;
+    border: 1px solid #ddd; /* Adding a border for visual separation */
+    box-sizing: border-box; /* Ensures padding and border are included in width */
+    margin-right: 10px; /* Spacing between panels */
+}
+
 .flex-item:last-child {
     margin-right: 0;  /* Removes margin from the last panel */
 }
@@ -109,7 +129,7 @@ th {
 
 #big1 {
     font-family: Arial, sans-serif;
-    font-size: 20px;
+    font-size: 36px;
 }
 
 
@@ -127,13 +147,17 @@ input {
     border: 1px solid #ccc; /* Optional: Adds a border around the scrollable area */
 }
 
-#overallStatus, #status-exercise, #status-time, #status-rep, #status-set, #dash {
+#overallStatus, #status-exercise, #status-set, #status-rep, #status-time, #dash {
     font-size: 36px;
 }
 
 
+/*#dash {*/
+/*    font-size: 36px;*/
+/*}*/
+
 #exercise-description {
-    font-size: 24px;
+    font-size: 18px;
 }
 
 @media only screen and (max-width: 600px) {

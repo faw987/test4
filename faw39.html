@@ -71,7 +71,7 @@
     <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
 
     <div class="flex-item">
-      <div class="scrollable-table">
+      <div  id="tableContainer" class="scrollable-table">
         <table border="1" id="exerciseTable">
           <thead>
           <tr>
@@ -98,7 +98,7 @@
   </div>
 
 
-  <div class="flex-item">
+  <div class="flex-item-a">
     <button onclick="goRoutine()" id="goButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
     <button onclick="pauseRoutine()" id="pauseButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>
     <button onclick="resumeRoutine()" id="resumeButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>
@@ -110,11 +110,11 @@
 
   <!-- Panel 2: Inputs -->
 <!--  <div class="flex-item">-->
-  <div class="flex-item" id="status_id">
+  <div class="flex-item-b" id="status_id">
       <table id="dataTable2" border="1">
         <thead>
         <tr>
-          <th style="height: 24px; font-family: Arial, sans-serif; font-size: 20px;">Dashboard</th>
+          <th style="height: 40px; font-family: Arial, sans-serif; font-size: 36px;">Dashboard</th>
         </tr>
         </thead>
         <tbody id="big1">
@@ -191,22 +191,9 @@
   });
 
 
-  let startTime;
-  let endTime;
-
   document.getElementById('sendEmailButton').addEventListener('click',
           function () {
-            // Capture the start and end time
-            startTime = new Date();
-
-            // ... your exercise code here ...
-
-            endTime = new Date();
-
-            // Calculate duration
-            let duration = (endTime - startTime) / 1000; // in seconds
-
-            // Format the data as CSV
+                // Format the data as CSV
             // let csvData = `Exercise,Start Time,End Time,Duration\nExercise Name,${startTime},${endTime},${duration}`;
             let csvData = exercise_stats;
             alert(csvData)
@@ -214,11 +201,7 @@
             sendEmail(csvData);
           });
 
-  // function sendEmail(data) {
-  //   let subject = "stats";
-  //   let body = encodeURIComponent(data);
-  //   window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  // }
+
   function sendEmail(data) {
     let recipientEmail = "faw987@gmail.com"; // Change to the desired email address
     let subject = "stats";
@@ -226,7 +209,30 @@
     window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
   }
 
+  function scrollToRowById(rowId) {
+    const tableContainer = document.getElementById('tableContainer');
+    const rowElement = document.getElementById(rowId);
+    let specificRow = tableBody.rows[r]; // This gets the second row (index starts at 0)
 
+    if (rowElement) {
+      const rowTopPosition = rowElement.offsetTop;
+      const centeringOffset = tableContainer.clientHeight / 2 - rowElement.clientHeight / 2;
+
+      tableContainer.scrollTop = rowTopPosition - centeringOffset;
+    }
+  }
+
+  function scrollToRowIndex(rowIndex) {
+    const tableContainer = document.getElementById('tableContainer');
+    const rows = document.querySelectorAll('#exerciseTable tr');
+    if (rows[rowIndex]) {
+      const rowElement = rows[rowIndex];
+      const rowTopPosition = rowElement.offsetTop;
+      const centeringOffset = tableContainer.clientHeight / 2 - rowElement.clientHeight / 2;
+
+      tableContainer.scrollTop = rowTopPosition - centeringOffset;
+    }
+  }
 
   function scrollToRow(rowId) {
     const rowElement = document.getElementById(rowId);
@@ -238,13 +244,9 @@
     }
   }
 
-
-
   function padWithZero(number) {
     return (number < 10) ? '0' + number : number;
   }
-
-
 
   function formatHHMMSS(d) {
 // Extract time (hours, minutes, and seconds)
@@ -255,7 +257,6 @@
   const estart = start_hours + ":" + padWithZero(start_minutes) + ":" + padWithZero(start_seconds);
   return estart;
 }
-
 
 
   function changeVideoSource(newSrc) {
@@ -370,7 +371,7 @@
         console.log(`row: ${row}`);
         r = row.split(',')[0];
         console.log(`r: ${r}      routines: ${routines}`);
-        if (r !== "Routine") {
+        if ((r.length>0) && (r !== "Routine")) {
           routines.add(row.split(',')[0])
         }
       });
@@ -490,6 +491,10 @@
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
     document.getElementById('status-time').innerText = rHold
 
+
+    document.getElementById('exercise-description').innerText = rDescription;     // check if hack
+
+
     // clearText();
 
     document.getElementById('overallStatus').innerText = "Running"
@@ -561,6 +566,7 @@
     console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
 
     highlightSpecificRowColor(Number(Exercise)-1,myYellow);
+    scrollToRowIndex(Number(Exercise)-1);
 
        t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     // console.log(t1)
@@ -638,7 +644,7 @@
             console.log(`exercise_stats: ${exercise_stats}`);
 
             setImage(rPic);
-            document.getElementById('exercise-description').innerText = rDescription;
+            document.getElementById('exercise-description').innerText = rDescription;    // look HARDER
             document.getElementById('status-exercise').innerText = Number(Exercise)+1;
             document.getElementById('status-set').innerText = 1;
             document.getElementById('status-rep').innerText = 1;
