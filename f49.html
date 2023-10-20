@@ -30,7 +30,7 @@
       ws.send(JSON.stringify(jsonMessage));
       console.log("Sent message to WebSocket server:", jsonMessage);
     } catch (error) {
-      alert('Invalid JSON message!');
+      alert(`Invalid JSON message! + ${error}`);
     }
   }
 </script>
