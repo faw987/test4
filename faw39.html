@@ -103,6 +103,7 @@
     <button onclick="pauseRoutine()" id="pauseButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>
     <button onclick="resumeRoutine()" id="resumeButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>
     <button onclick="stopRoutine()" id="stopButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>
+    <button id="sendEmailButton">Send Stats</button>
   </div>
 
 
@@ -165,6 +166,8 @@
   let rows = [];        // of routines
   let numberExercises = 0;
 
+  let exercise_stats = '';
+
   // INIT_HOLD = 10
   INIT_MOD = 5
 
@@ -188,6 +191,43 @@
   });
 
 
+  let startTime;
+  let endTime;
+
+  document.getElementById('sendEmailButton').addEventListener('click',
+          function () {
+            // Capture the start and end time
+            startTime = new Date();
+
+            // ... your exercise code here ...
+
+            endTime = new Date();
+
+            // Calculate duration
+            let duration = (endTime - startTime) / 1000; // in seconds
+
+            // Format the data as CSV
+            // let csvData = `Exercise,Start Time,End Time,Duration\nExercise Name,${startTime},${endTime},${duration}`;
+            let csvData = exercise_stats;
+            alert(csvData)
+            // Use the mailto protocol to open the email client
+            sendEmail(csvData);
+          });
+
+  // function sendEmail(data) {
+  //   let subject = "stats";
+  //   let body = encodeURIComponent(data);
+  //   window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  // }
+  function sendEmail(data) {
+    let recipientEmail = "faw987@gmail.com"; // Change to the desired email address
+    let subject = "stats";
+    let body = encodeURIComponent(data);
+    window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+  }
+
+
+
   function scrollToRow(rowId) {
     const rowElement = document.getElementById(rowId);
     console.log(`rowElement: ${rowElement}`)
@@ -197,6 +237,26 @@
       containerElement.scrollTop = rowElement.offsetTop - containerElement.offsetTop;
     }
   }
+
+
+
+  function padWithZero(number) {
+    return (number < 10) ? '0' + number : number;
+  }
+
+
+
+  function formatHHMMSS(d) {
+// Extract time (hours, minutes, and seconds)
+    // bad names
+  const start_hours = d.getHours();
+  const start_minutes = d.getMinutes();
+  const start_seconds = d.getSeconds();
+  const estart = start_hours + ":" + padWithZero(start_minutes) + ":" + padWithZero(start_seconds);
+  return estart;
+}
+
+
 
   function changeVideoSource(newSrc) {
     // Select the source and video elements
@@ -437,6 +497,9 @@
 
     // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
     t2=`exercise ${Exercise} `
+
+    exercise_startTime = new Date();
+
     // speakText(t2);
     speakTextCallback(t2,speak1done);
 
@@ -555,6 +618,25 @@
           // setTimeout(test1_1sec,1000);
         } else {
           if (parseInt(Exercise) < numberExercises) {
+            let exercise_endTime = new Date();
+            // Extract month and day  HACK - assume date of end is ok
+            const month = exercise_endTime.getMonth() + 1; // Add 1 because months are 0-indexed
+            const day = exercise_endTime.getDate();
+            const month_day= month + "/" + day;
+
+// Calculate the difference in milliseconds
+            const differenceInMilliseconds = exercise_endTime.getTime() - exercise_startTime.getTime();
+
+// Convert the difference to seconds
+            const differenceInSeconds = differenceInMilliseconds / 1000;
+
+            const estart = formatHHMMSS(exercise_startTime);
+            const eend = formatHHMMSS(exercise_endTime);
+            line = Exercise + "," + month_day + "," + estart + "," + eend + "," + differenceInSeconds;
+            exercise_stats = exercise_stats + "\n" + line;
+
+            console.log(`exercise_stats: ${exercise_stats}`);
+
             setImage(rPic);
             document.getElementById('exercise-description').innerText = rDescription;
             document.getElementById('status-exercise').innerText = Number(Exercise)+1;
