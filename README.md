@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h3>Tues 17 - 10/20/2023 11:05 AM </h3>
+<h3>Tues 17 - 10/21/2023 10:32 AM </h3>
 <br/>
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
@@ -120,6 +120,10 @@ a {
 <a href="f49.html">try websocket</a>
 <br><br>
 
+
+
+<a href="f50.html">SpeechSynthesisUtterance experiment</a>
+<br><br>
 
 
 

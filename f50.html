@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test SpeechSynthesisUtterance Speakers</title>
+</head>
+<body>
+
+<h2>Test Different Speakers</h2>
+
+<label for="speakerSelect">Select Speaker:</label>
+<select id="speakerSelect"></select>
+
+<br><br>
+
+<label for="testText">Text to Speak:</label>
+<textarea id="testText" rows="4" cols="50" placeholder="Enter text here..."></textarea>
+
+<br><br>
+
+<button onclick="speakText()">Speak</button>
+
+<script>
+  // Get references to the HTML elements
+  const speakerSelect = document.getElementById('speakerSelect');
+  const testText = document.getElementById('testText');
+
+  // Populate the select box with available speakers
+  function loadSpeakers() {
+    const voices = window.speechSynthesis.getVoices();
+
+    voices.forEach(voice => {
+      const option = document.createElement('option');
+      option.textContent = voice.name + ' (' + voice.lang + ')';
+      option.setAttribute('data-lang', voice.lang);
+      option.setAttribute('data-name', voice.name);
+      speakerSelect.appendChild(option);
+    });
+  }
+
+  // If voices are already loaded, populate the select box
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = loadSpeakers;
+  }
+
+  // Speak the text using the selected speaker
+  function speakText() {
+    const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(voice => voice.name === selectedVoiceName);
+
+    const utterance = new SpeechSynthesisUtterance(testText.value);
+    utterance.voice = voice;
+
+    speechSynthesis.speak(utterance);
+  }
+
+  loadSpeakers();
+</script>
+
+</body>
+</html>

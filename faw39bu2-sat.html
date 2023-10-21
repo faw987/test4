@@ -51,14 +51,8 @@
     <input type="range" id="pitch" min="0" max="2" step="0.01" value="1">
     <output id="pitch-output" for="pitch">1</output>
     <br>
-<!--    <label for="voice">Voice: </label>-->
-<!--    <select id="voice" name="voice"></select>-->
-
-
-    <label for="speakerSelect">Select Speaker:</label>
-    <select id="speakerSelect"></select>
-
-
+    <label for="voice">Voice: </label>
+    <select id="voice" name="voice"></select>
   </div>
 
 </div>
@@ -175,13 +169,6 @@
   myYellow = "#FDEE00";
   myGreen = "#50C878"
 
-  // If voices are already loaded, populate the select box
-  if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = loadSpeakers;
-  }
-
-
-
   document.getElementById('pauseButton').disabled = true;
   document.getElementById('resumeButton').disabled = true;
 
@@ -195,21 +182,6 @@
     let sheetUrl = document.getElementById('sheetUrl').value;
     loadSheetData(sheetUrl);
   });
-
-
-
-  // Populate the select box with available speakers
-  function loadSpeakers() {
-    const voices = window.speechSynthesis.getVoices();
-
-    voices.forEach(voice => {
-      const option = document.createElement('option');
-      option.textContent = voice.name + ' (' + voice.lang + ')';
-      option.setAttribute('data-lang', voice.lang);
-      option.setAttribute('data-name', voice.name);
-      speakerSelect.appendChild(option);
-    });
-  }
 
 
   document.getElementById('sendEmailButton').addEventListener('click',
@@ -382,19 +354,22 @@
     console.log(`numberExercises=${numberExercises}`)
   }
 
-  // go thru all  csv rows to build table of routine names for subsequent user selection
+  // go thru all routines csv to build table of routine names for suser selection
 
   function findRoutineInit(rows) {
+
     const routines = new Set();
+
     rows.forEach(row => {
-      // console.log(`row: ${row}`);
+      console.log(`row: ${row}`);
       r = row.split(',')[0];
+      console.log(`r: ${r}      routines: ${routines}`);
       if ((r.length>0) && (r !== "Routine")) {
         routines.add(row.split(',')[0])
       }
     });
 
-    // console.log(`routines: ${routines}`);
+    console.log(`routines: ${routines}`);
 
     // Populate the Routines table with the list of routine names for user selection
 
@@ -457,6 +432,7 @@
     // // Change the source of the image
     imageElement.src = image;
 
+
     // changeVideoSource(image);
   }
 
@@ -509,8 +485,14 @@
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
     document.getElementById('status-time').innerText = rHold
 
+
     document.getElementById('exercise-description').innerText = rDescription;     // check if hack
+
+
+    // clearText();
+
     document.getElementById('overallStatus').innerText = "Running"
+
 
     // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
     t2=`exercise ${Exercise} `
@@ -720,13 +702,22 @@
       let volume = document.getElementById('volume').value;
       let rate = document.getElementById('rate').value;
       let pitch = document.getElementById('pitch').value;
+      let voice = document.getElementById('voice').value;
+
+      // window.speechSynthesis.getVoices().forEach(function(voice) {
+      //   console.log(voice.name, voice.default ? voice.default :'');
+      // });
 
       let utterance = new SpeechSynthesisUtterance(text);
 
-      let selectedVoiceName = document.getElementById('speakerSelect').value;
+      // utterance.voice = speechSynthesis.getVoices().filter(function (voice) {
+      //   return voice.name == 'Whisper';
+      // })[0];
+
+      let selectedVoiceName = document.getElementById('voice').value;
       utterance.voice = speechSynthesis.getVoices().filter(voice => voice.name === selectedVoiceName)[0];
 
-      console.log(`utterance.voice=${utterance.voice}`);
+      console.log(utterance.voice);
 
       utterance.lang = 'en-GB';
       utterance.volume = volume; // 0 to 1
@@ -737,7 +728,16 @@
       alert("Sorry, your browser does not support Text to Speech!");
     }
   }
-
+  //
+  // function speakTextField() {
+  //   let text = document.getElementById('text-input').value;
+  //   speakText(text);
+  // }
+  //
+  //
+  // function clearText() {
+  //   document.getElementById('text-input').value = '';
+  // }
 
   function listenText() {
     if ('webkitSpeechRecognition' in window) {
@@ -771,6 +771,43 @@
 
   window.onload = () => {
     //... any existing onload code...
+
+    // let voiceSelect = document.getElementById('voice');
+    // let voices = window.speechSynthesis.getVoices();
+    //
+    // // Populate the voice select dropdown
+    // voices.forEach((voice, i) => {
+    //   let option = document.createElement('option');
+    //   option.value = voice.name;
+    //   option.innerHTML = voice.name + ' (' + voice.lang + ')';
+    //   voiceSelect.appendChild(option);
+    // });
+
+    let voiceSelect = document.getElementById('voice');
+
+// Hard-coded voice choices
+    let voices = [
+      {name: 'Samantha', lang: 'en-US'},
+      {name: 'Whisper', lang: 'en-US'},
+      {name: 'Wobble', lang: 'en-US'},
+      {name: 'Xander', lang: 'en-US'},
+      {name: 'Sara', lang: 'en-US'}
+      // Note: These names and languages are placeholders and may not work if the user's speech synthesis doesn't have them.
+    ];
+
+// Populate the voice select dropdown
+    voices.forEach((voice, i) => {
+      let option = document.createElement('option');
+      option.value = voice.name;
+      option.innerHTML = voice.name + ' (' + voice.lang + ')';
+      voiceSelect.appendChild(option);
+    });
+
+    voiceSelect.addEventListener('change', function () {
+      console.log('Voice selected:', voiceSelect.value);
+      // Additional code to handle voice change...
+    });
+
     loadDefaultData(); // ???????
   };
 
