@@ -18,12 +18,6 @@
   <!-- Panel 1: Table -->
   <div class="flex-item">
     <!--    <button onclick="loadDefaultData()">Load Demo</button>-->
-    <form id="urlForm">
-      <label for="sheetUrl">Google Sheet URL:</label>
-      <input type="url" id="sheetUrl" name="sheetUrl" required>
-      <button type="submit">Load Routines</button>
-    </form>
-    <br/>
     <table id="routinesTable" border="1">
       <thead>
       <tr style="height: 10px;">
@@ -39,6 +33,13 @@
   </div>
 
   <div class="flex-item">
+    <form id="urlForm">
+      <label for="sheetUrl">Google Sheet URL:</label>
+      <input type="url" id="sheetUrl" name="sheetUrl" required>
+      <button type="submit">Load Routines</button>
+    </form>
+    <br/>
+
     <label for="volume">Volume: </label>
     <input type="range" id="volume" min="0" max="1" step="0.10" value="0.5">
     <output id="volume-output" for="volume">0.5</output>
@@ -51,21 +52,13 @@
     <input type="range" id="pitch" min="0" max="2" step="0.01" value="1">
     <output id="pitch-output" for="pitch">1</output>
     <br>
-<!--    <label for="voice">Voice: </label>-->
-<!--    <select id="voice" name="voice"></select>-->
-
-
     <label for="speakerSelect">Select Speaker:</label>
     <select id="speakerSelect"></select>
-
-
   </div>
 
 </div>
 
 <div class="flex-container">
-  <!-- Panel 1: Table -->
-
   <div class="flex-item">
     <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
 
@@ -103,7 +96,6 @@
     </div>
   </div>
 
-
   <div class="flex-item-a">
     <button onclick="goRoutine()" id="goButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Go</button>
     <button onclick="pauseRoutine()" id="pauseButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>
@@ -112,15 +104,12 @@
     <button id="sendEmailButton">Send Stats</button>
   </div>
 
-
-
-  <!-- Panel 2: Inputs -->
-  <!--  <div class="flex-item">-->
   <div class="flex-item-b" id="status_id">
     <table id="dashboardTable" border="1">
       <thead>
       <tr>
         <th style="height: 40px; font-family: Arial, sans-serif; font-size: 36px;">Dashboard</th>
+        <td><span id="status-routine"></span></td>
       </tr>
       </thead>
       <tbody id="big1">
@@ -146,16 +135,20 @@
         <td><label>Rep:       </label>
         <td><span id="status-rep"></span></td>
         <!--          <td><button onclick="nextRep()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>-->
-      </tr>
+        <td class="bar-container">
+          <div class="bar" id="bar-rep"></div>
+        </td></tr>
       <tr>
         <td><label>Time Remaining: </label>
         <td><span id="status-time"></span></td>
+        <td class="bar-container">
+          <div class="bar" id="bar-time"></div>
+        </td>
       </tr>
       <!-- Rows will be populated by JavaScript -->
       </tbody>
     </table>
     <br/>
-
   </div>
 </div>
 </div>
@@ -171,6 +164,7 @@
   INIT_MOD = 5
 
   pauseSwitch = false;
+  stopSwitch = false;
 
   myYellow = "#FDEE00";
   myGreen = "#50C878"
@@ -179,8 +173,6 @@
   if (speechSynthesis.onvoiceschanged !== undefined) {
     speechSynthesis.onvoiceschanged = loadSpeakers;
   }
-
-
 
   document.getElementById('pauseButton').disabled = true;
   document.getElementById('resumeButton').disabled = true;
@@ -195,6 +187,18 @@
     let sheetUrl = document.getElementById('sheetUrl').value;
     loadSheetData(sheetUrl);
   });
+
+
+  document.getElementById('sendEmailButton').addEventListener('click',
+          function () {
+            // Format the data as CSV
+            // let csvData = `Exercise,Start Time,End Time,Duration\nExercise Name,${startTime},${endTime},${duration}`;
+            let csvData = exercise_stats;
+            alert(csvData)
+            // Use the mailto protocol to open the email client
+            sendEmail(csvData);
+          });
+
 
 
 
@@ -212,17 +216,6 @@
   }
 
 
-  document.getElementById('sendEmailButton').addEventListener('click',
-          function () {
-            // Format the data as CSV
-            // let csvData = `Exercise,Start Time,End Time,Duration\nExercise Name,${startTime},${endTime},${duration}`;
-            let csvData = exercise_stats;
-            alert(csvData)
-            // Use the mailto protocol to open the email client
-            sendEmail(csvData);
-          });
-
-
   function sendEmail(data) {
     let recipientEmail = "faw987@gmail.com"; // Change to the desired email address
     let subject = "stats";
@@ -238,7 +231,6 @@
     if (rowElement) {
       const rowTopPosition = rowElement.offsetTop;
       const centeringOffset = tableContainer.clientHeight / 2 - rowElement.clientHeight / 2;
-
       tableContainer.scrollTop = rowTopPosition - centeringOffset;
     }
   }
@@ -250,7 +242,6 @@
       const rowElement = rows[rowIndex];
       const rowTopPosition = rowElement.offsetTop;
       const centeringOffset = tableContainer.clientHeight / 2 - rowElement.clientHeight / 2;
-
       tableContainer.scrollTop = rowTopPosition - centeringOffset;
     }
   }
@@ -278,7 +269,6 @@
     const estart = start_hours + ":" + padWithZero(start_minutes) + ":" + padWithZero(start_seconds);
     return estart;
   }
-
 
   function changeVideoSource(newSrc) {
     // Select the source and video elements
@@ -339,7 +329,6 @@
       row.id = "ex-" + ex; // This will set IDs like row-0, row-1, etc.
       console.log(`row id: ${row.id}`)
 
-
       // Add a checkbox at the beginning of each row
       let checkboxCell = row.insertCell(0);
       let checkbox = document.createElement("input");
@@ -363,15 +352,16 @@
 
   }
 
-  // Function to process the clicked row
+  // Function to process the clicked item (button) corresponding to the selected routine
+
   function processRoutineSelectRow(row, rows) {
-    // let clickedData = row.cells[0].textContent;
-    let clickedData = row.name;
-    console.log(`clickedData=${clickedData}`)
+    let selectedRoutine = row.name;
+    console.log(`selectedRoutine=${selectedRoutine}`);
+    document.getElementById('status-routine').innerText = selectedRoutine;
     data = [];
     rows.forEach(eachrow => {
-      if (eachrow.startsWith(clickedData + ",")) {
-        let remainder = eachrow.substring(clickedData.length + 1);
+      if (eachrow.startsWith(selectedRoutine + ",")) {
+        let remainder = eachrow.substring(selectedRoutine.length + 1);
         newRow=remainder.split(',');
         data.push(newRow);
       }
@@ -384,7 +374,8 @@
 
   // go thru all  csv rows to build table of routine names for subsequent user selection
 
-  function findRoutineInit(rows) {
+  function routinesTableInit(rows) {
+
     const routines = new Set();
     rows.forEach(row => {
       // console.log(`row: ${row}`);
@@ -393,8 +384,6 @@
         routines.add(row.split(',')[0])
       }
     });
-
-    // console.log(`routines: ${routines}`);
 
     // Populate the Routines table with the list of routine names for user selection
 
@@ -425,7 +414,7 @@
             .then(data => {
               let rows = data.split("\n");
               displaySummary(rows);
-              findRoutineInit(rows);
+              routinesTableInit(rows);
             })
             .catch(error => console.error('Error fetching data:', error));
   }
@@ -481,12 +470,9 @@
     test1_1sec();
   }
 
-
   function stopRoutine(){
-    stop = true;
+    stopSwitch = true;
   }
-
-
 
   function goRoutine(){
 
@@ -498,7 +484,7 @@
     var divElement = document.querySelector('.flex-container');
 
 // Set its display property to "none" to hide it
-    divElement.style.display = 'none';
+//     divElement.style.display = 'none';              //  Maybe best NOT TO DO IT ?????????
 
     let tr = document.getElementById('status-time').innerText;
 
@@ -511,6 +497,7 @@
 
     document.getElementById('exercise-description').innerText = rDescription;     // check if hack
     document.getElementById('overallStatus').innerText = "Running"
+
 
     // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
     t2=`exercise ${Exercise} `
@@ -537,6 +524,13 @@
   }
 
 
+  function extracted(tr, rHold) {
+    let percentComplete = (tr / rHold) * 100;
+    let stylew = `${percentComplete}%`
+    console.log(`value=${tr}, max=${rHold},  percentComplete=${percentComplete}`);
+    return stylew;
+  }
+
   function test1_1sec(){
     let tr = document.getElementById('status-time').innerText;
 
@@ -550,6 +544,18 @@
     let rid= `ex-${Exercise}`;
 
     scrollToRow(rid);
+
+    if (stopSwitch) {
+      console.log("stop accepted.");
+      // Select the div with class "flex-container"
+      var divElement = document.querySelector('.flex-container');
+
+// Set its display property to "none" to hide it
+      divElement.style.display = 'grid';
+      document.getElementById('stopButton').disabled = true;
+
+      return;
+    }
 
     if (pauseSwitch) {
       setTimeout(test1_1sec,1000);
@@ -577,9 +583,6 @@
 
     console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
 
-    highlightSpecificRowColor(Number(Exercise)-1,myYellow);
-    scrollToRowIndex(Number(Exercise)-1);
-
     t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     // console.log(t1)
 
@@ -587,6 +590,8 @@
       // t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
       t2=`set  ${Set} repetition  ${Rep}  hold ${rHold}.`
       speakText(t2);
+      highlightSpecificRowColor(Number(Exercise)-1,myYellow);
+      scrollToRowIndex(Number(Exercise)-1);
     }
 
     if (parseInt(tr) > 0) {
@@ -605,6 +610,8 @@
 
       tr=Number(tr)-1;
       document.getElementById('status-time').innerText = tr;
+      let stylew = extracted(tr, rHold);
+      document.getElementById("bar-time").style.width = stylew;
       setTimeout(test1_1sec,1000);
 
     } else {
@@ -619,7 +626,10 @@
       console.log(`Rep ${Rep}   rReps ${rReps}`);
 
       if (parseInt(Rep) < parseInt(rReps)) {
-        document.getElementById('status-rep').innerText = Number(Rep)+1;
+        let newRep = Number(Rep)+1;
+        document.getElementById('status-rep').innerText = newRep;
+        let stylew = extracted(newRep, rReps);
+        document.getElementById("bar-rep").style.width = stylew;
         document.getElementById('status-time').innerText = rHold;
         console.log(`rRepP=${rRepP}   pausing`);
         speakText(`pause ${rRepP}`);
@@ -714,6 +724,12 @@
     window.speechSynthesis.speak(utterance);
   }
 
+
+
+
+
+
+
   function speakText(text) {
     if ('speechSynthesis' in window) {
       // Get voice properties from controls
@@ -723,12 +739,56 @@
 
       let utterance = new SpeechSynthesisUtterance(text);
 
-      let selectedVoiceName = document.getElementById('speakerSelect').value;
-      utterance.voice = speechSynthesis.getVoices().filter(voice => voice.name === selectedVoiceName)[0];
+      let selectedVoiceName = document.getElementById('speakerSelect');
+
+      llang = selectedVoiceName.getAttribute("data-lang");
+      lname = selectedVoiceName.getAttribute("data-name");
+      // let reqvoice = selectedVoiceName.replace(/\s*\(.*?\)\s*$/, '');
+
+      // console.log(`llang=${llang}`);
+      // console.log(`lname=${lname}`);
+
+      // console.log(`selectedVoiceName=${selectedVoiceName}`);
+      // console.log(`reqvoice=${reqvoice}`);
+      //
+      // utterance.voice = speechSynthesis.getVoices().filter(voices => voices.name === selectedVoiceName)[0];
+      utterance.voice = speechSynthesis.getVoices().filter(voices => voices.name === lname)[0];
+      //
+      //
+      // voices.forEach(voice => {
+      //   const option = document.createElement('option');
+      //   option.textContent = voice.name + ' (' + voice.lang + ')';
+      //   option.setAttribute('data-lang', voice.lang);
+      //   option.setAttribute('data-name', voice.name);
+      //   speakerSelect.appendChild(option);
+      // });
+      // let v = speechSynthesis.getVoices();
+      // v.forEach(voice => {
+      //     // const option = document.createElement('option');
+      //     // option.textContent = voice.name + ' (' + voice.lang + ')';
+      //     // option.setAttribute('data-lang', voice.lang);
+      //     // option.setAttribute('data-name', voice.name);
+      //     // speakerSelect.appendChild(option);
+      //   console.log(`voice=${voice.name}`)
+      //   });
+
+//
+// // Get the list of available voices
+//       let voices = window.speechSynthesis.getVoices();
+//
+// // Filter and select a specific voice, e.g., by its name
+//       let selectedVoice = voices.find(voice => voice.name === reqvoice);
+//
+// // Assign the selected voice to the utterance
+//       utterance.voice = selectedVoice;
+
 
       console.log(`utterance.voice=${utterance.voice}`);
+      console.log("l lang",llang);
+      console.log("l name",lname);
 
-      utterance.lang = 'en-GB';
+
+      // utterance.lang = 'en-GB';
       utterance.volume = volume; // 0 to 1
       utterance.rate = rate; // 0.1 to 10
       utterance.pitch = pitch; // 0 to 2

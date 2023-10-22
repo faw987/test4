@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h3>Tues 17 - 10/21/2023 10:32 AM </h3>
+<h2>Tues 17 - 10/22/2023 11:42 AM </h2>
 <br/>
 <a href="faw4.html">faw4 location and camera</a>
 <br/>

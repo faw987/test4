@@ -115,7 +115,7 @@ th {
 }
 
 .flex-item-b {
-    /*flex: 1; !* Each panel takes up an equal amount of space *!*/
+    flex: 1; /* Each panel takes up an equal amount of space */
     width: 320px;
     padding: 10px;
     border: 1px solid #ddd; /* Adding a border for visual separation */
@@ -161,6 +161,22 @@ input {
 #exercise-description {
     font-size: 18px;
 }
+
+
+.bar-container {
+    width: 100px;
+    height: 30px;
+    background-color: #f0f0f0;
+    position: relative;
+}
+
+.bar {
+    background-color: #3498db;
+    height: 50%;
+    position: absolute;
+    bottom: 0;
+}
+
 
 @media only screen and (max-width: 600px) {
     table {
