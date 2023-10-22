@@ -165,6 +165,8 @@
 
   pauseSwitch = false;
   stopSwitch = false;
+  weAreSpeaking = false;
+
 
   myYellow = "#FDEE00";
   myGreen = "#50C878"
@@ -474,7 +476,7 @@
     stopSwitch = true;
   }
 
-  function goRoutine(){
+  async function goRoutine(){
 
     document.getElementById('goButton').disabled = true;
     document.getElementById('pauseButton').disabled = false;
@@ -504,7 +506,7 @@
 
     exercise_startTime = new Date();
 
-    speakText(t2);
+    await speakText(t2);
     // speakTextCallback(t2,speak1done);     // hack for testing
 
     console.log(`runRoutine time remaining=${tr}`)
@@ -531,7 +533,7 @@
     return stylew;
   }
 
-  function test1_1sec(){
+  async function test1_1sec(){
     let tr = document.getElementById('status-time').innerText;
 
     let Exercise = document.getElementById('status-exercise').innerText;
@@ -544,6 +546,7 @@
     let rid= `ex-${Exercise}`;
 
     scrollToRow(rid);
+
 
     if (stopSwitch) {
       console.log("stop accepted.");
@@ -589,7 +592,7 @@
     if (tr === rHold) {
       // t2=`${rDescription}, ${rSets}  sets ${rReps} repetitions.`
       t2=`set  ${Set} repetition  ${Rep}  hold ${rHold}.`
-      speakText(t2);
+      await speakText(t2);
       highlightSpecificRowColor(Number(Exercise)-1,myYellow);
       scrollToRowIndex(Number(Exercise)-1);
     }
@@ -605,7 +608,7 @@
 
       if (index !== -1) {
         t = `${tr} remaining.`;
-        speakText(t);
+        await speakText(t);
       };
 
       tr=Number(tr)-1;
@@ -621,7 +624,7 @@
       // t = `Set ${Set} repetition ${Rep} complete.`;
       t = `repetition ${Rep} complete.`;
       console.log(t);
-      speakText(`${t}`);
+      await  speakText(`${t}`);
 
       console.log(`Rep ${Rep}   rReps ${rReps}`);
 
@@ -632,7 +635,7 @@
         document.getElementById("bar-rep").style.width = stylew;
         document.getElementById('status-time').innerText = rHold;
         console.log(`rRepP=${rRepP}   pausing`);
-        speakText(`pause ${rRepP}`);
+        await speakText(`pause ${rRepP}`);
         setTimeout(test1_1sec,rRepP*1000);
         // setTimeout(test1_1sec,1000);
       } else {
@@ -641,7 +644,7 @@
           document.getElementById('status-rep').innerText = 1;
           document.getElementById('status-time').innerText = rHold;
           console.log(`rSetP=${rSetP}  pausing`);
-          speakText(`pause ${rSetP}`);
+          await  speakText(`pause ${rSetP}`);
           setTimeout(test1_1sec,rSetP*1000);
           // setTimeout(test1_1sec,1000);
         } else {
@@ -724,96 +727,94 @@
     window.speechSynthesis.speak(utterance);
   }
 
+  async function speakText(text) {
+    return new Promise((resolve, reject) => {
+      let utterance = new SpeechSynthesisUtterance(text);
 
+      utterance.onend = function(event) {
+        resolve(); // Resolve the promise when speech ends
+      };
 
+      utterance.onerror = function(event) {
+        reject(new Error('Speech synthesis error')); // Reject on error
+      };
 
-
-
-
-  function speakText(text) {
-    if ('speechSynthesis' in window) {
-      // Get voice properties from controls
       let volume = document.getElementById('volume').value;
       let rate = document.getElementById('rate').value;
       let pitch = document.getElementById('pitch').value;
-
-
 
       const speakerSelect = document.getElementById('speakerSelect');
       const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
       const voices = window.speechSynthesis.getVoices();
       const voice = voices.find(voice => voice.name === selectedVoiceName);
 
-      // const utterance = new SpeechSynthesisUtterance(testText.value);
-      const utterance = new SpeechSynthesisUtterance(text);
+      // const utterance = new SpeechSynthesisUtterance(text);
       utterance.voice = voice;
 
-
-
-      //
-      //
-      // utterance.voice = voice;
-      //
-      //
-      //
-      // let selectedVoiceName = document.getElementById('speakerSelect');
-      //
-      // llang = selectedVoiceName.getAttribute("data-lang");
-      // lname = selectedVoiceName.getAttribute("data-name");
-      // let reqvoice = selectedVoiceName.replace(/\s*\(.*?\)\s*$/, '');
-
-      // console.log(`llang=${llang}`);
-      // console.log(`lname=${lname}`);
-
-      // console.log(`selectedVoiceName=${selectedVoiceName}`);
-      // console.log(`reqvoice=${reqvoice}`);
-      //
-      // utterance.voice = speechSynthesis.getVoices().filter(voices => voices.name === selectedVoiceName)[0];
-      // utterance.voice = speechSynthesis.getVoices().filter(voices => voices.name === lname)[0];
-      //
-      //
-      // voices.forEach(voice => {
-      //   const option = document.createElement('option');
-      //   option.textContent = voice.name + ' (' + voice.lang + ')';
-      //   option.setAttribute('data-lang', voice.lang);
-      //   option.setAttribute('data-name', voice.name);
-      //   speakerSelect.appendChild(option);
-      // });
-      // let v = speechSynthesis.getVoices();
-      // v.forEach(voice => {
-      //     // const option = document.createElement('option');
-      //     // option.textContent = voice.name + ' (' + voice.lang + ')';
-      //     // option.setAttribute('data-lang', voice.lang);
-      //     // option.setAttribute('data-name', voice.name);
-      //     // speakerSelect.appendChild(option);
-      //   console.log(`voice=${voice.name}`)
-      //   });
-
-//
-// // Get the list of available voices
-//       let voices = window.speechSynthesis.getVoices();
-//
-// // Filter and select a specific voice, e.g., by its name
-//       let selectedVoice = voices.find(voice => voice.name === reqvoice);
-//
-// // Assign the selected voice to the utterance
-//       utterance.voice = selectedVoice;
-
-
-      console.log(`utterance.voice=${utterance.voice}`);
-      // console.log("l lang",llang);
-      // console.log("l name",lname);
-
-
       // utterance.lang = 'en-GB';
+
       utterance.volume = volume; // 0 to 1
       utterance.rate = rate; // 0.1 to 10
       utterance.pitch = pitch; // 0 to 2
+
       window.speechSynthesis.speak(utterance);
+    });
+  }
+
+
+
+
+
+
+  function speakTextOld(text) {
+    if ('speechSynthesis' in window) {
+      // Get voice properties from controls
+
+      let volume = document.getElementById('volume').value;
+      let rate = document.getElementById('rate').value;
+      let pitch = document.getElementById('pitch').value;
+
+      const speakerSelect = document.getElementById('speakerSelect');
+      const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find(voice => voice.name === selectedVoiceName);
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = voice;
+
+      // utterance.lang = 'en-GB';
+
+      utterance.volume = volume; // 0 to 1
+      utterance.rate = rate; // 0.1 to 10
+      utterance.pitch = pitch; // 0 to 2
+
+
+
+      // Attach an event handler for the 'end' event
+      utterance.onend = function(event) {
+        console.log('Speech has finished');
+        weAreSpeaking = false;
+      };
+
+
+      weAreSpeaking = true;
+      window.speechSynthesis.speak(utterance);
+      setTimeout(speakTextWait,1000);
     } else {
       alert("Sorry, your browser does not support Text to Speech!");
     }
   }
+
+
+function speakTextWait() {
+  if (weAreSpeaking) {
+    console.log("wait another sec for speack to end");
+    setTimeout(speakTextWait, 1000);
+    return;
+  } else {
+    return;
+  }
+}
 
 
   function listenText() {
