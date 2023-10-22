@@ -500,12 +500,12 @@
 
 
     // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
-    t2=`exercise ${Exercise} `
+    t2=`exercise ${Exercise} ${rDescription}`
 
     exercise_startTime = new Date();
 
-    // speakText(t2);
-    speakTextCallback(t2,speak1done);
+    speakText(t2);
+    // speakTextCallback(t2,speak1done);     // hack for testing
 
     console.log(`runRoutine time remaining=${tr}`)
 
@@ -737,12 +737,29 @@
       let rate = document.getElementById('rate').value;
       let pitch = document.getElementById('pitch').value;
 
-      let utterance = new SpeechSynthesisUtterance(text);
 
-      let selectedVoiceName = document.getElementById('speakerSelect');
 
-      llang = selectedVoiceName.getAttribute("data-lang");
-      lname = selectedVoiceName.getAttribute("data-name");
+      const speakerSelect = document.getElementById('speakerSelect');
+      const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
+      const voices = window.speechSynthesis.getVoices();
+      const voice = voices.find(voice => voice.name === selectedVoiceName);
+
+      // const utterance = new SpeechSynthesisUtterance(testText.value);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.voice = voice;
+
+
+
+      //
+      //
+      // utterance.voice = voice;
+      //
+      //
+      //
+      // let selectedVoiceName = document.getElementById('speakerSelect');
+      //
+      // llang = selectedVoiceName.getAttribute("data-lang");
+      // lname = selectedVoiceName.getAttribute("data-name");
       // let reqvoice = selectedVoiceName.replace(/\s*\(.*?\)\s*$/, '');
 
       // console.log(`llang=${llang}`);
@@ -752,7 +769,7 @@
       // console.log(`reqvoice=${reqvoice}`);
       //
       // utterance.voice = speechSynthesis.getVoices().filter(voices => voices.name === selectedVoiceName)[0];
-      utterance.voice = speechSynthesis.getVoices().filter(voices => voices.name === lname)[0];
+      // utterance.voice = speechSynthesis.getVoices().filter(voices => voices.name === lname)[0];
       //
       //
       // voices.forEach(voice => {
@@ -784,8 +801,8 @@
 
 
       console.log(`utterance.voice=${utterance.voice}`);
-      console.log("l lang",llang);
-      console.log("l name",lname);
+      // console.log("l lang",llang);
+      // console.log("l name",lname);
 
 
       // utterance.lang = 'en-GB';
