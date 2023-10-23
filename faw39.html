@@ -54,6 +54,9 @@
     <br>
     <label for="speakerSelect">Select Speaker:</label>
     <select id="speakerSelect"></select>
+    <br>
+    <label for="debugFlags">Special Flags:</label>
+    <input type="text" id="debugFlags">
   </div>
 
 </div>
@@ -111,7 +114,9 @@
     <button onclick="pauseRoutine()" id="pauseButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Pause</button>
     <button onclick="resumeRoutine()" id="resumeButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>
     <button onclick="stopRoutine()" id="stopButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>
-    <button id="sendEmailButton">Send Stats</button>
+<!--    <button id="sendEmailButton">Send Stats</button>-->
+    <button onclick="stopRoutine()" id="sendEmailButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Send Stats</button>
+    <button onclick="listenText()" id="stopButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Listen</button>
   </div>
 
   <div class="flex-item-b" id="status_id">
@@ -270,7 +275,7 @@
 
   function scrollToRow(rowId) {
     const rowElement = document.getElementById(rowId);
-    console.log(`rowElement: ${rowElement}`)
+    // console.log(`rowElement: ${rowElement}`)   faw
     const containerElement = document.querySelector('.scrollable-table');
 
     if (rowElement && containerElement) {
@@ -480,7 +485,7 @@
 
   function getExerciseDetails(table,index){
     const tableRow = table[index];
-    console.log(`getExerciseDetails index=${index}  tableRow=${tableRow}`);
+    // console.log(`getExerciseDetails index=${index}  tableRow=${tableRow}`);  faw
     return tableRow;
   }
 
@@ -598,14 +603,14 @@
     }  else       {
       console.log(`not checked       specificRow=${specificRow}         firstCellValue=${firstCellValue}`)};
 
-    firstCell = specificRow.cells[1];
-    firstCellValue = firstCell.textContent || firstCell.innerText;
-
-    console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
-    firstCell = specificRow.cells[2];
-    firstCellValue = firstCell.textContent || firstCell.innerText;
-
-    console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
+    // firstCell = specificRow.cells[1];
+    // firstCellValue = firstCell.textContent || firstCell.innerText;
+    //
+    // console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
+    // firstCell = specificRow.cells[2];
+    // firstCellValue = firstCell.textContent || firstCell.innerText;
+    //
+    // console.log(`specificRow=${specificRow}         firstCellValue=${firstCellValue}`)
 
     t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     // console.log(t1)
@@ -625,7 +630,7 @@
 
       index=slashesAddedCountdown.indexOf(slashesAddedTr)
 
-      console.log(`tr="${tr}"  index=${index}   slashesAddedCountdown="${slashesAddedCountdown}"   slashesAddedTr=${slashesAddedTr}`);
+      // console.log(`tr="${tr}"  index=${index}   slashesAddedCountdown="${slashesAddedCountdown}"   slashesAddedTr=${slashesAddedTr}`); faw
 
       if (index !== -1) {
         t = `${tr} remaining.`;
@@ -850,14 +855,54 @@ function speakTextWait() {
     if ('webkitSpeechRecognition' in window) {
       const recognition = new webkitSpeechRecognition();
       recognition.lang = 'en-US';
+
       recognition.onresult = function(event) {
         // document.getElementById('text-input').value = event.results[0][0].transcript;
-        alert(event.results[0][0].transcript);
+        const text = event.results[0][0].transcript;
+        console.log(`JUST_HEARD: ${text}`);
+        // console.log("recognition.start() !!!!!!!! ");
+        // recognition.start();
+        switch (text) {
+          case "pause":
+            // code to be executed if expression is value1
+            console.log("pause !!!!!!!");
+            pauseRoutine();
+            break;
+          case "resume":
+            console.log("resume !!!!!!!! ");
+            resumeRoutine();
+            break;
+          default:
+                // code to be executed if expression is different from all
+        }
       };
+
       recognition.onerror = function(event) {
         alert('Error occurred in recognition: ' + event.error);
+      };
+
+      console.log("recognition start");
+      recognition.continuous = true; // Set to continuous mode
+      recognition.interimResults = true; // Get interim (not-final) results
+
+
+      if (window.SpeechGrammarList || window.webkitSpeechGrammarList) {
+        let SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList;
+        let grammarList = new SpeechGrammarList();
+        const grammar =
+                "#JSGF V1.0; grammar colors; public <color> = pause | juxtaposition | resume | stop ;";
+        // const recognition = new SpeechRecognition();
+        const speechRecognitionList = new SpeechGrammarList();
+        speechRecognitionList.addFromString(grammar, 1);
+        recognition.grammars = speechRecognitionList;
+        console.log('SpeechGrammarList set.');
+      } else {
+        console.log('SpeechGrammarList is not supported in this browser.');
       }
+
       recognition.start();
+      console.log("go routine");
+      goRoutine();
     } else {
       alert("Sorry, your browser does not support Speech Recognition!");
     }
