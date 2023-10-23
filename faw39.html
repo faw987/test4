@@ -18,7 +18,7 @@
   <!-- Panel 1: Table -->
   <div class="flex-item">
     <!--    <button onclick="loadDefaultData()">Load Demo</button>-->
-    <table id="routinesTable" border="1">
+    <table id="routinesTable" >
       <thead>
       <tr style="height: 10px;">
         <th style="height: 10px; font-family: Arial, sans-serif; font-size: 16px;">Click below to select a routine to execute.</th>
@@ -77,7 +77,7 @@
     <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
 
     <div  id="tableContainer" class="scrollable-table">
-      <table border="1" id="exerciseTable">
+      <table id="exerciseTable">
         <thead>
         <tr>
           <th style="width: 15px;">Select</th>
@@ -107,11 +107,11 @@
     <button onclick="resumeRoutine()" id="resumeButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Resume</button>
     <button onclick="stopRoutine()" id="stopButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Stop</button>
     <button id="sendEmailButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Send Stats</button>
-    <button onclick="listenText()" id="stopButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Listen</button>
+    <button onclick="listenText()" id="listenButton" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Listen</button>
   </div>
 
   <div class="flex-item-b" id="status_id">
-    <table id="dashboardTable" border="1">
+    <table id="dashboardTable">
       <thead>
       <tr>
         <th style="height: 40px; font-family: Arial, sans-serif; font-size: 36px;">Dashboard</th>
@@ -141,7 +141,7 @@
         <!--          <td><button onclick="nextSet()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>-->
         <td class="bar-container">
           <div class="bar" id="bar-set"></div>
-        </td></tr>
+        </td>
       </tr>
       <tr>
         <td><label>Rep:       </label>
@@ -221,8 +221,8 @@
   }
 
   function openInNewTab(imgElement) {
-    var imgUrl = imgElement.src;
-    var win = window.open(imgUrl, '_blank');
+    const imgUrl = imgElement.src;
+    const win = window.open(imgUrl, '_blank');
     win.focus();
   }
 
@@ -248,7 +248,7 @@
   function scrollToRowById(rowId) {
     const tableContainer = document.getElementById('tableContainer');
     const rowElement = document.getElementById(rowId);
-    let specificRow = tableBody.rows[r]; // This gets the second row (index starts at 0)
+    // let specificRow = tableBody.rows[r]; // This gets the second row (index starts at 0)
 
     if (rowElement) {
       const rowTopPosition = rowElement.offsetTop;
@@ -292,8 +292,8 @@
 
   function changeVideoSource(newSrc) {
     // Select the source and video elements
-    var videoSrc = document.getElementById('videoSrc');
-    var myVideo = document.getElementById('myVideo');
+    const videoSrc = document.getElementById('videoSrc');
+    const myVideo = document.getElementById('myVideo');
 
     // Change the source of the video
     videoSrc.src = newSrc;
@@ -391,17 +391,16 @@
     numberExercises=data.length;
     console.log(`numberExercises=${numberExercises}`);
 
-
+    let Exercise = 1;
+    let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
+    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
+    document.getElementById('exercise-description').innerText = rDescription;     // check if hack
+    setImage(rPic); // check if hack
     updateDashboardField('exercise',1,numberExercises);
     updateDashboardField('set',1,rSets);          // hack  ?
     updateDashboardField('rep',1,rReps);          //hack ?
-    updateDashboardField('time',rHold,0);          //hack ?
+    updateDashboardField('time',rHold,rHold);          //hack ?
 
-    // let Exercise = 1;
-    // let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
-    // const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
-    // document.getElementById('exercise-description').innerText = rDescription;     // check if hack
-    // setImage(rPic); // check if hack
     //
   }
 
@@ -520,10 +519,10 @@
     document.getElementById('resumeButton').disabled = true;
 
     // Select the div with class "flex-container"
-    var divElement = document.querySelector('.flex-container');
+    // Set its display property to "none" to hide it
 
-// Set its display property to "none" to hide it
-//     divElement.style.display = 'none';              //  Maybe best NOT TO DO IT ?????????
+    // var divElement = document.querySelector('.flex-container');
+    // divElement.style.display = 'none';              //  Maybe best NOT TO DO IT ?????????
 
     let tr = document.getElementById('status-time').innerText;
 
@@ -541,7 +540,7 @@
     updateDashboardField('exercise',Number(Exercise),numberExercises);
     updateDashboardField('set',1,rSets);          // hack  ?
     updateDashboardField('rep',1,rReps);          //hack ?
-    updateDashboardField('time',rHold,0);          //hack ?
+    updateDashboardField('time',rHold,rHold);          //hack ?
 
 
     document.getElementById('overallStatus').innerText = "Running"
@@ -612,8 +611,9 @@
     let checkbox = specificRow.cells[0].querySelector("input[type='checkbox']");
     if (checkbox && checkbox.checked) {
       console.log(`checked - specificRow=${specificRow} firstCellValue=${firstCellValue}`)
-    }  else       {
-      console.log(`not checked - specificRow=${specificRow} firstCellValue=${firstCellValue}`)};
+    }  else {
+      console.log(`not checked - specificRow=${specificRow} firstCellValue=${firstCellValue}`)
+    }
 
     t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     // console.log(t1)
@@ -634,7 +634,7 @@
       if (index !== -1) {
         t = `${tr} remaining.`;
         await speakText(t);
-      };
+      }
 
       tr=Number(tr)-1;
       document.getElementById('status-time').innerText = tr;
@@ -665,7 +665,7 @@
 
 
         // document.getElementById('status-time').innerText = rHold;
-        updateDashboardField('time',rHold,0);          //hack?
+        updateDashboardField('time',rHold,rHold);          //hack?
 
 
 
@@ -685,7 +685,7 @@
           updateDashboardField('set',newSet,rSets);
 
           updateDashboardField('rep',1,1);          //hack?
-          updateDashboardField('time',rHold,0);          //hack?
+          updateDashboardField('time',rHold,rHold);          //hack?
 
 
 
@@ -728,7 +728,7 @@
 
             updateDashboardField('set',1,1);          // hack?
             updateDashboardField('rep',1,1);          //hack?
-            updateDashboardField('time',rHold,0);          //hack?
+            updateDashboardField('time',rHold,rHold);          //hack?
 
 
             // document.getElementById('status-set').innerText = 1;
@@ -821,62 +821,6 @@
       window.speechSynthesis.speak(utterance);
     });
   }
-
-
-
-
-
-
-  function speakTextOld(text) {
-    if ('speechSynthesis' in window) {
-      // Get voice properties from controls
-
-      let volume = document.getElementById('volume').value;
-      let rate = document.getElementById('rate').value;
-      let pitch = document.getElementById('pitch').value;
-
-      const speakerSelect = document.getElementById('speakerSelect');
-      const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
-      const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(voice => voice.name === selectedVoiceName);
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = voice;
-
-      // utterance.lang = 'en-GB';
-
-      utterance.volume = volume; // 0 to 1
-      utterance.rate = rate; // 0.1 to 10
-      utterance.pitch = pitch; // 0 to 2
-
-
-
-      // Attach an event handler for the 'end' event
-      utterance.onend = function(event) {
-        console.log('Speech has finished');
-        weAreSpeaking = false;
-      };
-
-
-      weAreSpeaking = true;
-      window.speechSynthesis.speak(utterance);
-      setTimeout(speakTextWait,1000);
-    } else {
-      alert("Sorry, your browser does not support Text to Speech!");
-    }
-  }
-
-
-function speakTextWait() {
-  if (weAreSpeaking) {
-    console.log("wait another sec for speack to end");
-    setTimeout(speakTextWait, 1000);
-    return;
-  } else {
-    return;
-  }
-}
-
 
   function listenText() {
     if ('webkitSpeechRecognition' in window) {
