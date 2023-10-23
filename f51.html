@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IndexedDB Example</title>
+</head>
+<body>
+
+<h2>IndexedDB User Data Example</h2>
+
+<div>
+  <label for="userName">Name:</label>
+  <input type="text" id="userName">
+
+  <label for="userEmail">Email:</label>
+  <input type="text" id="userEmail">
+
+  <button onclick="addUser()">Add User</button>
+</div>
+
+<div>
+  <h3>All Users:</h3>
+  <ul id="userList"></ul>
+</div>
+
+<script>
+  let db;
+
+  // Open the IndexedDB database (or create if it doesn't exist)
+  let request = indexedDB.open("userData", 1);
+
+  request.onerror = function(event) {
+    console.error("Error opening IndexedDB:", event);
+  };
+
+  request.onupgradeneeded = function(event) {
+    db = event.target.result;
+    if (!db.objectStoreNames.contains('users')) {
+      db.createObjectStore('users', { keyPath: 'email' });
+    }
+  };
+
+  request.onsuccess = function(event) {
+    db = event.target.result;
+    displayUsers();
+  };
+
+  function addUser() {
+    let name = document.getElementById('userName').value;
+    let email = document.getElementById('userEmail').value;
+
+    let transaction = db.transaction(['users'], 'readwrite');
+    let store = transaction.objectStore('users');
+
+    let user = {
+      name: name,
+      email: email
+    };
+
+    let request = store.add(user);
+
+    request.onsuccess = function(event) {
+      console.log('User added:', user);
+      displayUsers();
+    };
+
+    request.onerror = function(event) {
+      console.error('Error adding user:', event);
+    };
+  }
+
+  function displayUsers() {
+    let userList = document.getElementById('userList');
+    userList.innerHTML = ''; // Clear previous list
+
+    let transaction = db.transaction(['users'], 'readonly');
+    let store = transaction.objectStore('users');
+
+    store.openCursor().onsuccess = function(event) {
+      let cursor = event.target.result;
+      if (cursor) {
+        let listItem = document.createElement('li');
+        listItem.textContent = `${cursor.value.name} (${cursor.value.email})`;
+        userList.appendChild(listItem);
+
+        cursor.continue();
+      }
+    };
+  }
+
+</script>
+</body>
+</html>

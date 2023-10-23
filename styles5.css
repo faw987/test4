@@ -168,14 +168,50 @@ input {
     height: 30px;
     background-color: #f0f0f0;
     position: relative;
+
+    /* Flexbox properties for vertical centering */
+    display: flex;
+    align-items: center;
 }
 
 .bar {
     background-color: #3498db;
-    height: 50%;
-    position: absolute;
-    bottom: 0;
+    height: 90%;
+    width: 100%; /* To make sure the bar takes the full width of the container */
+    font-family: 'Arial', sans-serif;
+    font-size: 80%;
 }
+
+
+
+/* Style for the image container */
+.image-wrapper {
+    position: relative;
+    display: inline-block; /* To ensure the container fits the size of the image */
+}
+
+/* Initially hide the hovered image */
+.hovered-image {
+    display: none;
+    position: absolute;
+    top: 10%;   /* Adjust as needed for positioning */
+    left: 110%; /* Place the hovered image to the right of the original image */
+    z-index: 1000; /* Ensure the hovered image stays on top */
+    border: 2px solid black; /* Optional border */
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5); /* Optional shadow for better visibility */
+}
+
+/* Display the larger image when hovering over the container */
+.image-wrapper:hover .hovered-image {
+    display: block;
+}
+
+/* Style for the larger image */
+.hovered-image img {
+    width: 600px;  /* Set to desired size */
+    height: 400px; /* Set to desired size */
+}
+
 
 
 @media only screen and (max-width: 600px) {

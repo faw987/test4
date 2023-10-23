@@ -58,18 +58,28 @@
 
 </div>
 
+
+<!--    <video id="myVideo" width="640" height="360" alt="Image" onerror="imgError(this);" class="customImage" controls>-->
+<!--      <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
+<!--      Your browser does not support the video tag.-->
+<!--    </video>-->
+
+
+
 <div class="flex-container">
   <div class="flex-item">
-    <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage">
+    <div class="image-wrapper">
+<!--      <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage" width="300" height="200" onclick="openInNewTab(this)">-->
+      <img id="myImage" src="default.png" alt="Image" onerror="imgError(this);" class="customImage" width="100%" height="30%" onclick="openInNewTab(this)">
+      <div class="hovered-image">
+        <img id="myImage2" src="default.png" alt="Image">
+      </div>
+    </div>
 
-    <!--    <video id="myVideo" width="640" height="360" alt="Image" onerror="imgError(this);" class="customImage" controls>-->
-    <!--      <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
-    <!--      Your browser does not support the video tag.-->
-    <!--    </video>-->
 
     <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
 
-    <div class="flex-item">
+<!--    <div class="flex-item">-->
       <div  id="tableContainer" class="scrollable-table">
         <table border="1" id="exerciseTable">
           <thead>
@@ -93,7 +103,7 @@
           </tbody>
         </table>
       </div>
-    </div>
+<!--    </div>-->
   </div>
 
   <div class="flex-item-a">
@@ -121,6 +131,9 @@
         <td><label>Exercise:</label></td>
         <td><span id="status-exercise"></span></td>
         <!--          <td><button onclick="nextExercise()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>-->
+        <td class="bar-container">
+          <div class="bar" id="bar-exercise"></div>
+        </td></tr>
       </tr>
       <tr>
         <td><label>Description:</label></td>
@@ -130,6 +143,9 @@
         <td><label>Set:      </label></td>
         <td><span id="status-set">Set</span></td>
         <!--          <td><button onclick="nextSet()" style="font-size: 20px; padding: 10px 20px; margin-top: 20px; display: block;">Next</button></td>-->
+        <td class="bar-container">
+          <div class="bar" id="bar-set"></div>
+        </td></tr>
       </tr>
       <tr>
         <td><label>Rep:       </label>
@@ -201,7 +217,11 @@
             sendEmail(csvData);
           });
 
-
+  function openInNewTab(imgElement) {
+    var imgUrl = imgElement.src;
+    var win = window.open(imgUrl, '_blank');
+    win.focus();
+  }
 
 
   // Populate the select box with available speakers
@@ -438,6 +458,10 @@
   function imgError(thing) {
     let imageElement = document.getElementById('myImage');
     imageElement.src = "default.png";
+    // hovered-
+    let imageElement2 = document.getElementById('myImage2');
+    imageElement2.src = "default.png";
+
   }
 
 
@@ -447,13 +471,16 @@
     //
     // // Change the source of the image
     imageElement.src = image;
+// hovered-
+    let imageElement2 = document.getElementById('myImage2');
+    imageElement2.src = image;
 
     // changeVideoSource(image);
   }
 
   function getExerciseDetails(table,index){
-    // console.log(`getExerciseDetails index=${index}`);
     const tableRow = table[index];
+    console.log(`getExerciseDetails index=${index}  tableRow=${tableRow}`);
     return tableRow;
   }
 
@@ -498,6 +525,8 @@
     document.getElementById('status-time').innerText = rHold
 
     document.getElementById('exercise-description').innerText = rDescription;     // check if hack
+    setImage(rPic); // check if hack
+
     document.getElementById('overallStatus').innerText = "Running"
 
 
@@ -507,7 +536,6 @@
     exercise_startTime = new Date();
 
     await speakText(t2);
-    // speakTextCallback(t2,speak1done);     // hack for testing
 
     console.log(`runRoutine time remaining=${tr}`)
 
@@ -518,13 +546,6 @@
     // setTimeout(test1_1sec,1000)
     test1_1sec()            // first call is not delayed by 1000 ms, subsequent calls are delayed
   }
-
-  // look more at this
-
-  function speak1done(){
-    // alert('speak1done')
-  }
-
 
   function extracted(tr, rHold) {
     let percentComplete = (tr / rHold) * 100;
@@ -615,6 +636,7 @@
       document.getElementById('status-time').innerText = tr;
       let stylew = extracted(tr, rHold);
       document.getElementById("bar-time").style.width = stylew;
+      document.getElementById("bar-time").innerText = stylew;   // so we see e.g., 55%
       setTimeout(test1_1sec,1000);
 
     } else {
@@ -633,6 +655,7 @@
         document.getElementById('status-rep').innerText = newRep;
         let stylew = extracted(newRep, rReps);
         document.getElementById("bar-rep").style.width = stylew;
+        document.getElementById("bar-rep").innerText = stylew;
         document.getElementById('status-time').innerText = rHold;
         console.log(`rRepP=${rRepP}   pausing`);
         await speakText(`pause ${rRepP}`);
@@ -640,7 +663,13 @@
         // setTimeout(test1_1sec,1000);
       } else {
         if (parseInt(Set) < parseInt(rSets)) {
-          document.getElementById('status-set').innerText = Number(Set)+1;
+          let newSet = Number(Set)+1;
+          document.getElementById('status-set').innerText = newSet;
+
+          let stylew = extracted(newSet, rSets);
+          document.getElementById("bar-set").style.width = stylew;
+          document.getElementById("bar-set").innerText = stylew;
+
           document.getElementById('status-rep').innerText = 1;
           document.getElementById('status-time').innerText = rHold;
           console.log(`rSetP=${rSetP}  pausing`);
