@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+  let map;
+  let panorama;
+
+  function initMap() {
+    // const initialPosition = { lat: 42.345573, lng: -71.098326 }; // Sample starting position 41.12354198514238, -81.80592082411044
+    const initialPosition = { lat: 41.12354198514238, lng: -81.80592082411044 }; // Sample starting position
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: initialPosition,
+      zoom: 14
+    });
+
+    panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('map'),
+            {
+              pov: {
+                heading: 34,
+                pitch: 10
+              },
+              visible: false // Initially hide the panorama
+            }
+    );
+
+    // Link the panorama to the map
+    map.setStreetView(panorama);
+
+    // Add right-click listener to the map
+    map.addListener('rightclick', function(event) {
+      showContextMenu(event);
+    });
+  }
+
+  function showContextMenu(event) {
+    // For simplicity, we'll just use the browser's default context menu.
+    // You can replace this with a custom context menu if desired.
+    const menuItem = document.createElement('div');
+    menuItem.textContent = 'Look Around';
+    menuItem.style.position = 'absolute';
+    menuItem.style.top = event.pixel.y + 'px';
+    menuItem.style.left = event.pixel.x + 'px';
+    menuItem.style.backgroundColor = 'white';
+    menuItem.style.padding = '8px';
+    menuItem.style.cursor = 'pointer';
+    menuItem.style.border = '1px solid black';
+
+    menuItem.onclick = function() {
+      // Switch to Street View at the right-clicked location and rotate 360 degrees
+      panorama.setPosition(event.latLng);
+      panorama.setVisible(true);
+      rotatePanorama(panorama);
+      document.body.removeChild(menuItem); // Remove the context menu item
+    };
+
+    document.body.appendChild(menuItem);
+
+    // Remove the context menu item if another part of the document is clicked
+    document.addEventListener('click', function() {
+      document.body.removeChild(menuItem);
+    });
+  }
+
+  function rotatePanorama(panorama) {
+    let currentHeading = panorama.getPov().heading;
+    const rotationInterval = setInterval(function() {
+      currentHeading += 1;
+      if (currentHeading > 360) {
+        clearInterval(rotationInterval); // Stop rotating after 360 degrees
+        currentHeading = 0;
+      }
+      panorama.setPov({
+        heading: currentHeading,
+        pitch: panorama.getPov().pitch
+      });
+    }, 50); // Adjust rotation speed if necessary
+  }
+
+
+</script>
+<body>
+
+
+<div id="map" style="width: 600px; height: 400px;"></div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap" async defer></script>
+
+
+
+</body>
+</html>

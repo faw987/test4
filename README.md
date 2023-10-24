@@ -31,6 +31,14 @@ a {
 <div id="text"></div>
 <h2> 10/24/2023 06:47 - V0.941 </h2>
 <br/>
+
+
+
+
+<a href="f52.html">360 degrees experiment</a>
+<br>
+
+
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
 
@@ -118,6 +126,11 @@ a {
 
 
 <a href="f49.html">try websocket</a>
+<br><br>
+
+
+
+<a href="f50.html">SpeechSynthesisUtterance experiment</a>
 <br><br>
 
 
