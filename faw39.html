@@ -180,6 +180,32 @@
   myYellow = "#FDEE00";
   myGreen = "#50C878"
 
+//
+//   // Define the object
+//   const phrases = {
+//     "exercise_start": {
+//       getValue: function() {
+//         // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+//         return `exercise ${Exercise} ${rDescription}`;
+//       }
+//     },
+//   "exercise_end": {
+//     getValue: function() {
+//       // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+//       return `exercise ${Exercise} ${rDescription} complete`;
+//     }
+//   }
+//   };
+// //
+//   // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+//   t2=`exercise ${Exercise} ${rDescription}`
+//
+//   exercise_startTime = new Date();
+//
+//   // await speakText(t2);
+//   await speakTextHelper('exercise_start');
+// phrases
+
   // If voices are already loaded, populate the select box
   if (speechSynthesis.onvoiceschanged !== undefined) {
     speechSynthesis.onvoiceschanged = loadSpeakers;
@@ -286,8 +312,7 @@
     const hours = d.getHours();
     const minutes = d.getMinutes();
     const seconds = d.getSeconds();
-    const estart = hours + ":" + padWithZero(minutes) + ":" + padWithZero(seconds);
-    return estart;
+    return hours + ":" + padWithZero(minutes) + ":" + padWithZero(seconds);
   }
 
   function changeVideoSource(newSrc) {
@@ -552,6 +577,7 @@
     exercise_startTime = new Date();
 
     await speakText(t2);
+    // await speakText(phrases['exercise_start'].getValue());
 
     console.log(`runRoutine time remaining=${tr}`)
 
