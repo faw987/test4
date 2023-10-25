@@ -17,6 +17,8 @@
       zoom: 14
     });
 
+    geocoder = new google.maps.Geocoder();
+
     panorama = new google.maps.StreetViewPanorama(
             document.getElementById('map'),
             {
@@ -31,63 +33,247 @@
     // Link the panorama to the map
     map.setStreetView(panorama);
 
-    // Add right-click listener to the map
-    map.addListener('rightclick', function(event) {
-      showContextMenu(event);
-    });
+      // Add right-click listener to the map
+      map.addListener('rightclick', function(event) {
+          showContextMenu(event);
+      });
+
+      // Add right-click listener to the map
+      map.addListener('doubleclick', function(event) {
+          showContextMenu(event);
+      });
+
   }
 
-  function showContextMenu(event) {
-    // For simplicity, we'll just use the browser's default context menu.
-    // You can replace this with a custom context menu if desired.
-    const menuItem = document.createElement('div');
-    menuItem.textContent = 'Look Around';
-    menuItem.style.position = 'absolute';
-    menuItem.style.top = event.pixel.y + 'px';
-    menuItem.style.left = event.pixel.x + 'px';
-    menuItem.style.backgroundColor = 'white';
-    menuItem.style.padding = '8px';
-    menuItem.style.cursor = 'pointer';
-    menuItem.style.border = '1px solid black';
+  function reverseGeocode(latLng, callback) {
+      geocoder.geocode({ 'location': latLng }, function(results, status) {
+          if (status === 'OK' && results[0]) {
+              callback(results[0].geometry.location); // Return the location of the nearest address
+          } else {
+              alert('No address found at this location.');
+          }
+      });
+  }
 
-    menuItem.onclick = function() {
-      // Switch to Street View at the right-clicked location and rotate 360 degrees
-      panorama.setPosition(event.latLng);
+  // function showStreetView(location) {
+  //     panorama.setPosition(location);
+  //     panorama.setVisible(true);
+  //     rotatePanorama(panorama); // Assuming you have a rotatePanorama function as before
+  // }
+
+  // ... [Your existing code]
+
+  function showStreetView(location) {
+      let headingValue = parseFloat(document.getElementById('headingInput').value);
+      let pitchValue = parseFloat(document.getElementById('pitchInput').value);
+
+      panorama.setPov({
+          heading: headingValue,
+          pitch: pitchValue
+      });
+      panorama.setPosition(location);
       panorama.setVisible(true);
       rotatePanorama(panorama);
-      document.body.removeChild(menuItem); // Remove the context menu item
-    };
-
-    document.body.appendChild(menuItem);
-
-    // Remove the context menu item if another part of the document is clicked
-    document.addEventListener('click', function() {
-      document.body.removeChild(menuItem);
-    });
   }
+
+  function updateHeadingValue(value) {
+      document.getElementById('headingInput').value = value;
+      document.getElementById('headingLabel').textContent = value;
+  }
+
+  function updatePitchValue(value) {
+      document.getElementById('pitchInput').value = value;
+      document.getElementById('pitchLabel').textContent = value;
+  }
+
+  function adjustHeading(increment) {
+      let slider = document.getElementById('headingSlider');
+      let newValue = parseFloat(slider.value) + increment;
+      if (newValue >= 0 && newValue <= 360) {
+          slider.value = newValue;
+          updateHeadingValue(newValue);
+      }
+  }
+
+  function adjustPitch(increment) {
+      let slider = document.getElementById('pitchSlider');
+      let newValue = parseFloat(slider.value) + increment;
+      if (newValue >= -90 && newValue <= 90) {
+          slider.value = newValue;
+          updatePitchValue(newValue);
+      }
+  }
+
+
+
+  function showContextMenu(event) {
+      // For simplicity, we'll just use the browser's default context menu.
+      // You can replace this with a custom context menu if desired.
+      const menuItem = document.createElement('div');
+      menuItem.textContent = 'Look Around';
+      menuItem.style.position = 'absolute';
+      menuItem.style.top = event.pixel.y + 'px';
+      menuItem.style.left = event.pixel.x + 'px';
+      menuItem.style.backgroundColor = 'white';
+      menuItem.style.padding = '8px';
+      menuItem.style.cursor = 'pointer';
+      menuItem.style.border = '1px solid black';
+
+      menuItem.onclick = function () {
+          // Switch to Street View at the right-clicked location and rotate 360 degrees
+          // panorama.setPosition(event.latLng);
+          // panorama.setVisible(true);
+          // rotatePanorama(panorama);
+
+          if (document.getElementById('adjustCheckbox').checked) {
+              // If "adjust" is on, reverse geocode to get the nearest address
+              reverseGeocode(event.latLng, function (addressLocation) {
+                  // Use the returned addressLocation for Street View
+                  console.log(`using adjusted: ${addressLocation}`)
+                  showStreetView(addressLocation);
+              });
+          } else {
+              // If "adjust" is off, use the clicked location
+              console.log(`using lat lon: ${event.latLng}`)
+              showStreetView(event.latLng);
+          }
+      }
+      // document.body.removeChild(menuItem); // Remove the context menu item
+      // };
+
+      document.body.appendChild(menuItem);
+
+      // Remove the context menu item if another part of the document is clicked
+      // document.addEventListener('click', function () {
+      //     document.body.removeChild(menuItem);
+      // })
+  }
+
+  // function rotatePanorama(panorama) {
+  //   let currentHeading = panorama.getPov().heading;
+  //   const rotationInterval = setInterval(function() {
+  //     currentHeading += 1;
+  //     if (currentHeading > 360) {
+  //       clearInterval(rotationInterval); // Stop rotating after 360 degrees
+  //       currentHeading = 0;
+  //     }
+  //     panorama.setPov({
+  //       heading: currentHeading,
+  //       pitch: panorama.getPov().pitch
+  //     });
+  //   }, 50); // Adjust rotation speed if necessary
+  // }
+
+
+  // ... [Your existing code]
+
+  let rotationInterval;
 
   function rotatePanorama(panorama) {
-    let currentHeading = panorama.getPov().heading;
-    const rotationInterval = setInterval(function() {
-      currentHeading += 1;
-      if (currentHeading > 360) {
-        clearInterval(rotationInterval); // Stop rotating after 360 degrees
-        currentHeading = 0;
-      }
-      panorama.setPov({
-        heading: currentHeading,
-        pitch: panorama.getPov().pitch
-      });
-    }, 50); // Adjust rotation speed if necessary
+      clearInterval(rotationInterval); // Clear any existing rotation interval
+
+      let currentHeading = panorama.getPov().heading;
+      const direction = parseFloat(document.getElementById('rotationDirection').value);
+
+      rotationInterval = setInterval(function() {
+          currentHeading += direction;
+          if (currentHeading > 360) {
+              currentHeading -= 360;
+          } else if (currentHeading < 0) {
+              currentHeading += 360;
+          }
+
+
+          let pitchValue = parseFloat(document.getElementById('pitchInput').value);
+
+
+          panorama.setPov({
+              heading: currentHeading,
+              // pitch: panorama.getPov().pitch,
+              pitch: pitchValue,
+              zoom: panorama.getPov().zoom
+          });
+      }, 50); // Adjust rotation speed if necessary
   }
+
+  function pauseRotation() {
+      clearInterval(rotationInterval);
+  }
+
+  function resumeRotation() {
+      rotatePanorama(panorama);
+  }
+
+  function showMap() {
+      panorama.setVisible(false);
+  }
+
+
+
+  function geocodeAddress() {
+      const address = document.getElementById('addressInput').value;
+
+      geocoder.geocode({ 'address': address }, function(results, status) {
+          if (status === 'OK') {
+              // Set the map's center to the first result's location
+              map.setCenter(results[0].geometry.location);
+              // Optionally, you can also add a marker at this location
+              new google.maps.Marker({
+                  map: map,
+                  position: results[0].geometry.location
+              });
+          } else {
+              alert('Geocode was not successful for the following reason: ' + status);
+          }
+      });
+  }
+
 
 
 </script>
 <body>
 
 
+<input type="text" id="addressInput" placeholder="Enter an address">
+<button onclick="geocodeAddress()">Go to Address</button>
+<input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address
+
 <div id="map" style="width: 600px; height: 400px;"></div>
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>-->
+
+
+<div id="map" style="width: 600px; height: 400px;"></div>
+
+<label>Heading:
+    <input type="number" id="headingInput" value="34">
+    <input type="range" id="headingSlider" min="0" max="360" value="34" oninput="updateHeadingValue(this.value)">
+    <span id="headingLabel">34</span>
+    <button onclick="adjustHeading(-1)">-</button>
+    <button onclick="adjustHeading(1)">+</button>
+</label>
+
+<label>Pitch:
+    <input type="number" id="pitchInput" value="10">
+    <input type="range" id="pitchSlider" min="-90" max="90" value="10" oninput="updatePitchValue(this.value)">
+    <span id="pitchLabel">10</span>
+    <button onclick="adjustPitch(-1)">-</button>
+    <button onclick="adjustPitch(1)">+</button>
+</label>
+<label>
+    Direction:
+    <select id="rotationDirection">
+        <option value="1">Clockwise</option>
+        <option value="-1">Counter-Clockwise</option>
+    </select>
+</label>
+
+<button onclick="pauseRotation()">Pause</button>
+<button onclick="resumeRotation()">Resume</button>
+<button onclick="showMap()">Map</button>
+
+
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap" async defer></script>
+
 
 
 
