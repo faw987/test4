@@ -228,6 +228,14 @@
       });
   }
 
+  function enter360View() {
+      // Use the current map's center as the position for Street View
+      const currentCenter = map.getCenter();
+
+      panorama.setPosition(currentCenter);
+      panorama.setVisible(true);
+      rotatePanorama(panorama);
+  }
 
 
 </script>
@@ -236,7 +244,9 @@
 
 <input type="text" id="addressInput" placeholder="Enter an address">
 <button onclick="geocodeAddress()">Go to Address</button>
-<input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address
+<input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address>
+<button onclick="enter360View()">360view</button>
+
 
 <div id="map" style="width: 600px; height: 400px;"></div>
 <!--<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>-->
