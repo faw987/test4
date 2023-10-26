@@ -114,13 +114,18 @@
   }
 
   function showStreetView(location) {
-      let headingValue = parseFloat(document.getElementById('headingInput').value);
-      let pitchValue = parseFloat(document.getElementById('pitchInput').value);
+      // let headingValue = parseFloat(document.getElementById('headingInput').value);
 
-      panorama.setPov({
-          heading: headingValue,
-          pitch: pitchValue
-      });
+
+      // hack
+
+
+      // let pitchValue = parseFloat(document.getElementById('pitchInput').value);
+      //
+      // panorama.setPov({
+      //     heading: headingValue,
+      //     pitch: pitchValue
+      // });
       panorama.setPosition(location);
       panorama.setVisible(true);
       rotatePanorama(panorama);
