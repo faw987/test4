@@ -260,9 +260,10 @@
 
 
 <label>Pitch:
-    <input type="number" id="pitchInput" value="10" width="40">
-    <input type="range" id="pitchSlider" min="-90" max="90" value="10" oninput="updatePitchValue(this.value)">
-    <span id="pitchLabel">10</span>
+    <input type="number" id="pitchInput" value="0" width="40">
+<!--    <input type="range" id="pitchSlider" min="-90" max="90" value="10" oninput="updatePitchValue(this.value)">-->
+    <input type="range" id="pitchSlider" min="-90" max="90" value="0" oninput="updatePitchValue(this.value)">
+    <span id="pitchLabel">0</span>
     <button onclick="adjustPitch(-1)">-</button>
     <button onclick="adjustPitch(1)">+</button>
 </label>
@@ -295,9 +296,10 @@
 <br/>
 
 <label>Zoom:
-    <input type="number" id="zoomInput" value="5">
-    <input type="range" id="zoomSlider" min="1" max="10" value="5" oninput="updateZoomValue(this.value)">
-    <span id="zoomLabel">5</span>
+    <input type="number" id="zoomInput" value="2">
+<!--    <input type="range" id="zoomSlider" min="1" max="10" value="5" oninput="updateZoomValue(this.value)">-->
+    <input type="range" id="zoomSlider" min="1" max="10" value="2" oninput="updateZoomValue(this.value)">
+    <span id="zoomLabel">2</span>
     <button onclick="adjustZoom(-1)">-</button>
     <button onclick="adjustZoom(1)">+</button>
 </label>
