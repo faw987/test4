@@ -60,10 +60,6 @@
 
 </div>
 
-<!--    <video id="myVideo" width="640" height="360" alt="Image" onerror="imgError(this);" class="customImage" controls>-->
-<!--      <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
-<!--      Your browser does not support the video tag.-->
-<!--    </video>-->
 
 <div class="flex-container">
   <div class="flex-item">
@@ -72,6 +68,16 @@
       <div class="hovered-image">
         <img id="myImage2" src="default.png" alt="Image">
       </div>
+
+
+
+<!--      for the future-->
+<!--      <video id="myVideo" width="640" height="360" alt="Image" onerror="imgError(this);" class="customImage" controls>-->
+<!--        <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
+<!--        Your browser does not support the video tag.-->
+<!--      </video>-->
+
+
     </div>
 
     <!--Exercise	Description	Sets	Reps	Hold	Freq	Pic	Extras-->
@@ -497,7 +503,7 @@
     let imageElement2 = document.getElementById('myImage2');
     imageElement2.src = "default.png";
 
-  }
+      }
 
 
   function setImage(image) {
@@ -510,7 +516,13 @@
 // hover
     let imageElement2 = document.getElementById('myImage2');
     imageElement2.src = image;
-  }
+
+
+    // below not quite working - look at it
+    // let imageElementVid = document.getElementById('myVideo');
+    // imageElementVid.src = image;
+
+      }
 
   function getExerciseDetails(table,index){
     const tableRow = table[index];
