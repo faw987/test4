@@ -7,10 +7,40 @@
 <script>
   let map;
   let panorama;
+  let direction = 1; // Default direction is clockwise
+
+
+  function setDirection(newDirection) {
+      pauseRotation(); // Pause the current rotation
+      direction = newDirection; // Set the new direction
+
+      // Highlight the active direction button and reset the other
+      if (newDirection === 1) {
+          document.getElementById('clockwiseButton').style.backgroundColor = '#2196F3';
+          document.getElementById('counterClockwiseButton').style.backgroundColor = '';
+      } else {
+          document.getElementById('counterClockwiseButton').style.backgroundColor = '#2196F3';
+          document.getElementById('clockwiseButton').style.backgroundColor = '';
+      }
+
+      resumeRotation(); // Resume the rotation with the new direction
+  }
+
 
   function initMap() {
     // const initialPosition = { lat: 42.345573, lng: -71.098326 }; // Sample starting position 41.12354198514238, -81.80592082411044
     const initialPosition = { lat: 41.12354198514238, lng: -81.80592082411044 }; // Sample starting position
+
+    document.getElementById('addressInput').addEventListener('keydown', function(event) {
+      // Check if the "Enter" key was pressed
+      if (event.keyCode === 13 || event.which === 13) {
+          event.preventDefault(); // Prevent any default action
+          document.getElementById('goToAddressButton').click(); // Simulate button click
+      }
+    });
+
+
+
 
     map = new google.maps.Map(document.getElementById('map'), {
       center: initialPosition,
@@ -164,8 +194,8 @@
 
       let currentHeading = panorama.getPov().heading;
 
-      const dv = document.getElementById('rotationDirection').value;
-      const direction = parseFloat(dv);
+      // const dv = document.getElementById('rotationDirection').value;
+      // const direction = parseFloat(dv);
 
       const speed = parseFloat(document.getElementById('speedInput').value);
 
@@ -240,20 +270,27 @@
 
 <!--<input type="text" id="addressInput" placeholder="Enter an address">-->
 <input type="text" id="addressInput" placeholder="Enter an address">
-<button onclick="geocodeAddress()">Go to Address</button>
+<button onclick="geocodeAddress()" id="goToAddressButton">Go to Address</button>
 <input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address>
 <br/>
 <button onclick="enter360View()">360view</button>
 <button onclick="pauseRotation()">Pause</button>
 <button onclick="resumeRotation()">Resume</button>
 
-<label>
-    Direction:
-    <select id="rotationDirection">
-        <option value="1">Clockwise</option>
-        <option value="-1">Counter-Clockwise</option>
-    </select>
-</label>
+<!--<label>-->
+<!--    Direction:-->
+<!--    <select id="rotationDirection">-->
+<!--        <option value="1">Clockwise</option>-->
+<!--        <option value="-1">Counter-Clockwise</option>-->
+<!--    </select>-->
+<!--</label>-->
+
+<label>Direction:</label>
+<button id="clockwiseButton" onclick="setDirection(1)">Clockwise</button>
+<button id="counterClockwiseButton" onclick="setDirection(-1)">Counter-Clockwise</button>
+
+
+
 <button onclick="showMap()">Map</button>
 
 <br/>
