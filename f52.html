@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>View360</title>
 </head>
 <script>
   let map;
@@ -55,13 +55,33 @@
       });
   }
 
-  // function showStreetView(location) {
-  //     panorama.setPosition(location);
-  //     panorama.setVisible(true);
-  //     rotatePanorama(panorama); // Assuming you have a rotatePanorama function as before
-  // }
+  function updateSpeedValue(value) {
+      document.getElementById('speedInput').value = value;
+      document.getElementById('speedLabel').textContent = value;
+  }
 
-  // ... [Your existing code]
+  function updateZoomValue(value) {
+      document.getElementById('zoomInput').value = value;
+      document.getElementById('zoomLabel').textContent = value;
+  }
+
+  function adjustSpeed(increment) {
+      let slider = document.getElementById('speedSlider');
+      let newValue = parseFloat(slider.value) + increment;
+      if (newValue >= 0 && newValue <= 100) {
+          slider.value = newValue;
+          updateSpeedValue(newValue);
+      }
+  }
+
+  function adjustZoom(increment) {
+      let slider = document.getElementById('zoomSlider');
+      let newValue = parseFloat(slider.value) + increment;
+      if (newValue >= 1 && newValue <= 10) {
+          slider.value = newValue;
+          updateZoomValue(newValue);
+      }
+  }
 
   function showStreetView(location) {
       let headingValue = parseFloat(document.getElementById('headingInput').value);
@@ -105,7 +125,6 @@
   }
 
 
-
   function showContextMenu(event) {
       // For simplicity, we'll just use the browser's default context menu.
       // You can replace this with a custom context menu if desired.
@@ -120,11 +139,6 @@
       menuItem.style.border = '1px solid black';
 
       menuItem.onclick = function () {
-          // Switch to Street View at the right-clicked location and rotate 360 degrees
-          // panorama.setPosition(event.latLng);
-          // panorama.setVisible(true);
-          // rotatePanorama(panorama);
-
           if (document.getElementById('adjustCheckbox').checked) {
               // If "adjust" is on, reverse geocode to get the nearest address
               reverseGeocode(event.latLng, function (addressLocation) {
@@ -138,34 +152,10 @@
               showStreetView(event.latLng);
           }
       }
-      // document.body.removeChild(menuItem); // Remove the context menu item
-      // };
 
       document.body.appendChild(menuItem);
 
-      // Remove the context menu item if another part of the document is clicked
-      // document.addEventListener('click', function () {
-      //     document.body.removeChild(menuItem);
-      // })
   }
-
-  // function rotatePanorama(panorama) {
-  //   let currentHeading = panorama.getPov().heading;
-  //   const rotationInterval = setInterval(function() {
-  //     currentHeading += 1;
-  //     if (currentHeading > 360) {
-  //       clearInterval(rotationInterval); // Stop rotating after 360 degrees
-  //       currentHeading = 0;
-  //     }
-  //     panorama.setPov({
-  //       heading: currentHeading,
-  //       pitch: panorama.getPov().pitch
-  //     });
-  //   }, 50); // Adjust rotation speed if necessary
-  // }
-
-
-  // ... [Your existing code]
 
   let rotationInterval;
 
@@ -173,27 +163,34 @@
       clearInterval(rotationInterval); // Clear any existing rotation interval
 
       let currentHeading = panorama.getPov().heading;
-      const direction = parseFloat(document.getElementById('rotationDirection').value);
+
+      const dv = document.getElementById('rotationDirection').value;
+      const direction = parseFloat(dv);
+
+      const speed = parseFloat(document.getElementById('speedInput').value);
+
+      // Calculate the interval based on the speed. You can adjust the base value (50 in this case) for different results.
+      const intervalDuration = 50 + (100 - speed);
 
       rotationInterval = setInterval(function() {
-          currentHeading += direction;
+          let currentHeading = panorama.getPov().heading + direction;
           if (currentHeading > 360) {
               currentHeading -= 360;
           } else if (currentHeading < 0) {
               currentHeading += 360;
           }
 
-
           let pitchValue = parseFloat(document.getElementById('pitchInput').value);
+          let zoomValue = parseFloat(document.getElementById('zoomInput').value);
 
+          console.log(`heading: ${currentHeading}, pitch: ${pitchValue}, zoom: ${zoomValue}  speed: ${speed}, intervalDuration: ${intervalDuration}`);
 
           panorama.setPov({
               heading: currentHeading,
-              // pitch: panorama.getPov().pitch,
               pitch: pitchValue,
-              zoom: panorama.getPov().zoom
+              zoom: zoomValue,
           });
-      }, 50); // Adjust rotation speed if necessary
+      }, intervalDuration); // Adjust rotation speed if necessary
   }
 
   function pauseRotation() {
@@ -207,7 +204,6 @@
   function showMap() {
       panorama.setVisible(false);
   }
-
 
 
   function geocodeAddress() {
@@ -242,33 +238,15 @@
 <body>
 
 
+<!--<input type="text" id="addressInput" placeholder="Enter an address">-->
 <input type="text" id="addressInput" placeholder="Enter an address">
 <button onclick="geocodeAddress()">Go to Address</button>
 <input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address>
+<br/>
 <button onclick="enter360View()">360view</button>
+<button onclick="pauseRotation()">Pause</button>
+<button onclick="resumeRotation()">Resume</button>
 
-
-<div id="map" style="width: 600px; height: 400px;"></div>
-<!--<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>-->
-
-
-<div id="map" style="width: 600px; height: 400px;"></div>
-
-<label>Heading:
-    <input type="number" id="headingInput" value="34">
-    <input type="range" id="headingSlider" min="0" max="360" value="34" oninput="updateHeadingValue(this.value)">
-    <span id="headingLabel">34</span>
-    <button onclick="adjustHeading(-1)">-</button>
-    <button onclick="adjustHeading(1)">+</button>
-</label>
-
-<label>Pitch:
-    <input type="number" id="pitchInput" value="10">
-    <input type="range" id="pitchSlider" min="-90" max="90" value="10" oninput="updatePitchValue(this.value)">
-    <span id="pitchLabel">10</span>
-    <button onclick="adjustPitch(-1)">-</button>
-    <button onclick="adjustPitch(1)">+</button>
-</label>
 <label>
     Direction:
     <select id="rotationDirection">
@@ -276,11 +254,63 @@
         <option value="-1">Counter-Clockwise</option>
     </select>
 </label>
-
-<button onclick="pauseRotation()">Pause</button>
-<button onclick="resumeRotation()">Resume</button>
 <button onclick="showMap()">Map</button>
 
+<br/>
+
+
+<label>Pitch:
+    <input type="number" id="pitchInput" value="10" width="40">
+    <input type="range" id="pitchSlider" min="-90" max="90" value="10" oninput="updatePitchValue(this.value)">
+    <span id="pitchLabel">10</span>
+    <button onclick="adjustPitch(-1)">-</button>
+    <button onclick="adjustPitch(1)">+</button>
+</label>
+
+<!-- HTML -->
+<!--<label class="switch">-->
+<!--    <input type="checkbox" id="rotationToggle" checked>-->
+<!--    <span class="slider round"></span>-->
+<!--</label>-->
+<!--<label for="rotationToggle">Toggle Clockwise/Counter-Clockwise</label>-->
+
+<!--<label>Direction:</label>-->
+<!--<label>-->
+<!--    <input type="radio" id="rotationDirection" name="rotationDirection" value="1" checked> Clockwise-->
+<!--</label>-->
+<!--<label>-->
+<!--    <input type="radio" id="rotationDirection" name="rotationDirection" value="-1"> Counter-Clockwise-->
+<!--</label>-->
+
+
+<br/>
+
+<label>Speed:
+    <input type="number" id="speedInput" value="50">
+    <input type="range" id="speedSlider" min="0" max="100" value="50" oninput="updateSpeedValue(this.value)">
+    <span id="speedLabel">50</span>
+    <button onclick="adjustSpeed(-1)">-</button>
+    <button onclick="adjustSpeed(1)">+</button>
+</label>
+<br/>
+
+<label>Zoom:
+    <input type="number" id="zoomInput" value="5">
+    <input type="range" id="zoomSlider" min="1" max="10" value="5" oninput="updateZoomValue(this.value)">
+    <span id="zoomLabel">5</span>
+    <button onclick="adjustZoom(-1)">-</button>
+    <button onclick="adjustZoom(1)">+</button>
+</label>
+
+
+
+
+
+<div id="map" style="width: 1000px; height: 800px;"></div>
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>-->
+
+
+<!--<div id="map" style="width: 600px; height: 400px;"></div>-->
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap" async defer></script>
 
