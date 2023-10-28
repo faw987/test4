@@ -29,15 +29,18 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h2> 10/26/2023 9:20 - V0.953 </h2>
+<h2> 10/28/2023 12:09 - V0.954 </h2>
 <br/>
 
 
-
-
 <a href="f52.html">360 degrees experiment</a>
-<br>
-
+<br/>
+<a href="faw39.html">PT Coach experiment</a>
+<br/>
+<a href="f43.html">Enhanced Supercharger search</a>
+<br/>
+<br/>
+<br/>
 
 <a href="faw4.html">faw4 location and camera</a>
 <br/>
@@ -95,17 +98,6 @@ a {
 <a href="faw38.html">sheets experiment</a>
 <br><br>
 
-
-<a href="faw39.html">speech/pt experiment</a>
-<br><br>
-
-
-<a href="f41.html">Supercharger search</a>
-<br><br>
-
-
-<a href="f43.html">Enhanced Supercharger search</a>
-<br><br>
 
 <a href="f44.html">Enhanced Supercharger search</a>
 <br><br>
