@@ -45,6 +45,18 @@
   //   marker.setPosition(newPos); // Update marker position
   // }
 
+  function getURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  function hasURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.has(name);
+  }
+
+
+
   let currentLocationIndex = 0;  // Track the current location being viewed
 
   // function goToNextLocation() {
@@ -187,9 +199,21 @@
   function initMap() {
 
 
+    geocoder = new google.maps.Geocoder();
+
+
     // function initMap() {
     // const initialPosition = { lat: 42.345573, lng: -71.098326 }; // Sample starting position 41.12354198514238, -81.80592082411044
     const initialPosition = { lat: 41.12354198514238, lng: -81.80592082411044 }; // Sample starting position
+    if (hasURLParameter('address')) {
+      console.log('Location parameter is present.');
+      const addressParam = getURLParameter('address');
+      document.getElementById('addressInput').value=addressParam;       // hack ?
+      geocodeAddress();
+    } else {
+      console.log('Location parameter is not present.');
+    }
+
 
     // Initialize marker at initial position
     marker = new google.maps.Marker({
@@ -214,7 +238,6 @@
       zoom: 14
     });
 
-    geocoder = new google.maps.Geocoder();
 
     panorama = new google.maps.StreetViewPanorama(
             // document.getElementById('map'),
