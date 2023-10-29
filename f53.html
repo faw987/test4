@@ -45,6 +45,91 @@
   //   marker.setPosition(newPos); // Update marker position
   // }
 
+  let currentLocationIndex = 0;  // Track the current location being viewed
+
+  // function goToNextLocation() {
+  //   const locations = document.getElementById('locationsInput').value.split('\n');  // Split the textarea content by line
+  //   if (currentLocationIndex < locations.length) {
+  //     const location = locations[currentLocationIndex].trim();  // Get the current location
+  //     if (location) {
+  //       geocodeLocation(location);  // Process this location (geocode and display)
+  //     }
+  //     currentLocationIndex++;  // Move to the next index
+  //   } else {
+  //     alert('No more locations to display.');
+  //   }
+  // }
+
+  function geocodeLocation(address) {
+    geocoder.geocode({ 'address': address }, function(results, status) {
+      if (status === 'OK') {
+        const location = results[0].geometry.location;
+        map.setCenter(location);
+        panorama.setPosition(location);
+        panorama.setVisible(true);
+        // Optionally, you can also add/update a marker at this location
+        if (marker) {
+          marker.setPosition(location);
+        } else {
+          marker = new google.maps.Marker({
+            map: map,
+            position: location
+          });
+        }
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+
+  // Initiate by geocoding the first address when the page loads
+  window.onload = function() {
+    goToNextLocation();
+  };
+
+  // function resetLocations() {
+  //   currentLocationIndex = 0;  // Reset the index
+  //   goToNextLocation();  // Go to the first location
+  // }
+
+  function resetLocations() {
+    currentLocationIndex = 0;
+    document.getElementById('currentLocationDisplay').textContent = 'Current Location: None'; // Reset display text
+    goToNextLocation();
+  }
+
+
+
+  // function goToNextLocation() {
+  //   const locations = document.getElementById('locationsInput').value.split('\n');
+  //   if (currentLocationIndex < locations.length) {
+  //     const location = locations[currentLocationIndex].trim();
+  //     if (location) {
+  //       geocodeLocation(location);
+  //     }
+  //     currentLocationIndex++;
+  //   } else {
+  //     alert('Reached the end. Click "Reset" to start over.');
+  //   }
+  // }
+
+
+  function goToNextLocation() {
+    const locations = document.getElementById('locationsInput').value.split('\n');
+    if (currentLocationIndex < locations.length) {
+      const location = locations[currentLocationIndex].trim();
+      if (location) {
+        // Update the display field with the current location
+        document.getElementById('currentLocationDisplay').textContent = 'Current Location: ' + location;
+        geocodeLocation(location);
+      }
+      currentLocationIndex++;
+    } else {
+      alert('Reached the end. Click "Reset" to start over.');
+      document.getElementById('currentLocationDisplay').textContent = 'Current Location: None'; // Reset display text
+    }
+  }
+
 
   function moveStreetView(direction, distanceInMiles) {
     const currentPos = panorama.getPosition();
@@ -436,6 +521,10 @@
 <button onclick="moveStreetView('E', document.getElementById('distanceInput').value)">E</button>
 <button onclick="moveStreetView('W', document.getElementById('distanceInput').value)">W</button>
 
+<textarea id="locationsInput" rows="5" placeholder="Enter one address per line"></textarea>
+<button onclick="goToNextLocation()" id="goNextButton">Go Next</button>
+<button onclick="resetLocations()" id="resetButton">Reset</button>
+<div id="currentLocationDisplay">Current Location: None</div>
 
 
 
