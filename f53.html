@@ -206,13 +206,14 @@
     // const initialPosition = { lat: 42.345573, lng: -71.098326 }; // Sample starting position 41.12354198514238, -81.80592082411044
     const initialPosition = { lat: 41.12354198514238, lng: -81.80592082411044 }; // Sample starting position
     if (hasURLParameter('address')) {
-      console.log('Location parameter is present.');
       const addressParam = getURLParameter('address');
+      console.log(`address parameter is present.  address:${address}`);
+
       document.getElementById('addressInput').value=addressParam;       // hack ?
       geocodeAddress();
       enter360View();
     } else {
-      console.log('Location parameter is not present.');
+      console.log('address parameter is not present.');
     }
 
 
