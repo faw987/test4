@@ -210,6 +210,7 @@
       const addressParam = getURLParameter('address');
       document.getElementById('addressInput').value=addressParam;       // hack ?
       geocodeAddress();
+      enter360View();
     } else {
       console.log('Location parameter is not present.');
     }
