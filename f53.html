@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View360</title>
+</head>
+<style>
+  /* Styles to make the map and StreetView divs appear side by side */
+  #container {
+    display: flex;
+  }
+  #map, #pano {
+    width: 50%;
+    height: 800px;
+  }
+</style>
+<script>
+  let map;
+  let panorama;
+  let direction = 1; // Default direction is clockwise
+
+  // function moveStreetView(direction, distanceInMiles) {
+  //   const currentPos = panorama.getPosition();
+  //   let lat = currentPos.lat();
+  //   let lng = currentPos.lng();
+  //
+  //   // Convert distance from miles to kilometers
+  //   const distanceInKm = distanceInMiles * 1.60934;
+  //
+  //   const R = 6371; // Radius of the Earth in kilometers
+  //   const d = distanceInKm;
+  //   const bearing = {
+  //     'N': Math.PI / 2,
+  //     'S': 3 * Math.PI / 2,
+  //     'E': 0,
+  //     'W': Math.PI
+  //   }[direction];
+  //
+  //   lat = Math.asin(Math.sin(lat) * Math.cos(d / R) + Math.cos(lat) * Math.sin(d / R) * Math.cos(bearing));
+  //   lng += Math.atan2(Math.sin(bearing) * Math.sin(d / R) * Math.cos(lat), Math.cos(d / R) - Math.sin(lat) * Math.sin(lat));
+  //
+  //   const newPos = new google.maps.LatLng(lat, lng);
+  //   console.log(`currentPos: ${currentPos}    newPos:${newPos} `)
+  //   panorama.setPosition(newPos);
+  //   marker.setPosition(newPos); // Update marker position
+  // }
+
+
+  function moveStreetView(direction, distanceInMiles) {
+    const currentPos = panorama.getPosition();
+    let lat = currentPos.lat();
+    let lng = currentPos.lng();
+
+    // Convert distance from miles to degrees
+    // Roughly, a degree of latitude is about 69 miles.
+    // A degree of longitude varies: it's about 69 miles at the equator but shrinks to zero at the poles.
+    // For simplicity, we'll also use the 69 miles conversion for longitude, but please note this is an approximation.
+    const distanceInDegrees = distanceInMiles / 69;
+
+    switch (direction) {
+      case 'N':
+        lat += distanceInDegrees;
+        break;
+      case 'S':
+        lat -= distanceInDegrees;
+        break;
+      case 'E':
+        lng += distanceInDegrees;
+        break;
+      case 'W':
+        lng -= distanceInDegrees;
+        break;
+    }
+
+    const newPos = new google.maps.LatLng(lat, lng);
+    console.log(`currentPos: ${currentPos}    newPos:${newPos} `)
+    panorama.setPosition(newPos);
+    marker.setPosition(newPos); // Update marker position
+  }
+
+
+
+  function setDirection(newDirection) {
+    pauseRotation(); // Pause the current rotation
+    direction = newDirection; // Set the new direction
+
+    // Highlight the active direction button and reset the other
+    if (newDirection === 1) {
+      document.getElementById('clockwiseButton').style.backgroundColor = '#2196F3';
+      document.getElementById('counterClockwiseButton').style.backgroundColor = '';
+    } else {
+      document.getElementById('counterClockwiseButton').style.backgroundColor = '#2196F3';
+      document.getElementById('clockwiseButton').style.backgroundColor = '';
+    }
+
+    resumeRotation(); // Resume the rotation with the new direction
+  }
+
+
+  let marker; // To store the map marker reference
+
+  function initMap() {
+
+
+    // function initMap() {
+    // const initialPosition = { lat: 42.345573, lng: -71.098326 }; // Sample starting position 41.12354198514238, -81.80592082411044
+    const initialPosition = { lat: 41.12354198514238, lng: -81.80592082411044 }; // Sample starting position
+
+    // Initialize marker at initial position
+    marker = new google.maps.Marker({
+      map: map,
+      position: initialPosition
+    });
+
+
+    document.getElementById('addressInput').addEventListener('keydown', function(event) {
+      // Check if the "Enter" key was pressed
+      if (event.keyCode === 13 || event.which === 13) {
+        event.preventDefault(); // Prevent any default action
+        document.getElementById('goToAddressButton').click(); // Simulate button click
+      }
+    });
+
+
+
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: initialPosition,
+      zoom: 14
+    });
+
+    geocoder = new google.maps.Geocoder();
+
+    panorama = new google.maps.StreetViewPanorama(
+            // document.getElementById('map'),
+            document.getElementById('pano'),
+            {
+              pov: {
+                heading: 34,
+                pitch: 10
+              },
+              visible: false // Initially hide the panorama
+            }
+    );
+
+    // Link the panorama to the map
+    map.setStreetView(panorama);
+
+    // Add right-click listener to the map
+    map.addListener('rightclick', function(event) {
+      showContextMenu(event);
+    });
+
+    // Add right-click listener to the map
+    map.addListener('doubleclick', function(event) {
+      showContextMenu(event);
+    });
+
+  }
+
+  function reverseGeocode(latLng, callback) {
+    geocoder.geocode({ 'location': latLng }, function(results, status) {
+      if (status === 'OK' && results[0]) {
+        callback(results[0].geometry.location); // Return the location of the nearest address
+      } else {
+        alert('No address found at this location.');
+      }
+    });
+  }
+
+  function updateSpeedValue(value) {
+    document.getElementById('speedInput').value = value;
+    document.getElementById('speedLabel').textContent = value;
+  }
+
+  function updateZoomValue(value) {
+    document.getElementById('zoomInput').value = value;
+    document.getElementById('zoomLabel').textContent = value;
+  }
+
+  function adjustSpeed(increment) {
+    let slider = document.getElementById('speedSlider');
+    let newValue = parseFloat(slider.value) + increment;
+    if (newValue >= 0 && newValue <= 100) {
+      slider.value = newValue;
+      updateSpeedValue(newValue);
+    }
+  }
+
+  function adjustZoom(increment) {
+    let slider = document.getElementById('zoomSlider');
+    let newValue = parseFloat(slider.value) + increment;
+    if (newValue >= 1 && newValue <= 10) {
+      slider.value = newValue;
+      updateZoomValue(newValue);
+    }
+  }
+
+  function showStreetView(location) {
+    // let headingValue = parseFloat(document.getElementById('headingInput').value);
+
+
+    // hack
+
+
+    // let pitchValue = parseFloat(document.getElementById('pitchInput').value);
+    //
+    // panorama.setPov({
+    //     heading: headingValue,
+    //     pitch: pitchValue
+    // });
+    panorama.setPosition(location);
+    panorama.setVisible(true);
+    rotatePanorama(panorama);
+  }
+
+  function updateHeadingValue(value) {
+    document.getElementById('headingInput').value = value;
+    document.getElementById('headingLabel').textContent = value;
+  }
+
+  function updatePitchValue(value) {
+    document.getElementById('pitchInput').value = value;
+    document.getElementById('pitchLabel').textContent = value;
+  }
+
+  function adjustHeading(increment) {
+    let slider = document.getElementById('headingSlider');
+    let newValue = parseFloat(slider.value) + increment;
+    if (newValue >= 0 && newValue <= 360) {
+      slider.value = newValue;
+      updateHeadingValue(newValue);
+    }
+  }
+
+  function adjustPitch(increment) {
+    let slider = document.getElementById('pitchSlider');
+    let newValue = parseFloat(slider.value) + increment;
+    if (newValue >= -90 && newValue <= 90) {
+      slider.value = newValue;
+      updatePitchValue(newValue);
+    }
+  }
+
+
+  function showContextMenu(event) {
+    // For simplicity, we'll just use the browser's default context menu.
+    // You can replace this with a custom context menu if desired.
+    const menuItem = document.createElement('div');
+    menuItem.textContent = 'Look Around';
+    menuItem.style.position = 'absolute';
+    menuItem.style.top = event.pixel.y + 'px';
+    menuItem.style.left = event.pixel.x + 'px';
+    menuItem.style.backgroundColor = 'white';
+    menuItem.style.padding = '8px';
+    menuItem.style.cursor = 'pointer';
+    menuItem.style.border = '1px solid black';
+
+    menuItem.onclick = function () {
+      if (document.getElementById('adjustCheckbox').checked) {
+        // If "adjust" is on, reverse geocode to get the nearest address
+        reverseGeocode(event.latLng, function (addressLocation) {
+          // Use the returned addressLocation for Street View
+          console.log(`using adjusted: ${addressLocation}`)
+          showStreetView(addressLocation);
+        });
+      } else {
+        // If "adjust" is off, use the clicked location
+        console.log(`using lat lon: ${event.latLng}`)
+        showStreetView(event.latLng);
+      }
+    }
+
+    document.body.appendChild(menuItem);
+
+  }
+
+  let rotationInterval;
+
+  function rotatePanorama(panorama) {
+    clearInterval(rotationInterval); // Clear any existing rotation interval
+
+    let currentHeading = panorama.getPov().heading;
+
+    // const dv = document.getElementById('rotationDirection').value;
+    // const direction = parseFloat(dv);
+
+    const speed = parseFloat(document.getElementById('speedInput').value);
+
+    // Calculate the interval based on the speed. You can adjust the base value (50 in this case) for different results.
+    const intervalDuration = 50 + (100 - speed);
+
+    rotationInterval = setInterval(function() {
+      let currentHeading = panorama.getPov().heading + direction;
+      if (currentHeading > 360) {
+        currentHeading -= 360;
+      } else if (currentHeading < 0) {
+        currentHeading += 360;
+      }
+
+      let pitchValue = parseFloat(document.getElementById('pitchInput').value);
+      let zoomValue = parseFloat(document.getElementById('zoomInput').value);
+
+      console.log(`heading: ${currentHeading}, pitch: ${pitchValue}, zoom: ${zoomValue}  speed: ${speed}, intervalDuration: ${intervalDuration}`);
+
+      panorama.setPov({
+        heading: currentHeading,
+        pitch: pitchValue,
+        zoom: zoomValue,
+      });
+    }, intervalDuration); // Adjust rotation speed if necessary
+  }
+
+  function pauseRotation() {
+    clearInterval(rotationInterval);
+  }
+
+  function resumeRotation() {
+    rotatePanorama(panorama);
+  }
+
+  function showMap() {
+    panorama.setVisible(false);
+  }
+
+
+  function geocodeAddress() {
+    const address = document.getElementById('addressInput').value;
+
+    geocoder.geocode({ 'address': address }, function(results, status) {
+      if (status === 'OK') {
+        // Set the map's center to the first result's location
+        map.setCenter(results[0].geometry.location);
+        // Optionally, you can also add a marker at this location
+        new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location
+        });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }
+
+  function enter360View() {
+    // Use the current map's center as the position for Street View
+    const currentCenter = map.getCenter();
+
+    panorama.setPosition(currentCenter);
+    panorama.setVisible(true);
+    rotatePanorama(panorama);
+  }
+
+
+</script>
+<body>
+
+
+<!--<input type="text" id="addressInput" placeholder="Enter an address">-->
+<input type="text" id="addressInput" placeholder="Enter an address">
+<button onclick="geocodeAddress()" id="goToAddressButton">Go to Address</button>
+<input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address>
+<br/>
+<button onclick="enter360View()">360view</button>
+<button onclick="pauseRotation()">Pause</button>
+<button onclick="resumeRotation()">Resume</button>
+
+<!--<label>-->
+<!--    Direction:-->
+<!--    <select id="rotationDirection">-->
+<!--        <option value="1">Clockwise</option>-->
+<!--        <option value="-1">Counter-Clockwise</option>-->
+<!--    </select>-->
+<!--</label>-->
+
+<label>Direction:</label>
+<button id="clockwiseButton" onclick="setDirection(1)">Clockwise</button>
+<button id="counterClockwiseButton" onclick="setDirection(-1)">Counter-Clockwise</button>
+
+
+
+<button onclick="showMap()">Map</button>
+
+<br/>
+
+
+<label>Pitch:
+  <input type="number" id="pitchInput" value="0" width="40">
+  <!--    <input type="range" id="pitchSlider" min="-90" max="90" value="10" oninput="updatePitchValue(this.value)">-->
+  <input type="range" id="pitchSlider" min="-90" max="90" value="0" oninput="updatePitchValue(this.value)">
+  <span id="pitchLabel">0</span>
+  <button onclick="adjustPitch(-1)">-</button>
+  <button onclick="adjustPitch(1)">+</button>
+</label>
+
+<!-- HTML -->
+<!--<label class="switch">-->
+<!--    <input type="checkbox" id="rotationToggle" checked>-->
+<!--    <span class="slider round"></span>-->
+<!--</label>-->
+<!--<label for="rotationToggle">Toggle Clockwise/Counter-Clockwise</label>-->
+
+<!--<label>Direction:</label>-->
+<!--<label>-->
+<!--    <input type="radio" id="rotationDirection" name="rotationDirection" value="1" checked> Clockwise-->
+<!--</label>-->
+<!--<label>-->
+<!--    <input type="radio" id="rotationDirection" name="rotationDirection" value="-1"> Counter-Clockwise-->
+<!--</label>-->
+
+
+<br/>
+
+<label>Speed:
+  <input type="number" id="speedInput" value="50">
+  <input type="range" id="speedSlider" min="0" max="100" value="50" oninput="updateSpeedValue(this.value)">
+  <span id="speedLabel">50</span>
+  <button onclick="adjustSpeed(-1)">-</button>
+  <button onclick="adjustSpeed(1)">+</button>
+</label>
+<br/>
+
+<label>Zoom:
+  <input type="number" id="zoomInput" value="2">
+  <!--    <input type="range" id="zoomSlider" min="1" max="10" value="5" oninput="updateZoomValue(this.value)">-->
+  <input type="range" id="zoomSlider" min="1" max="10" value="2" oninput="updateZoomValue(this.value)">
+  <span id="zoomLabel">2</span>
+  <button onclick="adjustZoom(-1)">-</button>
+  <button onclick="adjustZoom(1)">+</button>
+</label>
+
+<!-- Input for distance and buttons for direction -->
+<input type="text" id="distanceInput" placeholder="Enter distance in miles">
+<button onclick="moveStreetView('N', document.getElementById('distanceInput').value)">N</button>
+<button onclick="moveStreetView('S', document.getElementById('distanceInput').value)">S</button>
+<button onclick="moveStreetView('E', document.getElementById('distanceInput').value)">E</button>
+<button onclick="moveStreetView('W', document.getElementById('distanceInput').value)">W</button>
+
+
+
+
+<div id="container">
+  <div id="map"></div> <!-- Map will go here -->
+  <div id="pano"></div> <!-- StreetView will go here -->
+</div>
+
+<!--<div id="map" style="width: 1000px; height: 800px;"></div>-->
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>-->
+
+
+<!--<div id="map" style="width: 600px; height: 400px;"></div>-->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap" async defer></script>
+
+
+
+
+</body>
+</html>
