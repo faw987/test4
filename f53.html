@@ -207,7 +207,7 @@
     const initialPosition = { lat: 41.12354198514238, lng: -81.80592082411044 }; // Sample starting position
     if (hasURLParameter('address')) {
       const addressParam = getURLParameter('address');
-      console.log(`address parameter is present.  address:${address}`);
+      console.log(`address parameter is present.  addressParam:${addressParam}`);
 
       document.getElementById('addressInput').value=addressParam;       // hack ?
       geocodeAddress();
