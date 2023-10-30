@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+</head>
+<body>
+
+<h2>Enter Date and Time</h2>
+<input type="datetime-local" id="datetimeInput">
+<button onclick="startCountdown()">Go</button>
+
+<h2 id="countdownDisplay">Countdown: 00:00:00</h2>
+<h2 id="birthdayMessage" style="display:none;"></h2>
+
+<script>
+  let countdownInterval;
+  let nameFromURL = getURLParameter('name') || "Unknown";  // Get the name parameter or default to "Unknown"
+  const dateFromURL = getURLParameter('date');  // Get the date parameter from the URL
+
+  function getURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  function startCountdown(dateTime) {
+    const inputDateTime = dateTime ? new Date(dateTime) : new Date(document.getElementById('datetimeInput').value);
+    const now = new Date();
+
+    if (inputDateTime <= now) {
+      alert('Please enter a date and time in the future.');
+      return;
+    }
+
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+    }
+
+    countdownInterval = setInterval(function() {
+      const currentTime = new Date();
+      const difference = inputDateTime - currentTime;
+
+      if (difference <= 0) {
+        clearInterval(countdownInterval);
+        document.getElementById('countdownDisplay').textContent = 'Countdown: 00:00:00';
+        document.getElementById('birthdayMessage').textContent = `Happy Birthday, ${nameFromURL}!`;
+        document.getElementById('birthdayMessage').style.display = 'block';
+        beep();
+      } else {
+        const hours = Math.floor(difference / (1000 * 60 * 60));
+        const mins = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((difference % (1000 * 60)) / 1000);
+        document.getElementById('countdownDisplay').textContent = `Countdown: ${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+    }, 1000);
+  }
+
+  // function beep() {
+  //   const audioData = "data:audio/wav;base64,UklGRjgWAABXQVZFZm10IBAAAAABAAEAgD4AAIA7AABABGZpbGxlcgEAAAAAAABBVQgAAABkAQBFTkRTZWFxAAAAnw==";
+  //   const audio = new Audio(audioData);
+  //   audio.play();
+  // }
+
+  function beep() {
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = context.createOscillator();
+    oscillator.type = 'sine'; // This is the default value
+    oscillator.frequency.setValueAtTime(1000, context.currentTime); // A 1000Hz tone
+    oscillator.connect(context.destination);
+    oscillator.start();
+    oscillator.stop(context.currentTime + 0.25); // Play for 1/4 second
+  }
+
+
+
+
+  // If the date parameter is present, automatically start the countdown when the page loads
+  if (dateFromURL) {
+    startCountdown(dateFromURL);
+  }
+</script>
+</body>
+</html>
