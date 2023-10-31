@@ -9,16 +9,57 @@
 
 <h2>Enter Date and Time</h2>
 <input type="datetime-local" id="datetimeInput">
-<button onclick="startCountdown()">Go</button>
+<button onclick="startCountdown()">Start Countdown</button>
+<!--<button onclick="">Click Here</button>-->
 
 <h2 id="countdownDisplay">Countdown: 00:00:00</h2>
 <h2 id="birthdayMessage" style="display:none;"></h2>
 
 <script>
+
+  function formatDateOld(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    const strTime = hours + ':' + minutes + ' ' + ampm;
+    return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear() + " " + strTime;
+  }
+
+  function formatDate(date) {
+    let year = date.getFullYear();
+    let month = ('0' + (date.getMonth() + 1)).slice(-2);
+    let day = ('0' + date.getDate()).slice(-2);
+    let hours = ('0' + date.getHours()).slice(-2);
+    let minutes = ('0' + date.getMinutes()).slice(-2);
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
+
   let countdownInterval;
   let nameFromURL = getURLParameter('name') || "Unknown";  // Get the name parameter or default to "Unknown"
-  const dateFromURL = getURLParameter('date');  // Get the date parameter from the URL
+  const dateParam = getURLParameter('date');  // Get the date parameter from the URL
+  const demoFromURL = getURLParameter('demo');  // Get the demo parameter from the URL
+  console.log(`dateParam  ${dateParam}`)
+  console.log(`demoFromURL  ${demoFromURL}`)
+  if (demoFromURL) {
+    // if (demoFromURL.startsWith('+')) {
+      const offsetSecs = parseInt(demoFromURL) * 1000; // 1000 => secs
+      if (!isNaN(offsetSecs)) {
+        const futureTime = new Date(new Date().getTime() + offsetSecs);
+        const formattedDateTime = formatDate(futureTime);
+        console.log(`offsetSecs  ${offsetSecs}`)
+        console.log(`formattedDateTime  ${formattedDateTime}`)
 
+        document.getElementById('datetimeInput').value = formattedDateTime;
+        document.getElementById('datetimeInput').innerText = formattedDateTime;
+      }
+    // } else {
+    //   document.getElementById('datetime').value = dateParam;
+    //   // startCountdown();
+    // }
+  }
   function getURLParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
@@ -76,9 +117,9 @@
 
 
   // If the date parameter is present, automatically start the countdown when the page loads
-  if (dateFromURL) {
-    startCountdown(dateFromURL);
-  }
+  // if (dateFromURL) {
+  //   startCountdown(dateFromURL);
+  // }
 </script>
 </body>
 </html>

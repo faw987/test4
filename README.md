@@ -29,7 +29,7 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h2> 10/30/2023 09:23 - V0.961 </h2>
+<h2> 10/31/2023 08:50 - V0.962 </h2>
 <br/>
 
 
