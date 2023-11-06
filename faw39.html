@@ -257,8 +257,20 @@
     const win = window.open(imgUrl, '_blank');
     win.focus();
   }
+  //
+  // // Populate the select box with available speakers
+  // function loadSpeakers() {
+  //   const voices = window.speechSynthesis.getVoices();
+  //   voices.forEach(voice => {
+  //     const option = document.createElement('option');
+  //     option.textContent = voice.name + ' (' + voice.lang + ')';
+  //     option.setAttribute('data-lang', voice.lang);
+  //     option.setAttribute('data-name', voice.name);
+  //     speakerSelect.appendChild(option);
+  //   });
+  // }
 
-  // Populate the select box with available speakers
+  // Populate the select box with available speakers and set a default
   function loadSpeakers() {
     const voices = window.speechSynthesis.getVoices();
     voices.forEach(voice => {
@@ -267,8 +279,19 @@
       option.setAttribute('data-lang', voice.lang);
       option.setAttribute('data-name', voice.name);
       speakerSelect.appendChild(option);
+
+      // Check if this voice is Moira (en-IE) and set it as default if so
+      if (voice.name === "Moira" && voice.lang === "en-IE") {
+        option.selected = true;
+      }
     });
   }
+
+  // Ensure the voices are loaded before setting the default
+  window.speechSynthesis.onvoiceschanged = function() {
+    loadSpeakers();
+  };
+
 
   function sendEmail(data) {
     let recipientEmail = "faw987@gmail.com"; // Change to the desired email address
@@ -842,12 +865,21 @@
       let rate = document.getElementById('rate').value;
       let pitch = document.getElementById('pitch').value;
 
+      // const speakerSelect = document.getElementById('speakerSelect');
+      // const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
+      // const voices = window.speechSynthesis.getVoices();
+      // const voice = voices.find(voice => voice.name === selectedVoiceName);
+      //
+      // // const utterance = new SpeechSynthesisUtterance(text);
+      // utterance.voice = voice;
+
+      // Rest of your code to set the voice for utterance
       const speakerSelect = document.getElementById('speakerSelect');
       const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
       const voices = window.speechSynthesis.getVoices();
       const voice = voices.find(voice => voice.name === selectedVoiceName);
 
-      // const utterance = new SpeechSynthesisUtterance(text);
+// const utterance = new SpeechSynthesisUtterance(text);
       utterance.voice = voice;
 
       // utterance.lang = 'en-GB';
