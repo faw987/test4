@@ -5,14 +5,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Physical Therapy Coach</title>
+
   <link rel="stylesheet" href="styles5.css">
+
 </head>
 
 <body>
 <h1>Physical Therapy Coach</h1>
 
+
 <div class="flex-container">
+  <!-- Panel 1: Table -->
   <div class="flex-item">
+    <!--    <button onclick="loadDefaultData()">Load Demo</button>-->
     <table id="routinesTable" >
       <thead>
       <tr style="height: 10px;">
@@ -55,6 +60,7 @@
 
 </div>
 
+
 <div class="flex-container">
   <div class="flex-item">
     <div class="image-wrapper">
@@ -63,11 +69,14 @@
         <img id="myImage2" src="default.png" alt="Image">
       </div>
 
-<!--      for the future-->
-<!--      <video id="myVideo" width="640" height="360" alt="Image" onerror="imgError(this);" class="customImage" controls>-->
-<!--        <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
-<!--        Your browser does not support the video tag.-->
-<!--      </video>-->
+
+
+      <!--      for the future-->
+      <!--      <video id="myVideo" width="640" height="360" alt="Image" onerror="imgError(this);" class="customImage" controls>-->
+      <!--        <source src="your-video.mp4" id="videoSrc" type="video/mp4">-->
+      <!--        Your browser does not support the video tag.-->
+      <!--      </video>-->
+
 
     </div>
 
@@ -161,6 +170,7 @@
     <br/>
   </div>
 </div>
+<!--</div>-->
 
 <script>
   let data = [];
@@ -176,6 +186,31 @@
   myYellow = "#FDEE00";
   myGreen = "#50C878"
 
+  //
+  //   // Define the object
+  //   const phrases = {
+  //     "exercise_start": {
+  //       getValue: function() {
+  //         // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+  //         return `exercise ${Exercise} ${rDescription}`;
+  //       }
+  //     },
+  //   "exercise_end": {
+  //     getValue: function() {
+  //       // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+  //       return `exercise ${Exercise} ${rDescription} complete`;
+  //     }
+  //   }
+  //   };
+  // //
+  //   // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+  //   t2=`exercise ${Exercise} ${rDescription}`
+  //
+  //   exercise_startTime = new Date();
+  //
+  //   // await speakText(t2);
+  //   await speakTextHelper('exercise_start');
+  // phrases
 
   // If voices are already loaded, populate the select box
   if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -185,9 +220,10 @@
   document.getElementById('pauseButton').disabled = true;
   document.getElementById('resumeButton').disabled = true;
 
-  // document.getElementById('status-exercise').innerText = 1;
-  // document.getElementById('status-set').innerText = 1;
-  // document.getElementById('status-rep').innerText = 1;
+  // document.getElementById('status-time').value = INIT_HOLD;
+  document.getElementById('status-exercise').innerText = 1;
+  document.getElementById('status-set').innerText = 1;
+  document.getElementById('status-rep').innerText = 1;
 
   updateDashboardField('exercise',1,numberExercises);
   updateDashboardField('set',1,1);          // hack
@@ -221,6 +257,18 @@
     const win = window.open(imgUrl, '_blank');
     win.focus();
   }
+  //
+  // // Populate the select box with available speakers
+  // function loadSpeakers() {
+  //   const voices = window.speechSynthesis.getVoices();
+  //   voices.forEach(voice => {
+  //     const option = document.createElement('option');
+  //     option.textContent = voice.name + ' (' + voice.lang + ')';
+  //     option.setAttribute('data-lang', voice.lang);
+  //     option.setAttribute('data-name', voice.name);
+  //     speakerSelect.appendChild(option);
+  //   });
+  // }
 
   // Populate the select box with available speakers and set a default
   function loadSpeakers() {
@@ -396,15 +444,11 @@
     generateExerciseTable(data);
     numberExercises=data.length;
     console.log(`numberExercises=${numberExercises}`);
-    console.log(`data=${data}`);
 
     let Exercise = 1;
     let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
-    document.getElementById('exercise-description').innerText = rDescription;     // check if hacks
-
-    console.log(`in processRoutineSelectRow - set exercise to ${rDescription}    number()-1= ${Number(Exercise)-1}`)
-
+    document.getElementById('exercise-description').innerText = rDescription;     // check if hack
     setImage(rPic); // check if hack
     updateDashboardField('exercise',1,numberExercises);
     updateDashboardField('set',1,rSets);          // hack  ?
@@ -486,7 +530,7 @@
     let imageElement2 = document.getElementById('myImage2');
     imageElement2.src = "default.png";
 
-      }
+  }
 
 
   function setImage(image) {
@@ -505,7 +549,7 @@
     // let imageElementVid = document.getElementById('myVideo');
     // imageElementVid.src = image;
 
-      }
+  }
 
   function getExerciseDetails(table,index){
     const tableRow = table[index];
@@ -538,17 +582,49 @@
     document.getElementById('pauseButton').disabled = false;
     document.getElementById('resumeButton').disabled = true;
 
+    // Select the div with class "flex-container"
+    // Set its display property to "none" to hide it
 
-    updateDashboardField('exercise',1,numberExercises);
+    // var divElement = document.querySelector('.flex-container');
+    // divElement.style.display = 'none';              //  Maybe best NOT TO DO IT ?????????
+
+    let tr = document.getElementById('status-time').innerText;
+
+// hack ???
+
+    let Exercise = document.getElementById('status-exercise').innerText;
+    let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
+    const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
+
+    // document.getElementById('status-time').innerText = rHold
+
+    document.getElementById('exercise-description').innerText = rDescription;     // check if hack
+    setImage(rPic); // check if hack
+
+    updateDashboardField('exercise',Number(Exercise),numberExercises);
+    updateDashboardField('set',1,rSets);          // hack  ?
+    updateDashboardField('rep',1,rReps);          //hack ?
+    updateDashboardField('time',rHold,rHold);          //hack ?
+
 
     document.getElementById('overallStatus').innerText = "Running"
 
+
+    // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
+    t2=`exercise ${Exercise} ${rDescription}`
+
     exercise_startTime = new Date();
+
+    await speakText(t2);
+    // await speakText(phrases['exercise_start'].getValue());
+
+    console.log(`runRoutine time remaining=${tr}`)
 
     data.forEach(d => {
       console.log(`data: ${d}`); // Outputs: "remainder of the string
     });
 
+    // setTimeout(test1_1sec,1000)
     test1_1sec()            // first call is not delayed by 1000 ms, subsequent calls are delayed
   }
 
@@ -560,35 +636,19 @@
   }
 
   async function test1_1sec(){
-    let repRemainingTime = document.getElementById('status-time').innerText;
+    let tr = document.getElementById('status-time').innerText;
 
     let Exercise = document.getElementById('status-exercise').innerText;
-    let exerciseIndex = Number(Exercise)-1;
     let Set = document.getElementById('status-set').innerText;
     let Rep = document.getElementById('status-rep').innerText;
 
-    let d = getExerciseDetails(data,exerciseIndex);  // HACK ???????
+    let d = getExerciseDetails(data,Number(Exercise)-1);  // HACK ???????
     const [rExercise, rDescription, rSets, rReps, rHold, rFreq, rPic, rExtras, rRepP, rSetP, rCountdownAt] = d;
-
-    document.getElementById('exercise-description').innerText = rDescription;
-
-    // if first time for this exercise, say the details
-
-    if (repRemainingTime == rHold) {
-      console.log(`runRoutine initial time remaining=${repRemainingTime}`)
-      setImage(rPic); // check if hack
-      // t2=`exercise ${Exercise}  ${rDescription}, ${rSets} sets of ${rReps} repetitions holding ${rHold} seconds.`
-      t2=`exercise ${Exercise} ${rDescription}`
-      await speakText(t2);
-    }
-
-    // updateDashboardField('set',1,rSets);          // hack  ?
-    // updateDashboardField('rep',1,rReps);          //hack ?
-    // updateDashboardField('time',rHold,rHold);          //hack ?
 
     let rid= `ex-${Exercise}`;
 
     scrollToRow(rid);
+
 
     if (stopSwitch) {
       console.log("stop accepted.");
@@ -608,7 +668,7 @@
     }
 
     let tableBody = document.querySelector("#exerciseTable tbody");
-    let specificRow = tableBody.rows[exerciseIndex]; // This gets the second row (index starts at 0)
+    let specificRow = tableBody.rows[Number(Exercise)-1]; // This gets the second row (index starts at 0)
 
     firstCell = specificRow.cells[0];
     firstCellValue = firstCell.textContent || firstCell.innerText;
@@ -620,68 +680,86 @@
       console.log(`not checked - specificRow=${specificRow} firstCellValue=${firstCellValue}`)
     }
 
-    t1=`test1_1sec: tr:${repRemainingTime}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
+    t1=`test1_1sec: tr:${tr}  rExercise: ${rExercise}  rDescription: ${rDescription}  rSets: ${rSets}  rReps: ${rReps}`
     // console.log(t1)
 
-    if (repRemainingTime === rHold) {
+    if (tr === rHold) {
       t2=`set  ${Set} repetition  ${Rep}  hold ${rHold}.`
       await speakText(t2);
-      highlightSpecificRowColor(exerciseIndex,myYellow);
-      scrollToRowIndex(exerciseIndex);
+      highlightSpecificRowColor(Number(Exercise)-1,myYellow);
+      scrollToRowIndex(Number(Exercise)-1);
     }
 
-    if (parseInt(repRemainingTime) > 0) {
+    if (parseInt(tr) > 0) {
       slashesAddedCountdown='/'+rCountdownAt+'/';
-      slashesAddedTr='/'+repRemainingTime+'/';
+      slashesAddedTr='/'+tr+'/';
 
       index=slashesAddedCountdown.indexOf(slashesAddedTr);
 
       if (index !== -1) {
-        t = `${repRemainingTime} remaining.`;
+        t = `${tr} remaining.`;
         await speakText(t);
       }
 
-      repRemainingTime=Number(repRemainingTime)-1;
-      document.getElementById('status-time').innerText = repRemainingTime;
-      let stylew = extracted(repRemainingTime, rHold, "bar-time");
+      tr=Number(tr)-1;
+      document.getElementById('status-time').innerText = tr;
+      let stylew = extracted(tr, rHold, "bar-time");
       document.getElementById("bar-time").style.width = stylew;
       document.getElementById("bar-time").innerText = stylew;   // so we see e.g., 55%
-
       setTimeout(test1_1sec,1000);
 
     } else {
 
       highlightSpecificRowColor(Number(Exercise)-1,myGreen);
-
       // t = `Exercise ${Exercise} Set ${Set} Rep ${Rep} complete.`;
       // t = `Set ${Set} repetition ${Rep} complete.`;
       t = `repetition ${Rep} complete.`;
+      console.log(t);
       await  speakText(`${t}`);
 
       console.log(`Rep ${Rep}   rReps ${rReps}`);
 
       if (parseInt(Rep) < parseInt(rReps)) {
         let newRep = Number(Rep)+1;
+        document.getElementById('status-rep').innerText = newRep;
+        // let stylew = extracted(newRep, rReps, "bar-rep");
+        // document.getElementById("bar-rep").style.width = stylew;
+        // document.getElementById("bar-rep").innerText = stylew;
 
         updateDashboardField('rep',newRep,rReps);
+
+
+        // document.getElementById('status-time').innerText = rHold;
         updateDashboardField('time',rHold,rHold);          //hack?
+
+
 
         console.log(`rRepP=${rRepP}   pausing`);
         await speakText(`pause ${rRepP}`);
         setTimeout(test1_1sec,rRepP*1000);
+        // setTimeout(test1_1sec,1000);
       } else {
         if (parseInt(Set) < parseInt(rSets)) {
           let newSet = Number(Set)+1;
+          document.getElementById('status-set').innerText = newSet;
 
-          // document.getElementById('status-set').innerText = newSet;
+          // let stylew = extracted(newSet, rSets, "bar-set");
+          // document.getElementById("bar-set").style.width = stylew;
+          // document.getElementById("bar-set").innerText = stylew;
 
           updateDashboardField('set',newSet,rSets);
+
           updateDashboardField('rep',1,1);          //hack?
           updateDashboardField('time',rHold,rHold);          //hack?
 
+
+
+          // document.getElementById('status-rep').innerText = 1;
+          // document.getElementById('status-time').innerText = rHold;
           console.log(`rSetP=${rSetP}  pausing`);
           await  speakText(`pause ${rSetP}`);
           setTimeout(test1_1sec,rSetP*1000);
+          // setTimeout(test1_1sec,1000);
         } else {
           if (parseInt(Exercise) < numberExercises) {
             let exercise_endTime = new Date();
@@ -706,16 +784,21 @@
             setImage(rPic);
             document.getElementById('exercise-description').innerText = rDescription;    // look HARDER
 
-            console.log(`in test1_1sec - set exercise to ${rDescription} exerciseIndex=${exerciseIndex}`)
-
             newExercise = Number(Exercise)+1;
+            document.getElementById('status-exercise').innerText = newExercise;
+
 
             updateDashboardField('exercise',newExercise,numberExercises);
+
 
             updateDashboardField('set',1,1);          // hack?
             updateDashboardField('rep',1,1);          //hack?
             updateDashboardField('time',rHold,rHold);          //hack?
 
+
+            // document.getElementById('status-set').innerText = 1;
+            // document.getElementById('status-rep').innerText = 1;
+            // document.getElementById('status-time').innerText = rHold;
             setTimeout(test1_1sec,1000);
           } else {
             speakText("thats all folks");
@@ -773,7 +856,6 @@
   async function speakText(text) {
     return new Promise((resolve, reject) => {
       let utterance = new SpeechSynthesisUtterance(text);
-      console.log(`text: ${text}`);
 
       utterance.onend = function(event) {
         resolve(); // Resolve the promise when speech ends
@@ -786,6 +868,14 @@
       let volume = document.getElementById('volume').value;
       let rate = document.getElementById('rate').value;
       let pitch = document.getElementById('pitch').value;
+
+      // const speakerSelect = document.getElementById('speakerSelect');
+      // const selectedVoiceName = speakerSelect.selectedOptions[0].getAttribute('data-name');
+      // const voices = window.speechSynthesis.getVoices();
+      // const voice = voices.find(voice => voice.name === selectedVoiceName);
+      //
+      // // const utterance = new SpeechSynthesisUtterance(text);
+      // utterance.voice = voice;
 
       // Rest of your code to set the voice for utterance
       const speakerSelect = document.getElementById('speakerSelect');

@@ -29,15 +29,18 @@ a {
 <div id="map" style="width: 600px; height: 400px;"></div>
 
 <div id="text"></div>
-<h2> 11/06/2023 03:44 - V0.962 </h2>
+<h2> 11/16/2023 12:41 - V0.97 </h2>
 <br/>
 
 
 <a href="f53.html">360 degrees experiment (new)</a>
 <br/>
+<br/>
 <a href="faw39.html">PT Coach experiment</a>
 <br/>
+<br/>
 <a href="f43.html">Enhanced Supercharger search</a>
+<br/>
 <br/>
 <a href="f54.html">Timer</a>
 <br/>
