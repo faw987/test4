@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>File Reader</title>
+</head>
+<body>
+<h1>File Reader</h1>
+<p id="output"></p>
+<input type="file" id="fileInput" accept="text/plain"/>
+<button onclick="readFile()">Read File</button>
+
+
+  <script>
+    function readFile() {
+    var file = document.getElementById("fileInput").files[0];
+    if (!file) return; // no file selected, do nothing
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+    var text = e.target.result;
+    console.log(text);
+    var lines = text.split("\n");
+    var total = 0;
+    for (var i = 0; i < lines.length; i++) {
+    if (!lines[i]) continue; // ignore empty lines
+    total += parseInt(lines[i]);
+  }
+    document.getElementById("output").innerHTML = "Total number of lines: " + lines.length + ", Total sum: " + total;
+  };
+    reader.readAsText(file);
+  }
+</script>
+</body>
+</html>

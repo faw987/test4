@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        #map {
+            margin-top: 20px;
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+<h1>Geolocation Information</h1>
+<input type="text" id="latlon" placeholder="Enter lat, lon (e.g., 40.730610, -73.935242)">
+<br>
+<button id="useInput">Use Input</button>
+<button id="useCurrentLoc">Use Current Location</button>
+<div id="output"></div>
+<div id="map"></div>
+
+<script>
+    document.getElementById('useInput').addEventListener('click', function() {
+        const latlonInput = document.getElementById('latlon').value;
+        if (latlonInput) {
+            const [lat, lon] = latlonInput.split(',').map(Number);
+            if (lat && lon) {
+                processLocation(lat, lon);
+            } else {
+                document.getElementById('output').innerHTML = "Invalid input. Please enter valid lat, lon values.";
+            }
+        } else {
+            document.getElementById('output').innerHTML = "Please enter lat, lon values.";
+        }
+    });
+
+    document.getElementById('useCurrentLoc').addEventListener('click', function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                processLocation(position.coords.latitude, position.coords.longitude);
+            }, showError);
+        } else {
+            document.getElementById('output').innerHTML = "Geolocation is not supported by this browser.";
+        }
+    });
+
+    function processLocation(lat, lon) {
+        const apiKey = "AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw";
+        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}`;
+
+        fetch(geocodeUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "OK") {
+                    const results = data.results[0].address_components;
+                    let output = `<p>Latitude: ${lat}</p>`;
+                    output += `<p>Longitude: ${lon}</p>`;
+                    results.forEach(component => {
+                        if (component.types.includes('administrative_area_level_1')) {
+                            output += `<p>State: ${component.long_name}</p>`;
+                        }
+                        if (component.types.includes('administrative_area_level_2')) {
+                            output += `<p>County: ${component.long_name}</p>`;
+                        }
+                        if (component.types.includes('locality')) {
+                            output += `<p>City: ${component.long_name}</p>`;
+                        }
+                        if (component.types.includes('neighborhood')) {
+                            output += `<p>Neighborhood: ${component.long_name}</p>`;
+                        }
+                    });
+                    document.getElementById('output').innerHTML = output;
+                    initMap(lat, lon);
+                } else {
+                    document.getElementById('output').innerHTML = "Geocode was not successful for the following reason: " + data.status;
+                }
+            })
+            .catch(error => {
+                document.getElementById('output').innerHTML = "Error: " + error;
+            });
+    }
+
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                document.getElementById('output').innerHTML = "User denied the request for Geolocation.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                document.getElementById('output').innerHTML = "Location information is unavailable.";
+                break;
+            case error.TIMEOUT:
+                document.getElementById('output').innerHTML = "The request to get user location timed out.";
+                break;
+            case error.UNKNOWN_ERROR:
+                document.getElementById('output').innerHTML = "An unknown error occurred.";
+                break;
+        }
+    }
+
+    function initMap(lat, lon) {
+        const mapOptions = {
+            zoom: 15,
+            center: new google.maps.LatLng(lat, lon),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        new google.maps.Marker({
+            position: {lat: lat, lng: lon},
+            map: map
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw&callback=initMap">
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text File Line Sum</title>
+  <style>
+    #dropzone {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<h1>Drop a text file here</h1>
+<div id="dropzone" ondrop="handleDrop(event)">
+<!--<div id="dropzone">-->
+  <p>Drop your file here, or click to select it.</p>
+</div>
+<div id="results">
+  <p>Number of lines: </p>
+  <p>Sum of numbers: </p>
+</div>
+
+<script>
+  // Get the dropzone and results elements
+  const dropzone = document.getElementById('dropzone');
+  const results = document.getElementById('results');
+
+  // Add event listener for the drop event
+  dropzone.addEventListener('drop', (e) => {
+    // Prevent default behavior (opening the file)
+    e.preventDefault();
+
+    // Get the files from the event
+    const files = e.dataTransfer.files;
+
+    // Check if there is a file
+    if (files.length === 0) {
+      alert('No file selected.');
+      return;
+    }
+
+    // Get the first file
+    const file = files[0];
+
+    // Create a new file reader
+    const reader = new FileReader();
+
+    // Add event listener for the load event
+    reader.addEventListener('load', (e) => {
+      // Get the file contents as a string
+      const contents = e.target.result;
+
+      // Split the contents into lines
+      const lines = contents.split('\n');
+
+      // Initialize the number of lines and the sum
+      let lineCount = 0;
+      let sum = 0;
+
+      // Loop over each line
+      for (const line of lines) {
+        // Ignore empty lines
+        if (line.length === 0) {
+          continue;
+        }
+
+        // Increment the number of lines
+        lineCount++;
+
+        // Get the number from the line
+        const number = parseInt(line.trim());
+
+        // Add the number to the sum
+        sum += number;
+      }
+
+      // Update the results element
+      results.innerHTML = `
+            <p>Number of lines: ${lineCount}</p>
+            <p>Sum of numbers: ${sum}</p>
+          `;
+    });
+
+    // Read the file
+    reader.readAsText(file);
+  });
+
+  function handleDrop(event) {
+    // Prevent default behavior (opening the files)
+    event.preventDefault();
+
+    // Get the files from the event
+    const files = event.dataTransfer.files;
+
+
+    alert(files)
+
+    // Check if there are any files
+    if (files.length === 0) {
+      alert('No files selected.');
+      return;
+    }
+
+    // Process the files
+    for (const file of files) {
+      // Create a new file reader
+      const reader = new FileReader();
+
+      // Add event listener for the load event
+      reader.addEventListener('load', (e) => {
+        // Get the file contents as a string
+        const contents = e.target.result;
+
+        // Split the contents into lines
+        const lines = contents.split('\n');
+
+        // Initialize the number of lines and the sum
+        let lineCount = 0;
+        let sum = 0;
+
+        // Loop over each line
+        for (const line of lines) {
+          // Ignore empty lines
+          if (line.length === 0) {
+            continue;
+          }
+
+          // Increment the number of lines
+          lineCount++;
+
+          // Get the number from the line
+          const number = parseInt(line.trim());
+
+          // Add the number to the sum
+          sum += number;
+        }
+
+        // Update the results element
+        results.innerHTML = `
+        <p>Number of lines: ${lineCount}</p>
+        <p>Sum of numbers: ${sum}</p>
+      `;
+      });
+
+      // Read the file
+      reader.readAsText(file);
+    }
+  }
+</script>
+</body>
+</html>
