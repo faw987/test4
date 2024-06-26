@@ -48,6 +48,11 @@ a {
 <a href="f55.html">Dec23 GPS gpt4all Mistral Instruct</a>
 <br/>
 <br/>
+
+<br/>
+<a href="http://www.wunderground.com">weather</a><br/>
+<br/>
+
 <br/>
 
 <a href="faw4.html">faw4 location and camera</a>
