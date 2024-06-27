@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #output {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+        #map {
+            margin-top: 20px;
+            width: 100%;
+            height: 400px;
+        }
+        button {
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+<h1>Geolocation Info</h1>
+<input type="text" id="locationInput" placeholder="Enter lat, long (e.g., 37.7749, -122.4194)">
+<button onclick="processLocation()">Use Input</button>
+<button onclick="getCurrentLocation()" style="margin-left: 10px;">Current Location</button>
+<div id="output"></div>
+<div id="map"></div>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw&callback=initMap">
+</script>
+<script>
+    function processLocation() {
+        const location = document.getElementById('locationInput').value.split(',');
+        if (location.length === 2) {
+            const [lat, long] = location;
+            getAddressComponents(parseFloat(lat), parseFloat(long));
+        } else {
+            document.getElementById('output').innerText = "Invalid format";
+        }
+    }
+
+    function getCurrentLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const long = position.coords.longitude;
+                getAddressComponents(lat, long);
+            }, () => {
+                document.getElementById('output').innerText = "Error getting location.";
+            });
+        } else {
+            document.getElementById('output').innerText = "Geolocation not supported.";
+        }
+    }
+
+    function getAddressComponents(lat, long) {
+        const apiKey = 'AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw'; // Replace with your API key
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${apiKey}`;
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.results[0]) {
+                    const address = data.results[0].formatted_address;
+                    const [latLong, geopolitical] = document.getElementById('output').innerText.split(': ');
+                    document.getElementById('output').innerText = `${latLong} (${lat}, ${long})\n${address}\n${geopolitical}`;
+                    initMap(lat, long);
+                } else {
+                    document.getElementById('output').innerText = "Error getting address.";
+                }
+            })
+            .catch((error) => {
+                document.getElementById('output').innerText = `Error: ${error}`;
+            });
+    }
+
+    function initMap(lat, long) {
+        const mapOptions = {
+            zoom: 15,
+            center: new google.maps.LatLng(lat, long),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        new google.maps.Marker({
+            position: { lat: lat, lng: long },
+            map: map
+        });
+    }
+</script>
+</body>
+</html>
