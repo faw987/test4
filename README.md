@@ -7,11 +7,23 @@
 /*  background-image: url('images/sunset-on-river.jpg');*/
 /*}*/
 
+
 a {
-            font-size: 16pt;
-            font-family: Arial, sans-serif;
-            color: black;
-        }
+text-decoration: none; /* Remove underline */
+color: #000; /* Default text color */
+font-weight: bold; /* Make text bold */
+padding: 10px 15px; /* Add padding inside the box */
+border: 2px solid #000; /* Add a border */
+border-radius: 5px; /* Optional: Add rounded corners */
+display: inline-block; /* Make the link a block element */
+transition: background-color 0.3s, color 0.3s; /* Add transition for smooth effect */
+}
+
+/* Hover and focus states */
+a:hover, a:focus {
+background-color: #000; /* Change background color on hover */
+color: #fff; /* Change text color on hover */
+}
 
 </style>
 </head>
