@@ -30,6 +30,7 @@
 <button onclick="processLocation()">Use Input</button>
 <button onclick="getCurrentLocation()" style="margin-left: 10px;">Current Location</button>
 <button id="wikiButton">Check Wikipedia Page</button>
+<button id="statsButton">Check Stats Page</button>
 <div id="output"></div>
 <div id="map"></div>
 <script async defer
@@ -58,30 +59,72 @@
             }
         });
 
-        async function getWikipediaPage(town, state) {
-            const pageTitle = `${town},_${state}`;
-            const url = `https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&titles=${encodeURIComponent(pageTitle)}`;
-            console.log("url="+url)
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const pages = data.query.pages;
-                const pageId = Object.keys(pages)[0];
+        const statsButton = document.getElementById('statsButton');
 
-                if (pageId !== '-1') {
-                    wikiButton.disabled = false;
+        statsButton.addEventListener('click', async () => {
+            // const town = townInput.value;
+            // const state = stateInput.value;
+            const town = globaltown;
+            const thestate = globalstate;
+            // alert("here we are")
+            const wikiPage = await getStatsPage(town, thestate);
+
+            if (wikiPage) {
+                window.location.href = `https://www.city-data.com/city/${wikiPage}.html`;
+            }
+        });
+
+        // https://www.city-data.com/city/South-Plainfield-New-Jersey.html
+
+        async function getStatsPage(town, state) {
+            const pageTitle = `${town}-${state}`;
+            const url = `https://www.city-data.com/city/${encodeURIComponent(pageTitle)}.html`;
+            console.log("url="+url)
+            // try {
+            //     const response = await fetch(url);
+            //     const data = await response.json();
+            //     const pages = data.query.pages;
+            //     const pageId = Object.keys(pages)[0];
+            //
+            //     if (pageId !== '-1') {
+            //         wikiButton.disabled = false;
                     return pageTitle;
-                } else {
-                    wikiButton.disabled = true;
-                    return null;
-                }
-            } catch (error) {
-                console.error('Error fetching Wikipedia page:', error);
+            //     } else {
+            //         wikiButton.disabled = true;
+            //         return null;
+            //     }
+            // } catch (error) {
+            //     console.error('Error fetching Wikipedia page:', error);
+            //     wikiButton.disabled = true;
+            //     return null;
+            // }
+        }
+    });
+
+    async function getWikipediaPage(town, state) {
+        const pageTitle = `${town},_${state}`;
+        const url = `https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&titles=${encodeURIComponent(pageTitle)}`;
+        console.log("url="+url)
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const pages = data.query.pages;
+            const pageId = Object.keys(pages)[0];
+
+            if (pageId !== '-1') {
+                wikiButton.disabled = false;
+                return pageTitle;
+            } else {
                 wikiButton.disabled = true;
                 return null;
             }
+        } catch (error) {
+            console.error('Error fetching Wikipedia page:', error);
+            wikiButton.disabled = true;
+            return null;
         }
-    });
+    };
+    // });
 
     function processLocation() {
         const location = document.getElementById('locationInput').value.split(',');
