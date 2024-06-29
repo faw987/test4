@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crime Data Fetcher</title>
+</head>
+<body>
+<h1>Crime Data Fetcher</h1>
+<input type="text" id="address" placeholder="Enter address" />
+<button onclick="getCrimeData()">Get Crime Data</button>
+<div id="crime-data"></div>
+
+<script>
+    async function getCrimeData() {
+        const address = document.getElementById('address').value;
+        if (!address) {
+            alert('Please enter an address.');
+            return;
+        }
+
+        try {
+            // Step 1: Convert address to city and state (simplified for example purposes)
+            const cityState = address.split(','); // Assume address format: "City, State"
+            if (cityState.length < 2) {
+                alert('Please enter the address in "City, State" format.');
+                return;
+            }
+            const city = cityState[0].trim();
+            const state = cityState[1].trim();
+
+            // Step 2: Fetch the city-data page
+            const response = await fetch(`https://www.city-data.com/city/${city}-${state}.html`);
+            const text = await response.text();
+
+            // Step 3: Parse the HTML to extract the crime index
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            const crimeIndexElement = doc.querySelector('.crime table tr:last-child td:last-child');
+
+            if (crimeIndexElement) {
+                const crimeIndex = crimeIndexElement.textContent;
+                document.getElementById('crime-data').innerHTML = `Total Crime Index: ${crimeIndex}`;
+            } else {
+                document.getElementById('crime-data').innerHTML = 'Crime data not found.';
+            }
+        } catch (error) {
+            console.error('Error fetching crime data:', error);
+            document.getElementById('crime-data').innerHTML = 'Error fetching crime data.';
+        }
+    }
+</script>
+</body>
+</html>

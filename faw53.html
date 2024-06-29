@@ -29,12 +29,60 @@
 <input type="text" id="locationInput" placeholder="Enter lat, long (e.g., 37.7749, -122.4194)">
 <button onclick="processLocation()">Use Input</button>
 <button onclick="getCurrentLocation()" style="margin-left: 10px;">Current Location</button>
+<button id="wikiButton">Check Wikipedia Page</button>
 <div id="output"></div>
 <div id="map"></div>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw&callback=initMap">
 </script>
 <script>
+
+    // Declare global variables
+    let globaltown = '';
+    let globalstate = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // const townInput = document.getElementById('town');
+        // const stateInput = document.getElementById('state');
+        const wikiButton = document.getElementById('wikiButton');
+
+        wikiButton.addEventListener('click', async () => {
+            // const town = townInput.value;
+            // const state = stateInput.value;
+            const town = globaltown;
+            const thestate = globalstate;
+            const wikiPage = await getWikipediaPage(town, thestate);
+
+            if (wikiPage) {
+                window.location.href = `https://en.wikipedia.org/wiki/${wikiPage}`;
+            }
+        });
+
+        async function getWikipediaPage(town, state) {
+            const pageTitle = `${town},_${state}`;
+            const url = `https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&titles=${encodeURIComponent(pageTitle)}`;
+            console.log("url="+url)
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const pages = data.query.pages;
+                const pageId = Object.keys(pages)[0];
+
+                if (pageId !== '-1') {
+                    wikiButton.disabled = false;
+                    return pageTitle;
+                } else {
+                    wikiButton.disabled = true;
+                    return null;
+                }
+            } catch (error) {
+                console.error('Error fetching Wikipedia page:', error);
+                wikiButton.disabled = true;
+                return null;
+            }
+        }
+    });
+
     function processLocation() {
         const location = document.getElementById('locationInput').value.split(',');
         if (location.length === 2) {
@@ -44,6 +92,36 @@
             document.getElementById('output').innerText = "Invalid format";
         }
     }
+
+    function extractLocalityAndState(geocodingResult) {
+        let locality = null;
+        let state = null;
+        // const locality;
+        // const state;
+        if (geocodingResult.status === 'OK') {
+            const addressComponents = geocodingResult.results[0].address_components;
+            addressComponents.forEach(component => {
+                if (component.types.includes('locality')) {
+                    locality = component.long_name;
+                    // alert(locality);
+                } else if (component.types.includes('administrative_area_level_1')) {
+                    state = component.long_name;
+                    // alert(state);
+                }
+            });
+        }
+        // alert("loc,st="+{ locality, state });
+        // alert("loc,st="+locality+state );
+        // const loc = locality;
+        // const st = state;
+        let r = {locality, state};
+        // alert("r=" + r);
+        console.log(r);
+        return r;
+    }
+
+
+
 
     function getCurrentLocation() {
         if (navigator.geolocation) {
@@ -68,6 +146,10 @@
             .then((data) => {
                 if (data.results[0]) {
                     const address = data.results[0].formatted_address;
+                    const { locality, state }  = extractLocalityAndState(data);
+                    globaltown   = locality;
+                    globalstate = state;
+                    // alert("global: " + globaltown+ " " +globalstate);
                     const [latLong, geopolitical] = document.getElementById('output').innerText.split(': ');
                     document.getElementById('output').innerText = `${latLong} (${lat}, ${long})\n${address}\n${geopolitical}`;
                     initMap(lat, long);
@@ -92,6 +174,9 @@
             map: map
         });
     }
+
+
+
 </script>
 </body>
 </html>
