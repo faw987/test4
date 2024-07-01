@@ -45,6 +45,22 @@
   //   marker.setPosition(newPos); // Update marker position
   // }
 
+
+  function getCurrentLatLon() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        return (latitude,longitude);
+      }, (error) => {
+        console.error("Error retrieving location: ", error);
+        alert("Unable to retrieve your location.");
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
   function getURLParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
@@ -433,6 +449,28 @@
     panorama.setVisible(false);
   }
 
+  function centerMapToCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const currentLocation = { lat: latitude, lng: longitude };
+
+        // Set the map's center to the current location
+        map.setCenter(currentLocation);
+        // Optionally, you can also add a marker at this location
+        new google.maps.Marker({
+          map: map,
+          position: currentLocation
+        });
+      }, (error) => {
+        console.error("Error retrieving location: ", error);
+        alert("Unable to retrieve your location.");
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
 
   function geocodeAddress() {
     const address = document.getElementById('addressInput').value;
@@ -470,6 +508,8 @@
 <input type="text" id="addressInput" placeholder="Enter an address">
 <button onclick="geocodeAddress()" id="goToAddressButton">Go to Address</button>
 <input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address>
+<!--<button onClick="getCurrentLatLon()" id="getCurrentLatLonButton">Use Current Lat/Lon</button>-->
+<button onclick="centerMapToCurrentLocation()" id="getCurrentLatLonButton">Use Current Lat/Lon</button>
 <br/>
 <button onclick="enter360View()">360view</button>
 <button onclick="pauseRotation()">Pause</button>

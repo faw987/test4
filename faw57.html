@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Maps Right-Click Menu</title>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw"></script>
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+    .contextmenu {
+      background: white;
+      border: 1px solid black;
+      padding: 10px;
+      position: absolute;
+      z-index: 1000;
+      display: none;
+    }
+  </style>
+  <script>
+    let map;
+    let contextMenuDiv;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: { lat: -34.397, lng: 150.644 } // Default center
+      });
+
+      // Create the context menu div
+      contextMenuDiv = document.createElement('div');
+      contextMenuDiv.className = 'contextmenu';
+      document.body.appendChild(contextMenuDiv);
+
+      // Add right-click event listener to the map
+      map.addListener('rightclick', (e) => {
+        showContextMenu(e.latLng, e.pixel);
+        copyToClipboard(e.latLng);
+      });
+
+      // Hide context menu on map click
+      map.addListener('click', () => {
+        hideContextMenu();
+      });
+    }
+
+    function showContextMenu(latLng, pixel) {
+      contextMenuDiv.innerHTML = `
+                <strong>Latitude:</strong> ${latLng.lat().toFixed(6)}<br>
+                <strong>Longitude:</strong> ${latLng.lng().toFixed(6)}
+            `;
+
+      contextMenuDiv.style.left = pixel.x + 'px';
+      contextMenuDiv.style.top = pixel.y + 'px';
+      contextMenuDiv.style.display = 'block';
+    }
+
+    function hideContextMenu() {
+      contextMenuDiv.style.display = 'none';
+    }
+
+    function copyToClipboard(latLng) {
+      const latLngStr = `${latLng.lat().toFixed(6)},${latLng.lng().toFixed(6)}`;
+      navigator.clipboard.writeText(latLngStr).then(() => {
+        console.log('Copied to clipboard:', latLngStr);
+      }).catch(err => {
+        console.error('Error copying to clipboard:', err);
+      });
+    }
+
+    // Load the map
+    window.onload = function() {
+      initMap();
+    };
+  </script>
+</head>
+<body>
+<div id="map"></div>
+</body>
+</html>
