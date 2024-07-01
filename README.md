@@ -65,6 +65,13 @@ color: #fff; /* Change text color on hover */
 <a href="http://www.wunderground.com">weather</a><br/>
 <br/>
 
+
+<br/>
+<a href="f56.html">weather2</a><br/>
+<br/>
+
+
+
 <br/>
 
 <a href="faw4.html">faw4 location and camera</a>

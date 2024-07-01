@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+
+
+  function getCurrentLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const lat = position.coords.latitude;
+        const long = position.coords.longitude;
+        // getAddressComponents(lat, long);
+        return (lat,long);
+      }, () => {
+        document.getElementById('output').innerText = "Error getting location.";
+      });
+    } else {
+      document.getElementById('output').innerText = "Geolocation not supported.";
+    }
+  }
+
+  const (lat,lon)=getCurrentLocation();
+
+</script>
+<body>
+
+// https://www.wunderground.com/weather/40.7128,-74.0060
+
+
+
+<a href="http://www.wunderground.com/weather/{lat},{lon}">weather</a><br/>
+
+</body>
+</html>
