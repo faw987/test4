@@ -67,7 +67,7 @@ color: #fff; /* Change text color on hover */
 
 
 <br/>
-<a href="f56.html">weather2</a><br/>
+<a href="faw56.html">weather2</a><br/>
 <br/>
 
 
