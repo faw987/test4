@@ -2,36 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather and Hourly Forecast</title>
+    <script>
+        function updateFrames() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const weatherUrl = `https://www.wunderground.com/weather/${latitude},${longitude}`;
+                    const hourlyUrl = `https://www.wunderground.com/hourly/${latitude},${longitude}`;
+
+                    document.getElementById('weatherFrame').src = weatherUrl;
+                    document.getElementById('hourlyFrame').src = hourlyUrl;
+                }, (error) => {
+                    console.error("Error retrieving location: ", error);
+                    alert("Unable to retrieve your location.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
 </head>
-<script>
-
-
-  function getCurrentLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const lat = position.coords.latitude;
-        const long = position.coords.longitude;
-        // getAddressComponents(lat, long);
-        return (lat,long);
-      }, () => {
-        document.getElementById('output').innerText = "Error getting location.";
-      });
-    } else {
-      document.getElementById('output').innerText = "Geolocation not supported.";
-    }
-  }
-
-  const (lat,lon)=getCurrentLocation();
-
-</script>
-<body>
-
-// https://www.wunderground.com/weather/40.7128,-74.0060
-
-
-
-<a href="http://www.wunderground.com/weather/{lat},{lon}">weather</a><br/>
-
+<body onload="updateFrames()">
+<h1>Weather Information</h1>
+<iframe id="weatherFrame" style="width: 100%; height: 45%; border: none;"></iframe>
+<iframe id="hourlyFrame" style="width: 100%; height: 45%; border: none;"></iframe>
 </body>
 </html>
