@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather and Hourly Forecast</title>
     <script>
-        function updateFrames() {
+        function redirectToWeather() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((position) => {
                     const latitude = position.coords.latitude;
@@ -13,8 +13,10 @@
                     const weatherUrl = `https://www.wunderground.com/weather/${latitude},${longitude}`;
                     const hourlyUrl = `https://www.wunderground.com/hourly/${latitude},${longitude}`;
 
-                    document.getElementById('weatherFrame').src = weatherUrl;
-                    document.getElementById('hourlyFrame').src = hourlyUrl;
+                    document.getElementById('weatherLink').href = weatherUrl;
+                    document.getElementById('weatherLink').style.display = 'block';
+                    document.getElementById('hourlyLink').href = hourlyUrl;
+                    document.getElementById('hourlyLink').style.display = 'block';
                 }, (error) => {
                     console.error("Error retrieving location: ", error);
                     alert("Unable to retrieve your location.");
@@ -25,9 +27,9 @@
         }
     </script>
 </head>
-<body onload="updateFrames()">
+<body onload="redirectToWeather()">
 <h1>Weather Information</h1>
-<iframe id="weatherFrame" style="width: 100%; height: 45%; border: none;"></iframe>
-<iframe id="hourlyFrame" style="width: 100%; height: 45%; border: none;"></iframe>
+<a id="weatherLink" href="#" target="_blank" style="display:none;">Current Weather</a><br>
+<a id="hourlyLink" href="#" target="_blank" style="display:none;">Hourly Forecast</a>
 </body>
 </html>
