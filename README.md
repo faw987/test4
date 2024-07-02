@@ -6,6 +6,7 @@
 /*body {*/
 /*  background-image: url('images/sunset-on-river.jpg');*/
 /*}*/
+
 body {
     /*background-image: url('images/sunset-on-river.jpg');*!*/
     background-color: lightcyan;
