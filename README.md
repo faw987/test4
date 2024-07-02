@@ -180,8 +180,9 @@ color: #fff; /* Change text color on hover */
 <a href="images/sunset-on-river.jpg">sunset</a>
 
 <br><br>
-<h1>Ahoy there.</h1>
- 
+
+<h1>Ahoy  2024.07.02  11:20</h1>
+
 <br/>
 <script>
 
