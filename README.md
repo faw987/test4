@@ -176,7 +176,7 @@ color: #fff; /* Change text color on hover */
 <a href="clemap1.png">cle</a>
 <br>
 
-<a href="sunset-on-river.jpg">sunset</a>
+<a href="images/sunset-on-river.jpg">sunset</a>
 
 <br><br>
 <h1>Ahoy there.</h1>
