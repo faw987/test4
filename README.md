@@ -49,8 +49,21 @@ color: #fff; /* Change text color on hover */
 <br/>
 
 
+<a href="mymain.html">mymain</a>
+<br/>
+
+
 <a href="f53.html">360 degrees experiment (new)</a>
 <br/>
+
+
+<a href="f57.html">360 degrees experiment (look in)</a>
+<br/>
+
+
+<a href="f58.html">360 degrees experiment (satellite)</a>
+<br/>
+
 <br/>
 <a href="faw39.html">PT Coach experiment</a>
 <br/>
