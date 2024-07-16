@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geolocation Info</title>
+    <title>Geolocation Info - In the context of the geopolitical infrastructure.</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,26 +17,41 @@
         #map {
             margin-top: 20px;
             width: 100%;
-            height: 400px;
+            height: 600px;
+            margin-bottom: 20px;
+
         }
         button {
-            height: 25px;
+            height: 40px;
         }
     </style>
 </head>
 <body>
 <h1>Geolocation Info</h1>
-<input type="text" id="locationInput" placeholder="Enter lat, long (e.g., 37.7749, -122.4194)">
-<button onclick="processLocation()">Use Input</button>
-<button onclick="getCurrentLocation()" style="margin-left: 10px;">Current Location</button>
-<button id="wikiButton">Check Wikipedia Page</button>
-<button id="statsButton">Check Stats Page</button>
-<div id="output"></div>
+<h2>... in the context of the geopolitical infrastructure.</h2>
 <div id="map"></div>
+<input type="text" id="locationInput" placeholder="Enter lat, long (e.g., 37.7749, -122.4194)">
+<button onClick="processLocation()">Use Input Lat,Lon</button>
+<button onclick="processLocationAddress()">Use Input Address</button>
+<button onclick="getCurrentLocation()" style="margin-left: 10px;">Current Location</button>
+<button id="wikiButton">Wikipedia Page</button>
+<button id="statsButton">City-Stats Page</button>
+<button id="justiceButton">Justice Map Page</button>
+<div id="output"></div>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw&callback=initMap">
 </script>
 <script>
+
+    window.addEventListener('load', (event) => {
+        // alert('Page fully loaded');
+        // Your function here
+        // yourFunction();
+
+        getCurrentLocation();
+
+        });
+
 
     // Declare global variables
     let globaltown = '';
@@ -65,13 +80,34 @@
             // const town = townInput.value;
             // const state = stateInput.value;
             const town = globaltown;
-            const thestate = globalstate;
+            thestate = globalstate;
             // alert("here we are")
-            const wikiPage = await getStatsPage(town, thestate);
+
+
+            thestate=fixupStatsPage(thestate);
+
+
+                const wikiPage = await getStatsPage(town, thestate);
 
             if (wikiPage) {
                 window.location.href = `https://www.city-data.com/city/${wikiPage}.html`;
             }
+        });
+
+
+        const justiceButton = document.getElementById('justiceButton');
+
+        justiceButton.addEventListener('click', async () => {
+            // const town = townInput.value;
+            // const state = stateInput.value;
+            const town = globaltown;
+            const thestate = globalstate;
+            // alert("here we are")
+            // const wikiPage = await getStatsPage(town, thestate);
+
+            // if (wikiPage) {
+                window.location.href = `https://www.justicemap.org/`;
+            // }
         });
 
         // https://www.city-data.com/city/South-Plainfield-New-Jersey.html
@@ -136,6 +172,19 @@
         }
     }
 
+    function fixupStatsPage(page) {
+        // alert("page:" + page);
+        switch (page) {
+            case page = "New%20Jersey":
+                return 'New-Jersey';
+            case page = "New Jersey":
+                return 'New-Jersey';
+            // Default case if no matches are found
+            default:
+                return page; // or any other adjustment you need
+        }
+    }
+
     function extractLocalityAndState(geocodingResult) {
         let locality = null;
         let state = null;
@@ -163,6 +212,28 @@
         return r;
     }
 
+    function setClipboard(textToCopy) {
+        // The string you want to copy to the clipboard
+        // const textToCopy = "This is the text to be copied";
+
+        // Check if the Clipboard API is available
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                console.log("Text copied to clipboard successfully!");
+            }).catch(err => {
+                console.error("Failed to copy text: ", err);
+            });
+        } else {
+            // Fallback for browsers that do not support the Clipboard API
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+            console.log("Text copied to clipboard using fallback method.");
+        }
+    }
 
 
 
@@ -172,6 +243,7 @@
                 const lat = position.coords.latitude;
                 const long = position.coords.longitude;
                 getAddressComponents(lat, long);
+                setClipboard(lat +"," + long);
             }, () => {
                 document.getElementById('output').innerText = "Error getting location.";
             });
@@ -216,9 +288,15 @@
             position: { lat: lat, lng: long },
             map: map
         });
+        //
+        // alert("in initMap")
+
     }
 
-
+    // https://www.city-data.com/township/Piscataway-Middlesex-NJ.html#google_vignette
+    // https://www.city-data.com/township/New-Jersey0.html
+    // https://www.city-data.com/township/New-Jersey1.html
+    // https://www.city-data.com/township/Plainsboro-Middlesex-NJ.html#google_vignette
 
 </script>
 </body>
