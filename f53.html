@@ -9,9 +9,16 @@
   #container {
     display: flex;
   }
-  #map, #pano {
+  #map {
+    /*height: 80%;*/
+    height: 400px;
     width: 50%;
-    height: 800px;
+    float: left;
+  }
+  #pano {
+    height: 400px;
+    width: 50%;
+    float: left;
   }
 </style>
 <script>
@@ -212,7 +219,7 @@
 
   let marker; // To store the map marker reference
 
-  function initMap() {
+  function initMap(callback) {
 
 
     geocoder = new google.maps.Geocoder();
@@ -253,9 +260,15 @@
 
     map = new google.maps.Map(document.getElementById('map'), {
       center: initialPosition,
-      zoom: 14
+      zoom: 14,
+      draggableCursor: 'crosshair' // Set the cursor style to crosshair
+
     });
 
+    // Add a click event listener to the map
+    map.addListener('click', function (event) {
+      getMapClickCoordinates(event);
+    });
 
     panorama = new google.maps.StreetViewPanorama(
             // document.getElementById('map'),
@@ -500,6 +513,51 @@
   }
 
 
+  function toggleMapVisibility() {
+    var mapDiv = document.getElementById('map');
+    var panoDiv = document.getElementById('pano');
+
+    if (mapDiv.style.display === 'none' || mapDiv.style.display === '') {
+      mapDiv.style.display = 'block';
+      panoDiv.style.width = '50%';
+      panoDiv.style.height = '400px';
+
+    } else {
+      mapDiv.style.display = 'none';
+      panoDiv.style.width = '90%';
+      panoDiv.style.height = '600px';
+    }
+  }
+
+
+  function getMapClickCoordinates(event) {
+    // Assuming you have a way to get the latitude and longitude from the event
+    // This example uses placeholder values
+    // var lat = event.latLng.lat(); // Replace with actual method to get latitude
+    // var lon = event.latLng.lng(); // Replace with actual method to get longitude
+    // mapClickedOn(lat, lon);
+
+    if (event && event.latLng) {
+      var lat = event.latLng.lat(); // Get the latitude from the event
+      var lon = event.latLng.lng(); // Get the longitude from the event
+      mapClickedOn(lat, lon);       // Call your custom function with these coordinates
+    } else {
+      console.error('Invalid event or event.latLng is not defined');
+      console.log('Event object:', event); // Log the event object to inspect its structure
+    }
+
+  }
+
+  function mapClickedOn(lat, lon) {
+    console.log('Map was clicked at latitude:', lat, 'and longitude:', lon);
+    // Add your custom logic here
+    const currentLocation = { lat: lat, lng: lon };
+
+    // Set the map's center to the current location
+    map.setCenter(currentLocation);
+  }
+
+
 </script>
 <body>
 
@@ -530,6 +588,7 @@
 
 
 <button onclick="showMap()">Map</button>
+<button onclick="toggleMapVisibility()" id="toggleMapButton">Hide/Show Map</button>
 
 <br/>
 
@@ -589,12 +648,16 @@
 <textarea id="locationsInput" rows="5" placeholder="Enter one address per line"></textarea>
 <button onclick="goToNextLocation()" id="goNextButton">Go Next</button>
 <button onclick="resetLocations()" id="resetButton">Reset</button>
+
+
+
 <div id="currentLocationDisplay">Current Location: None</div>
 
 
 
 <div id="container">
-  <div id="map"></div> <!-- Map will go here -->
+<!--  <div id="map"></div> &lt;!&ndash; Map will go here &ndash;&gt;-->
+  <div id="map" onclick="getMapClickCoordinates(event)"></div> <!-- Updated onclick attribute -->
   <div id="pano"></div> <!-- StreetView will go here -->
 </div>
 

@@ -56,6 +56,8 @@
     // Declare global variables
     let globaltown = '';
     let globalstate = '';
+    let globalcounty = '';
+
 
     document.addEventListener('DOMContentLoaded', () => {
         // const townInput = document.getElementById('town');
@@ -172,6 +174,35 @@
         }
     }
 
+    async function getLatLon(address,apiKey) {
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`;
+
+        try {
+            const response = await fetch(url);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.status === 'OK') {
+                    const location = data.results[0].geometry.location;
+                    return { lat: location.lat, lon: location.lng };
+                } else {
+                    throw new Error(`Error from API: ${data.status}`);
+                }
+            } else {
+                throw new Error(`HTTP Error: ${response.status}`);
+            }
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+
+
+    function processLocationAddress() {
+        const address = document.getElementById('locationInput');
+        latlon=getLatLon(address, 'AIzaSyDgsAGFHzzPSQ4tJWIpTUc3SducsQp45bw');
+        alert(latlon);
+    }
+
     function fixupStatsPage(page) {
         // alert("page:" + page);
         switch (page) {
@@ -188,25 +219,29 @@
     function extractLocalityAndState(geocodingResult) {
         let locality = null;
         let state = null;
+        let county = null;
         // const locality;
         // const state;
+        x='';
         if (geocodingResult.status === 'OK') {
             const addressComponents = geocodingResult.results[0].address_components;
             addressComponents.forEach(component => {
+                x = x + component.types + " " + component.long_name  + "\n";
                 if (component.types.includes('locality')) {
                     locality = component.long_name;
-                    // alert(locality);
-                } else if (component.types.includes('administrative_area_level_1')) {
+                 } else if (component.types.includes('administrative_area_level_1')) {
                     state = component.long_name;
-                    // alert(state);
-                }
+                 } else if (component.types.includes('administrative_area_level_2')) {
+                    county = component.long_name;
+                 }
             });
         }
+        alert(x);
         // alert("loc,st="+{ locality, state });
         // alert("loc,st="+locality+state );
         // const loc = locality;
         // const st = state;
-        let r = {locality, state};
+        let r = {locality, county, state};
         // alert("r=" + r);
         console.log(r);
         return r;
@@ -261,9 +296,10 @@
             .then((data) => {
                 if (data.results[0]) {
                     const address = data.results[0].formatted_address;
-                    const { locality, state }  = extractLocalityAndState(data);
+                    const { locality, state, county }  = extractLocalityAndState(data);
                     globaltown   = locality;
                     globalstate = state;
+                    globalcounty = county;
                     // alert("global: " + globaltown+ " " +globalstate);
                     const [latLong, geopolitical] = document.getElementById('output').innerText.split(': ');
                     document.getElementById('output').innerText = `${latLong} (${lat}, ${long})\n${address}\n${geopolitical}`;
