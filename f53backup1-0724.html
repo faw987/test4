@@ -22,16 +22,6 @@
   }
 </style>
 <script>
-
-  /*
-
-  Mott St and Houston NYC
-  Mott St and Prince St NYC
-  Mott St and Spring St NYC
-
-     */
-
-
   let map;
   let panorama;
   let direction = 1; // Default direction is clockwise
@@ -94,6 +84,19 @@
 
   let currentLocationIndex = 0;  // Track the current location being viewed
 
+  // function goToNextLocation() {
+  //   const locations = document.getElementById('locationsInput').value.split('\n');  // Split the textarea content by line
+  //   if (currentLocationIndex < locations.length) {
+  //     const location = locations[currentLocationIndex].trim();  // Get the current location
+  //     if (location) {
+  //       geocodeLocation(location);  // Process this location (geocode and display)
+  //     }
+  //     currentLocationIndex++;  // Move to the next index
+  //   } else {
+  //     alert('No more locations to display.');
+  //   }
+  // }
+
   function geocodeLocation(address) {
     geocoder.geocode({ 'address': address }, function(results, status) {
       if (status === 'OK') {
@@ -121,11 +124,32 @@
     goToNextLocation();
   };
 
+  // function resetLocations() {
+  //   currentLocationIndex = 0;  // Reset the index
+  //   goToNextLocation();  // Go to the first location
+  // }
+
   function resetLocations() {
     currentLocationIndex = 0;
     document.getElementById('currentLocationDisplay').textContent = 'Current Location: None'; // Reset display text
     goToNextLocation();
   }
+
+
+
+  // function goToNextLocation() {
+  //   const locations = document.getElementById('locationsInput').value.split('\n');
+  //   if (currentLocationIndex < locations.length) {
+  //     const location = locations[currentLocationIndex].trim();
+  //     if (location) {
+  //       geocodeLocation(location);
+  //     }
+  //     currentLocationIndex++;
+  //   } else {
+  //     alert('Reached the end. Click "Reset" to start over.');
+  //   }
+  // }
+
 
   function goToNextLocation() {
     const locations = document.getElementById('locationsInput').value.split('\n');
@@ -138,9 +162,8 @@
       }
       currentLocationIndex++;
     } else {
-      alert('Reached the end. Will return to the first location and continue.');
-      resetLocations();
-      // document.getElementById('currentLocationDisplay').textContent = 'Current Location: None'; // Reset display text
+      alert('Reached the end. Click "Reset" to start over.');
+      document.getElementById('currentLocationDisplay').textContent = 'Current Location: None'; // Reset display text
     }
   }
 
@@ -200,8 +223,12 @@
 
   function initMap(callback) {
 
+
     geocoder = new google.maps.Geocoder();
 
+
+    // function initMap() {
+    // const initialPosition = { lat: 42.345573, lng: -71.098326 }; // Sample starting position 41.12354198514238, -81.80592082411044
     const initialPosition = { lat: 41.12354198514238, lng: -81.80592082411044 }; // Sample starting position
     if (hasURLParameter('address')) {
       const addressParam = getURLParameter('address');
@@ -214,11 +241,13 @@
       console.log('address parameter is not present.');
     }
 
+
     // Initialize marker at initial position
     marker = new google.maps.Marker({
       map: map,
       position: initialPosition
     });
+
 
     document.getElementById('addressInput').addEventListener('keydown', function(event) {
       // Check if the "Enter" key was pressed
@@ -228,10 +257,14 @@
       }
     });
 
+
+
+
     map = new google.maps.Map(document.getElementById('map'), {
       center: initialPosition,
       zoom: 14,
       draggableCursor: 'crosshair' // Set the cursor style to crosshair
+
     });
 
     // Add a click event listener to the map
@@ -239,6 +272,15 @@
       getMapClickCoordinates(event);
     });
 
+    /*
+
+  Mott St and Houston NYC
+  Mott St and Prince St NYC
+  Mott St and Spring St NYC
+
+
+
+     */
 
 
 
@@ -525,6 +567,12 @@
 
 
   function getMapClickCoordinates(event) {
+    // Assuming you have a way to get the latitude and longitude from the event
+    // This example uses placeholder values
+    // var lat = event.latLng.lat(); // Replace with actual method to get latitude
+    // var lon = event.latLng.lng(); // Replace with actual method to get longitude
+    // mapClickedOn(lat, lon);
+
     if (event && event.latLng) {
       var lat = event.latLng.lat(); // Get the latitude from the event
       var lon = event.latLng.lng(); // Get the longitude from the event
@@ -549,6 +597,8 @@
 </script>
 <body>
 
+
+<!--<input type="text" id="addressInput" placeholder="Enter an address">-->
 <input type="text" id="addressInput" placeholder="Enter an address">
 <button onclick="geocodeAddress()" id="goToAddressButton">Go to Address</button>
 <input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address>
@@ -556,12 +606,27 @@
 <button onclick="centerMapToCurrentLocation()" id="getCurrentLatLonButton">Use Current Lat/Lon</button>
 <br/>
 <button onclick="enter360View()">360view</button>
+<!--<button onclick="pauseRotation()">Pause</button>-->
+<!--<button onclick="resumeRotation()">Resume</button>-->
 
 <button id="toggleButton" onclick="toggleRotation()">Pause</button>
 
+
+
+<!--<label>-->
+<!--    Direction:-->
+<!--    <select id="rotationDirection">-->
+<!--        <option value="1">Clockwise</option>-->
+<!--        <option value="-1">Counter-Clockwise</option>-->
+<!--    </select>-->
+<!--</label>-->
+
 <label>Direction:</label>
+<!--<button id="clockwiseButton" onclick="setDirection(1)">Clockwise</button>-->
+<!--<button id="counterClockwiseButton" onclick="setDirection(-1)">Counter-Clockwise</button>-->
 
 <button id="toggleDirectionButton" onclick="toggleDirection()">Clockwise</button>
+
 
 <button onclick="showMap()">Map</button>
 <button onclick="toggleMapVisibility()" id="toggleMapButton">Hide/Show Map</button>
@@ -571,11 +636,28 @@
 
 <label>Pitch:
   <input type="number" id="pitchInput" value="0" width="40">
+  <!--    <input type="range" id="pitchSlider" min="-90" max="90" value="10" oninput="updatePitchValue(this.value)">-->
   <input type="range" id="pitchSlider" min="-90" max="90" value="0" oninput="updatePitchValue(this.value)">
   <span id="pitchLabel">0</span>
   <button onclick="adjustPitch(-1)">-</button>
   <button onclick="adjustPitch(1)">+</button>
 </label>
+
+<!-- HTML -->
+<!--<label class="switch">-->
+<!--    <input type="checkbox" id="rotationToggle" checked>-->
+<!--    <span class="slider round"></span>-->
+<!--</label>-->
+<!--<label for="rotationToggle">Toggle Clockwise/Counter-Clockwise</label>-->
+
+<!--<label>Direction:</label>-->
+<!--<label>-->
+<!--    <input type="radio" id="rotationDirection" name="rotationDirection" value="1" checked> Clockwise-->
+<!--</label>-->
+<!--<label>-->
+<!--    <input type="radio" id="rotationDirection" name="rotationDirection" value="-1"> Counter-Clockwise-->
+<!--</label>-->
+
 
 <br/>
 
@@ -590,6 +672,7 @@
 
 <label>Zoom:
   <input type="number" id="zoomInput" value="2">
+  <!--    <input type="range" id="zoomSlider" min="1" max="10" value="5" oninput="updateZoomValue(this.value)">-->
   <input type="range" id="zoomSlider" min="1" max="10" value="2" oninput="updateZoomValue(this.value)">
   <span id="zoomLabel">2</span>
   <button onclick="adjustZoom(-1)">-</button>
@@ -607,14 +690,28 @@
 <button onclick="goToNextLocation()" id="goNextButton">Go Next</button>
 <button onclick="resetLocations()" id="resetButton">Reset</button>
 
+
+
 <div id="currentLocationDisplay">Current Location: None</div>
 
+
+
 <div id="container">
+<!--  <div id="map"></div> &lt;!&ndash; Map will go here &ndash;&gt;-->
   <div id="map" onclick="getMapClickCoordinates(event)"></div> <!-- Updated onclick attribute -->
   <div id="pano"></div> <!-- StreetView will go here -->
 </div>
 
+<!--<div id="map" style="width: 1000px; height: 800px;"></div>-->
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>-->
+
+
+<!--<div id="map" style="width: 600px; height: 400px;"></div>-->
+
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBsxTaBavVxP_9544dByg6ul0ZG3NnfEQ&callback=initMap" async defer></script>
+
+
+
 
 </body>
 </html>
