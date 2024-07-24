@@ -29,9 +29,14 @@
   Mott St and Prince St NYC
   Mott St and Spring St NYC
 
+  Broadway Ave and 14th Street NYC5
+  Broadway Ave and 15th Street NYC
+  Broadway Ave and 16th Street NYC
+  Broadway Ave and 17th Street NYC
+  Broadway Ave and 18th Street NYC
+
+
      */
-
-
   let map;
   let panorama;
   let direction = 1; // Default direction is clockwise
@@ -423,6 +428,7 @@
       let zoomValue = parseFloat(document.getElementById('zoomInput').value);
 
       console.log(`heading: ${currentHeading}, pitch: ${pitchValue}, zoom: ${zoomValue}  speed: ${speed}, intervalDuration: ${intervalDuration}`);
+      document.getElementById('currentHeading').textContent = 'Current Heading: '+ currentHeading;
 
       panorama.setPov({
         heading: currentHeading,
@@ -538,6 +544,7 @@
 
   function mapClickedOn(lat, lon) {
     console.log('Map was clicked at latitude:', lat, 'and longitude:', lon);
+    document.getElementById('currentLocationDisplay').textContent = 'Map was clicked at lat,lon: ' + lat + ',' + lon;
     // Add your custom logic here
     const currentLocation = { lat: lat, lng: lon };
 
@@ -549,22 +556,25 @@
 </script>
 <body>
 
+<button onclick="centerMapToCurrentLocation()" id="getCurrentLatLonButton">Use Current Lat/Lon</button>
+<label> or enter an address: </label>
 <input type="text" id="addressInput" placeholder="Enter an address">
 <button onclick="geocodeAddress()" id="goToAddressButton">Go to Address</button>
-<input type="checkbox" id="adjustCheckbox"> Adjust to nearest street address>
+<input type="checkbox" id="adjustCheckbox"> Adjust to closest street address
 <!--<button onClick="getCurrentLatLon()" id="getCurrentLatLonButton">Use Current Lat/Lon</button>-->
-<button onclick="centerMapToCurrentLocation()" id="getCurrentLatLonButton">Use Current Lat/Lon</button>
+<br/>
 <br/>
 <button onclick="enter360View()">360view</button>
-
 <button id="toggleButton" onclick="toggleRotation()">Pause</button>
 
 <label>Direction:</label>
 
 <button id="toggleDirectionButton" onclick="toggleDirection()">Clockwise</button>
 
-<button onclick="showMap()">Map</button>
-<button onclick="toggleMapVisibility()" id="toggleMapButton">Hide/Show Map</button>
+<!--<button onclick="showMap()">Map</button>-->
+<label>Map:</label>
+<button onclick="toggleMapVisibility()" id="toggleMapButton">Hide/Show</button>
+<br/>
 
 <br/>
 
@@ -595,19 +605,25 @@
   <button onclick="adjustZoom(-1)">-</button>
   <button onclick="adjustZoom(1)">+</button>
 </label>
+<br/>
 
 <!-- Input for distance and buttons for direction -->
-<input type="text" id="distanceInput" placeholder="Enter distance in miles">
+<!--<input type="text" id="distanceInput" valus="0.05" placeholder="Enter distance in miles">-->
+<label>Enter distance in miles:
+<input type="number" id="distanceInput" value="0.05">
 <button onclick="moveStreetView('N', document.getElementById('distanceInput').value)">N</button>
 <button onclick="moveStreetView('S', document.getElementById('distanceInput').value)">S</button>
 <button onclick="moveStreetView('E', document.getElementById('distanceInput').value)">E</button>
 <button onclick="moveStreetView('W', document.getElementById('distanceInput').value)">W</button>
+</label>
+<br/>
 
 <textarea id="locationsInput" rows="5" placeholder="Enter one address per line"></textarea>
 <button onclick="goToNextLocation()" id="goNextButton">Go Next</button>
 <button onclick="resetLocations()" id="resetButton">Reset</button>
 
 <div id="currentLocationDisplay">Current Location: None</div>
+<div id="currentHeading"></div>
 
 <div id="container">
   <div id="map" onclick="getMapClickCoordinates(event)"></div> <!-- Updated onclick attribute -->
