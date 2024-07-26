@@ -5,6 +5,20 @@
   <title>View360</title>
 </head>
 <style>
+
+
+  .container2 {
+    display: flex;
+    gap: 20px;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
   /* Styles to make the map and StreetView divs appear side by side */
   #container {
     display: flex;
@@ -564,66 +578,86 @@
 <!--<button onClick="getCurrentLatLon()" id="getCurrentLatLonButton">Use Current Lat/Lon</button>-->
 <br/>
 <br/>
-<button onclick="enter360View()">360view</button>
-<button id="toggleButton" onclick="toggleRotation()">Pause</button>
-
-<label>Direction:</label>
-
-<button id="toggleDirectionButton" onclick="toggleDirection()">Clockwise</button>
-
-<!--<button onclick="showMap()">Map</button>-->
-<label>Map:</label>
-<button onclick="toggleMapVisibility()" id="toggleMapButton">Hide/Show</button>
-<br/>
-
-<br/>
 
 
-<label>Pitch:
-  <input type="number" id="pitchInput" value="0" width="40">
-  <input type="range" id="pitchSlider" min="-90" max="90" value="0" oninput="updatePitchValue(this.value)">
-  <span id="pitchLabel">0</span>
-  <button onclick="adjustPitch(-1)">-</button>
-  <button onclick="adjustPitch(1)">+</button>
-</label>
 
-<br/>
+<div class="container2">
 
-<label>Speed:
-  <input type="number" id="speedInput" value="50">
-  <input type="range" id="speedSlider" min="0" max="100" value="50" oninput="updateSpeedValue(this.value)">
-  <span id="speedLabel">50</span>
-  <button onclick="adjustSpeed(-1)">-</button>
-  <button onclick="adjustSpeed(1)">+</button>
-</label>
-<br/>
+  <div class="column">
+    <button onclick="enter360View()">360view</button>
+    <button id="toggleButton" onclick="toggleRotation()">Pause</button>
 
-<label>Zoom:
-  <input type="number" id="zoomInput" value="2">
-  <input type="range" id="zoomSlider" min="1" max="10" value="2" oninput="updateZoomValue(this.value)">
-  <span id="zoomLabel">2</span>
-  <button onclick="adjustZoom(-1)">-</button>
-  <button onclick="adjustZoom(1)">+</button>
-</label>
-<br/>
+    <label>Direction:</label>
 
-<!-- Input for distance and buttons for direction -->
-<!--<input type="text" id="distanceInput" valus="0.05" placeholder="Enter distance in miles">-->
-<label>Enter distance in miles:
-<input type="number" id="distanceInput" value="0.05">
-<button onclick="moveStreetView('N', document.getElementById('distanceInput').value)">N</button>
-<button onclick="moveStreetView('S', document.getElementById('distanceInput').value)">S</button>
-<button onclick="moveStreetView('E', document.getElementById('distanceInput').value)">E</button>
-<button onclick="moveStreetView('W', document.getElementById('distanceInput').value)">W</button>
-</label>
-<br/>
+    <button id="toggleDirectionButton" onclick="toggleDirection()">Clockwise</button>
 
-<textarea id="locationsInput" rows="5" placeholder="Enter one address per line"></textarea>
-<button onclick="goToNextLocation()" id="goNextButton">Go Next</button>
-<button onclick="resetLocations()" id="resetButton">Reset</button>
+    <!--<button onclick="showMap()">Map</button>-->
+    <label>Map:</label>
+    <button onclick="toggleMapVisibility()" id="toggleMapButton">Hide/Show</button>
+    <br/>
+
+    <br/>
+  </div>
+
+  <div class="column">
+
+
+    <label>Pitch:
+      <input type="number" id="pitchInput" value="0" width="40">
+      <input type="range" id="pitchSlider" min="-90" max="90" value="0" oninput="updatePitchValue(this.value)">
+      <span id="pitchLabel">0</span>
+      <button onclick="adjustPitch(-1)">-</button>
+      <button onclick="adjustPitch(1)">+</button>
+    </label>
+
+    <br/>
+
+    <label>Speed:
+      <input type="number" id="speedInput" value="50">
+      <input type="range" id="speedSlider" min="0" max="100" value="50" oninput="updateSpeedValue(this.value)">
+      <span id="speedLabel">50</span>
+      <button onclick="adjustSpeed(-1)">-</button>
+      <button onclick="adjustSpeed(1)">+</button>
+    </label>
+    <br/>
+
+    <label>Zoom:
+      <input type="number" id="zoomInput" value="2">
+      <input type="range" id="zoomSlider" min="1" max="10" value="2" oninput="updateZoomValue(this.value)">
+      <span id="zoomLabel">2</span>
+      <button onclick="adjustZoom(-1)">-</button>
+      <button onclick="adjustZoom(1)">+</button>
+    </label>
+    <br/>
+
+    <!-- Input for distance and buttons for direction -->
+    <!--<input type="text" id="distanceInput" valus="0.05" placeholder="Enter distance in miles">-->
+    <label>Enter distance in miles:
+      <input type="number" id="distanceInput" value="0.05">
+      <button onclick="moveStreetView('N', document.getElementById('distanceInput').value)">N</button>
+      <button onclick="moveStreetView('S', document.getElementById('distanceInput').value)">S</button>
+      <button onclick="moveStreetView('E', document.getElementById('distanceInput').value)">E</button>
+      <button onclick="moveStreetView('W', document.getElementById('distanceInput').value)">W</button>
+    </label>
+    <br/>
+  </div>
+
+
+
+</div>
+
+<div>
+  <textarea id="locationsInput" rows="5" placeholder="Enter one address per line"></textarea>
+  <button onclick="goToNextLocation()" id="goNextButton">Go Next</button>
+  <button onclick="resetLocations()" id="resetButton">Reset</button>
+</div>
+
+
+
+
 
 <div id="currentLocationDisplay">Current Location: None</div>
-<div id="currentHeading"></div>
+<div id="currentHeading">Current Heading: None</div>
 
 <div id="container">
   <div id="map" onclick="getMapClickCoordinates(event)"></div> <!-- Updated onclick attribute -->

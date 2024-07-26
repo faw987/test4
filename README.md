@@ -182,13 +182,9 @@ color: #fff; /* Change text color on hover */
 
 
 
-<a href="f50.html">SpeechSynthesisUtterance experiment</a>
-<br><br>
 
-
-
-<a href="clemap1.png">cle</a>
-<br>
+<a href="clemap1.png">Historic Cleveland map</a>
+<br/>
 
 <a href="images/sunset-on-river.jpg">sunset</a>
 
