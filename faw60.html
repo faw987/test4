@@ -38,6 +38,7 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         transition: background-color 0.3s, transform 0.3s;
         z-index: 1;
+        cursor: pointer;
     }
 
     .grid-item:hover {
@@ -63,26 +64,27 @@
         z-index: 10; /* Ensure the tooltip appears above other elements */
     }
 
-    .grid-item:hover::after {
+    .grid-item:hover::after,
+    .grid-item.active::after { /* Add the active class for the visible tooltip */
         opacity: 1;
         bottom: 110%; /* Slightly move the tooltip up when visible */
+    }
+
+    .grid-item.active {
+        background-color: #0056b3;
     }
 </style>
 <body>
 <div class="grid-container">
-    <a href="f53.html" class="grid-item" data-hover="Tooltip for Link 1">360 degrees experiment (new)</a>
-    <a href="f57.html" class="grid-item" data-hover="Tooltip for Link 2">360 degrees experiment (look in)</a>
-    <a href="f58.html" class="grid-item" data-hover="Tooltip for Link 2">360 degrees experiment (satellite)</a>
-    <a href="mymain.html" class="grid-item" data-hover="Tooltip for Link 3">My Main</a>
-    <a href="readme.html" class="grid-item" data-hover="Tooltip for Link 4">Read Me</a>
-    <a href="#link5" class="grid-item" data-hover="reserved">-</a>
-    <a href="faw53.html" class="grid-item" data-hover="Tooltip for Link 6">show geopolitical info and map</a>
+    <a href="#link1" class="grid-item" data-hover="Tooltip for Link 1">Link 1</a>
+    <a href="#link2" class="grid-item" data-hover="Tooltip for Link 2">Link 2</a>
+    <a href="#link3" class="grid-item" data-hover="Tooltip for Link 3">Link 3</a>
+    <a href="#link4" class="grid-item" data-hover="Tooltip for Link 4">Link 4</a>
+    <a href="#link5" class="grid-item" data-hover="Tooltip for Link 5">Link 5</a>
+    <a href="#link6" class="grid-item" data-hover="Tooltip for Link 6">Link 6</a>
     <a href="#link7" class="grid-item" data-hover="Tooltip for Link 7">Link 7</a>
     <a href="#link8" class="grid-item" data-hover="Tooltip for Link 8">Link 8</a>
     <a href="#link9" class="grid-item" data-hover="Tooltip for Link 9">Link 9</a>
-    <a href="#link8" class="grid-item" data-hover="Tooltip for Link 8">Link 8</a>
-    <a href="#link9" class="grid-item" data-hover="Tooltip for Link 9">Link 9</a>
-    <!-- Add more link buttons as needed -->
 </div>
 <script src="scripts.js"></script>
 </body>
