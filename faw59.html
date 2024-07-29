@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Grid</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* This sets the grid to always have 3 columns */
+        gap: 10px;
+        width: 80%;
+        max-width: 600px; /* Adjust max-width to fit 3 columns nicely */
+    }
+
+    .grid-item {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, transform 0.3s;
+        z-index: 1;
+    }
+
+    .grid-item:hover {
+        background-color: #0056b3;
+        transform: translateY(-5px);
+    }
+
+    .grid-item::after {
+        content: attr(data-hover);
+        position: absolute;
+        bottom: 100%; /* Position the tooltip above the button */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #333;
+        color: white;
+        padding: 5px;
+        border-radius: 4px;
+        font-size: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s, bottom 0.3s;
+        white-space: nowrap;
+        z-index: 10; /* Ensure the tooltip appears above other elements */
+    }
+
+    .grid-item:hover::after {
+        opacity: 1;
+        bottom: 110%; /* Slightly move the tooltip up when visible */
+    }
+</style>
+<body>
+<div class="grid-container">
+    <a href="f53.html" class="grid-item" data-hover="Tooltip for Link 1">360 degrees experiment (new)</a>
+    <a href="f57.html" class="grid-item" data-hover="Tooltip for Link 2">360 degrees experiment (look in)</a>
+    <a href="f58.html" class="grid-item" data-hover="Tooltip for Link 2">360 degrees experiment (satellite)</a>
+    <a href="mymain.html" class="grid-item" data-hover="Tooltip for Link 3">My Main</a>
+    <a href="readme.html" class="grid-item" data-hover="Tooltip for Link 4">Read Me</a>
+    <a href="#link5" class="grid-item" data-hover="reserved">-</a>
+    <a href="f53.html" class="grid-item" data-hover="Tooltip for Link 6">show geopolitical info and map</a>
+    <a href="#link7" class="grid-item" data-hover="Tooltip for Link 7">Link 7</a>
+    <a href="#link8" class="grid-item" data-hover="Tooltip for Link 8">Link 8</a>
+    <a href="#link9" class="grid-item" data-hover="Tooltip for Link 9">Link 9</a>
+    <a href="#link8" class="grid-item" data-hover="Tooltip for Link 8">Link 8</a>
+    <a href="#link9" class="grid-item" data-hover="Tooltip for Link 9">Link 9</a>
+    <!-- Add more link buttons as needed -->
+</div>
+<script src="scripts.js"></script>
+</body>
+</html>
